@@ -1,1 +1,1 @@
-# daily-craft.github.io
+# dailycraft's blog
