@@ -1,1 +1,0 @@
-# dailycraft's blog
