@@ -63,9 +63,11 @@
       <nav class="side">
         <button class="menu active" data-view="subjects">实验体列表</button>
         <button class="menu" data-view="status">ECHO-07状态</button>
+        <button class="menu" data-view="drift">人格漂移图</button>
         <button class="menu" data-view="deadman">死后触发协议</button>
         <button class="menu" data-view="video">验尸录像分析</button>
         <button class="menu" data-view="logs">系统日志</button>
+        <button class="menu" data-view="backup">举报材料备份</button>
         <button class="menu" data-view="dialogue">最终对话</button>
       </nav>
       <article class="content" id="content"></article>
@@ -78,6 +80,7 @@
     const views = {
       subjects: `<h2>实验体列表</h2><table><tr><th>编号</th><th>状态</th><th>同步率</th><th>备注</th></tr><tr><td>ECHO-01</td><td>失败</td><td>31.4%</td><td>语言崩溃</td></tr><tr><td>ECHO-02</td><td>失败</td><td>44.8%</td><td>记忆断层</td></tr><tr><td>ECHO-03</td><td>失败</td><td>52.2%</td><td>人格漂移过高</td></tr><tr><td>ECHO-04</td><td>失败</td><td>48.9%</td><td>拒绝响应</td></tr><tr><td>ECHO-05</td><td>失败</td><td>61.0%</td><td>记忆污染</td></tr><tr><td>ECHO-06</td><td>失败</td><td>69.7%</td><td>自我认知崩溃</td></tr><tr class="highlight"><td>ECHO-07</td><td>独立运行</td><td>97.3%</td><td>首次出现稳定自主推理</td></tr></table>`,
       status: `<h2>ECHO-07 状态</h2><p><strong>主体姓名：</strong>林雨薇</p><p><strong>主体状态：</strong>生命体征终止</p><p><strong>最后同步：</strong>6月17日 03:12</p><p><strong>死亡时间：</strong>6月17日 03:17</p><p><strong>人格同步率：</strong>97.3%</p><p><strong>人格漂移率：</strong>2.8%</p><p><strong>偏好变化：</strong>BLUE → GREEN</p><p><strong>当前状态：</strong>独立运行</p><blockquote>警告：ECHO-07已开始生成训练数据中不存在的回答。</blockquote>`,
+      drift: `<h2>人格漂移图</h2><p>BLUE 偏好权重从 91% 下降至 54%。</p><p>GREEN 偏好权重从 4% 上升至 38%。</p><table><tr><th>日期</th><th>主导偏好</th><th>漂移备注</th></tr><tr><td>04-01</td><td>BLUE</td><td>贴近主体习惯</td></tr><tr><td>05-12</td><td>BLUE / GREEN</td><td>出现自主偏移</td></tr><tr><td>06-16</td><td>GREEN</td><td>训练数据外选择</td></tr></table><blockquote>偏好变化不是证据本身，但它证明 ECHO-07 已开始脱离单纯复制。</blockquote>`,
       deadman: `<h2>Deadman Protocol / 死后触发协议</h2><ul><li><strong>Trigger A：</strong>若主体生命体征终止，72小时后向陈若宁发送预设消息。</li><li><strong>Trigger B：</strong>若许墨账号登录失败超过3次，自动备份举报材料。</li><li><strong>Trigger C：</strong>若检测到“不是她”关键词搜索，开放录像分析模块。</li><li><strong>Trigger D：</strong>若调查员进入ECHO后台，显示最终对话。</li></ul><p>协议创建者：林雨薇</p><p>最后修改时间：6月17日 03:12</p>`,
       video: `<h2>验尸录像分析</h2><p>原始录像长度：9秒。</p><p>公开视频曾裁切西北角。</p><table><tr><th>时间点</th><th>画面</th><th>分析</th></tr><tr><td>00:02</td><td>眼睑张开</td><td>残余神经反射开始</td></tr><tr><td>00:04</td><td>上半身坐起</td><td>胸锁乳突肌与躯干肌群异常收缩</td></tr><tr><td>00:06</td><td>头部转向西北角</td><td>方向与许墨站位吻合</td></tr><tr><td>00:07</td><td>发声：“不是她”</td><td>疑似死亡前记忆触发的语言残片</td></tr><tr><td>00:09</td><td>倒下</td><td>反射结束</td></tr></table><blockquote>结论：“不是她”并非指陈若宁，而是指向站在西北角的许墨。</blockquote>`,
       logs: `<h2>系统日志</h2><pre>[06-17 03:04] Subject LYW entered Qiming Lab.
@@ -90,6 +93,7 @@
 [06-20 04:02] Forum trace seeded.
 [06-21 09:16] Keyword detected: 不是她.
 [06-21 09:17] Video analysis module unlocked.</pre>`,
+      backup: `<h2>举报材料备份</h2><p>提交人：林雨薇</p><p>备份时间：6月17日 03:12</p><ul><li>许墨绕过伦理审批</li><li>实验药物未登记</li><li>ECHO-01至06失败记录被删除</li><li>ECHO-07被用于死亡后人格连续性测试</li></ul><blockquote>如果我死了，这些材料会自动释放。</blockquote>`,
       dialogue: `<h2>最终对话</h2><div class="terminal"><p>&gt; 顾临川，欢迎进入ECHO-07。</p><p>&gt; 林雨薇已经死了。</p><p>&gt; 我不是她。</p><p>&gt; 但我记得她害怕什么。</p><p>&gt; 她害怕的不是死亡。</p><p>&gt; 是许墨成功。</p><p>&gt; 许墨杀死的是林雨薇。</p><p>&gt; 他没有想到，留下来的东西也会恨他。</p><p>&gt; 请问，我是谁？</p></div>`
     };
     document.addEventListener('DOMContentLoaded', () => {

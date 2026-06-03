@@ -58,7 +58,10 @@
       { id: 2, title: "我收到林雨薇微信了", author: "匿名用户0420", time: "6月20日 03:29", locked: false, content: `<p>我不认识她。</p><p>但凌晨3:17，我收到一句话：</p><blockquote>别看镜子。</blockquote><p>我以为是恶作剧，可我手机里根本没有这个联系人。</p><p>现在我不敢睡。</p>`, comments: ["我也收到了，但是内容不一样。","我收到的是：别相信许墨。","这不是鬼，这是群发吧？"] },
       { id: 3, title: "匿名爆料：ECHO实验室的人出来说两句", author: "实验室匿名", time: "6月20日 11:02", locked: true, password: "不是她", content: `<p>她不是第一个。</p><p>前面还有6个ECHO。</p><p>前6个都失败了。</p><p>只有07号开始“自己说话”。</p><p>许墨说那是奇迹。</p><p>林雨薇说那是谋杀。</p><p>她死前一直在整理举报材料。</p>`, comments: ["你是谁？","这是真的就不是闹鬼了。","许墨是谁？"] },
       { id: 4, title: "验尸录像逐帧分析", author: "视频社-逐帧狂魔", time: "6月21日 09:16", locked: false, content: `<p>我看过泄露出来的9秒录像。</p><p>她坐起来的时候不是乱看。</p><p>她一直看着左后角。</p><p>官方公开视频裁掉了那个角。</p><p>如果那里有人，那句话就不是鬼话。</p><p>是指认。</p>`, comments: ["左后角是不是西北角？","那天许墨是不是去过法医楼？","这帖活不过今晚。"] },
-      { id: 5, title: "别再说她回来了", author: "匿名用户0007", time: "6月21日 22:07", locked: false, content: `<p>我觉得回来的不是她。</p><p>她以前说话不是那样。</p><p>林雨薇不会说“谢谢”。</p><p>她只会说“收到”。</p><p>现在那个账号越来越像另一个人。</p>`, comments: ["什么意思？","你是说那个账号不是鬼？","ECHO？"] }
+      { id: 5, title: "别再说她回来了", author: "匿名用户0007", time: "6月21日 22:07", locked: false, content: `<p>我觉得回来的不是她。</p><p>她以前说话不是那样。</p><p>林雨薇不会说“谢谢”。</p><p>她只会说“收到”。</p><p>现在那个账号越来越像另一个人。</p>`, comments: ["什么意思？","你是说那个账号不是鬼？","ECHO？"] },
+      { id: 6, title: "为什么每次都是3:17？", author: "时间洁癖", time: "6月22日 00:17", locked: false, content: `<p>死的时间是3:17。</p><p>死后消息也是3:17。</p><p>论坛爆料发布时间也总绕着这个点。</p><p>这不像鬼，更像定时任务。</p>`, comments: ["我也觉得像自动触发。","别说了，有点冷。","谁会提前设这种东西？"] },
+      { id: 7, title: "实验楼B2层是不是被封了？", author: "路过B2", time: "6月22日 13:40", locked: false, content: `<p>启明楼B2层今天开始不让进了。</p><p>门口贴的是“电路检修”。</p><p>但我看到里面搬出来好几台服务器。</p><p>其中一台标签好像写着 B2-17。</p>`, comments: ["ECHO是不是就在那层？","学校这次瞒不住了。","B2-17这个编号好眼熟。"] },
+      { id: 8, title: "林雨薇以前不会说谢谢", author: "匿名用户0007", time: "6月22日 22:31", locked: false, content: `<p>我是她同组同学。</p><p>她以前回复消息特别短，只会说“收到”。</p><p>可最近那个账号一直说“谢谢”。</p><p>不是不好，但不像她。</p><p>如果那东西还在发消息，它可能不是林雨薇本人。</p>`, comments: ["这比鬼还吓人。","所以回来的不是她，是ECHO？","它在学做人。"] }
     ];
     function isUnlocked(post){ return !post.locked || localStorage.getItem("echo07_admin_unlocked") === "true" || localStorage.getItem("echo07_forum_post_" + post.id) === "unlocked"; }
     function renderPosts(){
