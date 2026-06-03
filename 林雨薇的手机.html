@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>林雨薇的手机</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { min-height: 100vh; background: radial-gradient(circle at top, #26384a, #090b10 68%); color: #e8eef4; padding: 18px; }
+    .back-link { display: inline-block; margin: 0 0 18px; color: #cbd7e2; text-decoration: none; font-weight: 700; }
+    .back-link:hover, a { color: #67c1ff; }
+    .layout { display: grid; place-items: center; }
+    .phone-frame { width: min(390px, 94vw); height: 760px; background: #05070a; border-radius: 42px; padding: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.55), inset 0 0 0 2px rgba(255,255,255,.08); position: relative; }
+    .phone-frame::before { content: ""; position: absolute; width: 110px; height: 20px; border-radius: 0 0 18px 18px; background: #05070a; top: 14px; left: 50%; transform: translateX(-50%); z-index: 3; }
+    .phone-screen { height: 100%; border-radius: 30px; overflow: hidden; background: linear-gradient(160deg, #101820, #1f3542 58%, #18232d); position: relative; }
+    .status { height: 34px; display: flex; justify-content: space-between; align-items: center; padding: 0 22px; font-size: .78rem; color: #dfe8ef; background: rgba(0,0,0,.22); }
+    .screen-page { height: calc(100% - 34px); overflow-y: auto; padding: 18px; }
+    #lock-screen { display: grid; align-content: center; gap: 16px; text-align: center; height: calc(100% - 34px); padding: 28px; background: radial-gradient(circle at 50% 20%, rgba(64,145,160,.5), transparent 34%), #0d1117; }
+    #lock-screen h1 { font-size: 2.1rem; }
+    input { width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,.18); border-radius: 12px; background: rgba(255,255,255,.08); color: #fff; text-align: center; font-size: 1.1rem; outline: none; }
+    button { border: 0; border-radius: 12px; padding: 11px 14px; background: #26a69a; color: #fff; font-weight: 800; cursor: pointer; }
+    button:hover { filter: brightness(1.07); }
+    .hint, #phone-error, #echo-error { color: #aebdcc; font-size: .88rem; min-height: 1.2em; }
+    #phone-error, #echo-error { color: #ff7675; }
+    .app-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding-top: 22px; }
+    .app-card { display: grid; gap: 8px; justify-items: center; cursor: pointer; color: #fff; }
+    .icon { width: 66px; height: 66px; border-radius: 18px; display: grid; place-items: center; font-size: 1.55rem; box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+    .i1 { background: #07c160; } .i2 { background: #f9a825; } .i3 { background: #7e57c2; } .i4 { background: #42a5f5; } .i5 { background: #ef5350; } .i6 { background: #26a69a; }
+    .app-name { font-size: .8rem; text-shadow: 0 2px 6px rgba(0,0,0,.5); }
+    .app-view { display: none; background: #f5f7fb; color: #1e2933; min-height: calc(100% - 34px); }
+    .app-header { position: sticky; top: 0; z-index: 2; height: 48px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; background: #fff; border-bottom: 1px solid #e5ebf0; }
+    .back-btn { color: #1e88e5; cursor: pointer; font-weight: 800; }
+    .app-content { padding: 14px; }
+    .list-item, .memo, .photo-card, .recording, .panel { background: #fff; border: 1px solid #e4eaf0; border-radius: 12px; padding: 14px; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(30,50,70,.06); }
+    .list-item { cursor: pointer; display: flex; justify-content: space-between; gap: 12px; }
+    .msg { max-width: 82%; padding: 10px 12px; border-radius: 14px; margin: 8px 0; line-height: 1.45; }
+    .other { background: #fff; border: 1px solid #dde5ec; }
+    .me { background: #9be37f; margin-left: auto; }
+    .system { background: #e8eef5; margin-left: auto; margin-right: auto; text-align: center; color: #607080; }
+    .photo-card { background: linear-gradient(135deg, #f8fbff, #edf6ff); border-style: dashed; }
+    .history-list { padding-left: 20px; display: grid; gap: 10px; }
+    blockquote { border-left: 4px solid #26a69a; background: #eefaf8; padding: 10px 12px; margin: 10px 0; }
+    .echo-msg { background: #07130f; color: #9ff7ca; border: 1px solid rgba(159,247,202,.25); border-radius: 10px; padding: 10px; margin: 8px 0; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+    @media (max-height: 820px) { .phone-frame { height: 700px; } }
+  </style>
+</head>
+<body>
+  <a class="back-link" href="./index.html">⬅ 返回特调局档案系统</a>
+  <main class="layout">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="status"><span>03:17</span><span>4G  17%</span></div>
+
+        <section id="lock-screen">
+          <h1>林雨薇的手机</h1>
+          <p>请输入4位锁屏密码</p>
+          <input id="phone-pass-input" maxlength="6" placeholder="密码">
+          <button onclick="unlockPhone()">解锁</button>
+          <p id="phone-error"></p>
+          <p class="hint">该设备需要授权凭据。</p>
+        </section>
+
+        <section id="home-screen" class="screen-page" style="display:none;">
+          <h2>林雨薇</h2>
+          <p class="hint">最后同步：06-17 03:12</p>
+          <div class="app-grid">
+            <div class="app-card" onclick="openApp('wechat')"><div class="icon i1">微</div><div class="app-name">微信</div></div>
+            <div class="app-card" onclick="openApp('memo')"><div class="icon i2">备</div><div class="app-name">备忘录</div></div>
+            <div class="app-card" onclick="openApp('photos')"><div class="icon i3">相</div><div class="app-name">相册</div></div>
+            <div class="app-card" onclick="openApp('history')"><div class="icon i4">览</div><div class="app-name">浏览器历史</div></div>
+            <div class="app-card" onclick="openApp('recorder')"><div class="icon i5">录</div><div class="app-name">录音机</div></div>
+            <div class="app-card" onclick="openApp('echo')"><div class="icon i6">E</div><div class="app-name">ECHO App</div></div>
+          </div>
+        </section>
+
+        <section class="app-view" id="app-wechat"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>微信</strong><span></span></div><div class="app-content" id="wechat-list"></div></section>
+        <section class="app-view" id="chat-view"><div class="app-header"><span class="back-btn" onclick="openApp('wechat')">⬅</span><strong id="chat-title"></strong><span></span></div><div class="app-content" id="chat-body"></div></section>
+        <section class="app-view" id="app-memo"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>备忘录</strong><span></span></div><div class="app-content" id="memo-list"></div></section>
+        <section class="app-view" id="app-photos"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>相册</strong><span></span></div><div class="app-content">
+          <div class="photo-card"><h3>实验室白板</h3><p>ECHO-07</p><p>Sync Rate: 97.3%</p><p>Drift: 2.8%</p><p>Preference Shift: BLUE → GREEN</p></div>
+          <div class="photo-card"><h3>服务器机柜</h3><p>标签：ECHO CORE / B2-17</p><p>备注：不要让许墨知道我拍了这个。</p></div>
+          <div class="photo-card"><h3>验尸房角落截图</h3><p>画面模糊，但能看见一个男人站在西北角。</p><p>备注：他为什么在那里？</p></div>
+        </div></section>
+        <section class="app-view" id="app-history"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>浏览器历史</strong><span></span></div><div class="app-content"><ul class="history-list"><li><a href="./A大校园论坛 - 验尸台上的少女.html">A大校园论坛：验尸台上的少女</a></li><li>搜索：脑死亡后神经反射</li><li>搜索：人格备份是否等于本人</li><li>搜索：ECHO drift green</li><li>搜索：死后自动触发协议</li></ul></div></section>
+        <section class="app-view" id="app-recorder"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>录音机</strong><span></span></div><div class="app-content"><div class="recording"><h3>not-her.wav</h3><p>录音时间：6月17日14:34</p><p>来源：验尸房监控音轨备份</p><button onclick="showTranscript()">查看转写文本</button><div id="transcript" style="display:none;"><blockquote>不是她。</blockquote><p>降噪后分析：发声极短，音色接近林雨薇本人。</p><p>背景音中可识别出许墨的呼吸声，位置接近西北角。</p></div></div></div></section>
+        <section class="app-view" id="app-echo"><div class="app-header"><span class="back-btn" onclick="showHome()">⬅</span><strong>ECHO App</strong><span></span></div><div class="app-content"><div id="echo-lock" class="panel"><h3>输入访问口令</h3><input id="echo-pass" placeholder="口令"><br><br><button onclick="unlockEcho()">进入</button><p id="echo-error"></p></div><div id="echo-terminal" class="panel" style="display:none;"><h3>ECHO-07 本地终端</h3><p>同步状态：中断</p><p>最后同步时间：6月17日03:12</p><p>主体生命体征：终止</p><p>当前状态：独立运行</p><hr><p class="echo-msg">我不是林雨薇。</p><p class="echo-msg">但我记得她害怕什么。</p><p class="echo-msg">她害怕的不是死亡。</p><p class="echo-msg">是许墨成功。</p><p><a href="./ECHO人格备份系统.html">进入ECHO人格备份系统</a></p></div></div></section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const chats = {
+      "陈若宁": [
+        ["other","你最近到底怎么了？"], ["me","如果有一天我不像我了，你能看出来吗？"],
+        ["other","你别吓我。"], ["me","我只是觉得，有东西正在学我。"],
+        ["other","你说ECHO？"], ["me","别在微信里说这个名字。"],
+        ["other","你昨晚是不是又去实验室了？"], ["me","如果我出事，先看我的备忘录。"]
+      ],
+      "许墨": [
+        ["other","今晚不要再进实验室。"], ["me","我已经备份了所有材料。"],
+        ["other","你不知道自己在破坏什么。"], ["me","我知道。"],
+        ["me","你不是想让人格活下去。"], ["me","你只是想让死人继续替你工作。"],
+        ["other","林雨薇，停止。"]
+      ],
+      "系统消息": [
+        ["system","6月20日 03:17，自动发送成功。"], ["me","别相信许墨。"],
+        ["system","发送对象：陈若宁"], ["system","触发来源：ECHO Deadman Protocol"]
+      ]
+    };
+    const memos = [
+      ["如果我死了", ["不要相信第一个解释。","不要先找鬼。","“不是她”不是给若宁看的。","能进入这里的人，应该已经知道钥匙。"]],
+      ["ECHO不是镜子", ["它一开始只是学我。","后来，它开始回答我没有想过的问题。","我喜欢蓝色。","但它喜欢绿色。","如果它开始坚持绿色，说明它已经不是单纯复制品。"]],
+      ["许墨", ["他不是在研究永生。","他是在研究死亡后仍能被使用的人。","如果我举报失败，他一定会删掉所有材料。","所以我把材料交给了ECHO。"]],
+      ["最后一次同步", ["最后同步时间：6月17日 03:12。","如果3:17后我没有回来，启动死后协议。","关键词触发：不是她、许墨、验尸、ECHO。"]]
+    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      renderWechat(); renderMemos();
+      if (localStorage.getItem("echo07_admin_unlocked") === "true") {
+        localStorage.setItem("echo07_phone_unlocked", "true");
+        localStorage.setItem("echo07_echo_app_unlocked", "true");
+      }
+      if (localStorage.getItem("echo07_phone_unlocked") === "true") showHome();
+      if (localStorage.getItem("echo07_echo_app_unlocked") === "true") showEchoTerminal();
+    });
+    function unlockPhone(){ const input=document.getElementById("phone-pass-input").value.trim(); if(["0317","3:17","317"].includes(input)){ localStorage.setItem("echo07_phone_unlocked","true"); showHome(); } else document.getElementById("phone-error").textContent="密码错误。"; }
+    function hideAll(){ document.getElementById('lock-screen').style.display='none'; document.getElementById('home-screen').style.display='none'; document.querySelectorAll('.app-view').forEach(v=>v.style.display='none'); }
+    function showHome(){ hideAll(); document.getElementById('home-screen').style.display='block'; }
+    function openApp(name){ hideAll(); document.getElementById('app-'+name).style.display='block'; }
+    function renderWechat(){ const list=document.getElementById('wechat-list'); list.innerHTML=Object.keys(chats).map(name=>`<div class="list-item" onclick="openChat('${name}')"><strong>${name}</strong><span>查看</span></div>`).join(''); }
+    function openChat(name){ hideAll(); document.getElementById('chat-view').style.display='block'; document.getElementById('chat-title').textContent=name; document.getElementById('chat-body').innerHTML=chats[name].map(([type,text])=>`<p class="msg ${type}">${text}</p>`).join(''); }
+    function renderMemos(){ document.getElementById('memo-list').innerHTML=memos.map(([title,paras])=>`<div class="memo"><h3>${title}</h3>${paras.map(p=>`<p>${p}</p>`).join('')}</div>`).join(''); }
+    function showTranscript(){ document.getElementById('transcript').style.display='block'; }
+    function unlockEcho(){ const v=document.getElementById('echo-pass').value.trim(); if(["green","绿色","GREEN"].includes(v)){ localStorage.setItem("echo07_echo_app_unlocked","true"); showEchoTerminal(); } else document.getElementById('echo-error').textContent='口令错误。'; }
+    function showEchoTerminal(){ document.getElementById('echo-lock').style.display='none'; document.getElementById('echo-terminal').style.display='block'; }
+  </script>
+</body>
+</html>
