@@ -85,6 +85,7 @@
     .red-flash { position: fixed; inset: 0; z-index: 2000; display: none; place-items: center; background: #b00000; color: #fff; font-size: clamp(2.4rem, 9vw, 7rem); font-weight: 900; letter-spacing: .08em; text-align: center; text-shadow: 0 0 18px rgba(0,0,0,.55); pointer-events: none; }
     .red-flash.active { display: grid; animation: redPulse 1s ease both; }
     @keyframes redPulse { 0% { opacity: 0; filter: brightness(1.8); } 12% { opacity: 1; } 55% { opacity: .96; filter: brightness(.9); } 100% { opacity: 0; filter: brightness(1.4); } }
+    .version-badge { position: fixed; right: 12px; bottom: 10px; z-index: 20; padding: 5px 9px; border-radius: 6px; background: rgba(34,49,63,.86); color: rgba(255,255,255,.78); font-size: .72rem; line-height: 1.2; box-shadow: 0 4px 16px rgba(0,0,0,.14); pointer-events: none; }
     .footer { color: #7a8793; text-align: center; padding: 18px; font-size: .86rem; }
     @media (max-width: 720px) { .header { align-items: flex-start; flex-direction: column; } .user-area { align-items: flex-start; } .content-area { padding: 16px; } .dorm-area { width: 100px; font-size: .86rem; } }
   </style>
@@ -92,6 +93,7 @@
 <body>
   <div id="system-toast" class="system-toast"></div>
   <div id="red-flash" class="red-flash">FAILED</div>
+  <div class="version-badge">档案系统 v20260603-1</div>
   <div class="container">
     <div class="top-nav"><a class="back-home-link" href="./index.html?v=20260603-1">返回案件首页</a></div>
     <div class="header">
@@ -297,7 +299,7 @@
     function normalizeSearchText(text) { return String(text || '').toLowerCase().trim().replace(/\s+/g, '').replace(/[，。！？、；：:,.!?;'"“”‘’《》【】\[\]（）()\-—_]/g, ''); }
     function matchKeyword(input, keywords) { const term = normalizeSearchText(input); if (!term) return false; return keywords.some(k => normalizeSearchText(k) === term); }
     function performSearch(term) { if (!term || !gameData.currentUser) return showToast('请先登录。'); const normalizedTerm = normalizeSearchText(term); if (usedSearchTerms.has(normalizedTerm)) return showToast('该关键词已经检索过，没有新的档案。'); const target = gameData.documents.find(doc => !doc.unlocked && matchKeyword(term, doc.keywords)); usedSearchTerms.add(normalizedTerm); if (target) { target.unlocked = true; target.new = true; updateDocumentsDisplay(); saveGame(); showToast('解锁了 1 份新档案。'); searchFailCount = 0; } else { searchFailCount++; showSearchHint(); } }
-    function showSearchHint(){ if(searchFailCount===1) showToast('未找到相关档案。请尝试搜索完整词，例如：验尸记录、异常录音、手机物证。'); else if(searchFailCount===2) showToast('建议从五个问题入手：尸体为什么坐起？死后消息从哪里来？不是她指谁？ECHO是什么？谁是凶手？'); else showToast('推荐搜索：法医记录 / 异常录音 / 验尸录像 / 手机物证 / 论坛入口 / ECHO计划 / 许墨档案 / 后台入口。'); }
+    function showSearchHint(){}
     function updateDocumentsDisplay(){ const c=document.getElementById('documents-container'); c.innerHTML=''; const visible=gameData.documents.filter(d=>d.unlocked); if(!visible.length){ c.innerHTML='<p style="text-align:center;color:#888;">暂无档案，请输入关键词搜索。</p>'; return; } visible.forEach(doc=>{ const item=document.createElement('div'); item.className='document-item'; item.dataset.docId=doc.id; const cat={case:'案件',personnel:'人员',evidence:'物证',forensic:'法医',background:'背景',classified:'机密',digital:'电子'}[doc.category]||'资料'; item.innerHTML=`<div class="doc-title"><span class="${doc.category==='classified'?'classified-title':''}">${doc.title}</span><span>${doc.new?'<span class="new-badge">NEW</span> ':''}<span class="clue-number">#${doc.id}</span></span></div><div class="doc-meta">分类: ${cat}</div><div class="document-content">${doc.content}</div>`; c.appendChild(item); }); }
     function handleDocumentClick(e){ const item=e.target.closest('.document-item'); if(!item || e.target.closest('.document-content')) return; const doc=gameData.documents.find(d=>d.id==item.dataset.docId); if(doc?.new){ doc.new=false; saveGame(); updateDocumentsDisplay(); } else { const content=item.querySelector('.document-content'); content.classList.toggle('active'); if(doc?.id===19 && content.classList.contains('active')) triggerEchoFailureFlash(); } }
     function triggerEchoFailureFlash(){ if(localStorage.getItem('echo07_doc19_flash_seen') === 'true') return; localStorage.setItem('echo07_doc19_flash_seen','true'); const flash=document.getElementById('red-flash'); flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'), 1000); }
