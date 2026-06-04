@@ -36,16 +36,17 @@
     button { padding: 10px 12px; border: 0; border-radius: 6px; background: #1e88e5; color: #fff; font-weight: 800; cursor: pointer; }
     button:hover { filter: brightness(.96); }
     .ghost { opacity: .72; font-size: .92rem; }
+    .inline-version { color: rgba(255,255,255,.82); font-size: .82rem; font-weight: 700; }
     .version-badge { position: fixed; right: 12px; bottom: 10px; z-index: 20; padding: 5px 9px; border-radius: 6px; background: rgba(36,49,61,.84); color: rgba(255,255,255,.78); font-size: .72rem; line-height: 1.2; box-shadow: 0 4px 16px rgba(0,0,0,.16); pointer-events: none; }
   </style>
 </head>
 <body>
-  <div class="version-badge">校园论坛 v20260603-1</div>
-  <a class="back-link" href="./index.html?v=20260603-1">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">校园论坛 v20260604-1</div>
+  <a class="back-link" href="./index.html?v=20260604-1">⬅ 返回特调局档案系统</a>
   <header>
     <div class="header-inner">
       <div>
-        <h1>A大校园论坛</h1>
+        <h1>A大校园论坛 <span class="inline-version">v20260604-1</span></h1>
         <p class="sub">匿名版 / 怪谈讨论区 / 验尸台上的少女</p>
       </div>
       <p class="ghost">当前在线：317 人</p>
@@ -72,12 +73,13 @@
     function renderPosts(){
       document.getElementById('posts').innerHTML = posts.map(post => {
         const unlocked = isUnlocked(post);
-        const body = unlocked ? `<div class="content">${post.content}</div><div class="comments">${post.comments.map(c=>`<div class="comment">${c}</div>`).join('')}</div>` : `<div class="locked-box"><p>该帖已被管理员设为口令可见。</p><p class="ghost">请输入授权口令。</p><br><input id="post-pass-${post.id}" placeholder="输入口令"> <button onclick="unlockPost(${post.id})">解锁</button></div>`;
+        const body = unlocked ? `<div class="content">${post.content}</div><div class="comments">${post.comments.map(c=>`<div class="comment">${c}</div>`).join('')}</div>` : `<div class="locked-box"><p>该帖已被管理员设为口令可见。</p><p class="ghost">访问口令为验尸台上死者说出的三个字，不含标点。</p><br><input id="post-pass-${post.id}" placeholder="输入口令"> <button onclick="unlockPost(${post.id})">解锁</button></div>`;
         return `<article class="post"><div class="post-head" onclick="togglePost(${post.id})"><div><div class="post-title">${post.title}${post.locked?'<span class="tag-lock">锁帖</span>':''}</div><div class="meta">${post.author} · ${post.time}</div></div><div class="expand" id="expand-${post.id}">▼</div></div><div class="post-body" id="post-${post.id}">${body}</div></article>`;
       }).join('');
     }
     function togglePost(id){ const body=document.getElementById('post-'+id); body.classList.toggle('active'); document.getElementById('expand-'+id).textContent = body.classList.contains('active') ? '▲' : '▼'; }
-    function unlockPost(postId){ const input=document.getElementById("post-pass-"+postId).value.trim(); const accepted=["不是她","不是她。","录音","异常录音"]; if(accepted.includes(input)){ localStorage.setItem("echo07_forum_post_"+postId,"unlocked"); renderPosts(); setTimeout(()=>togglePost(postId), 0); } else alert("口令错误。"); }
+    function strictInput(value){ return String(value || "").trim(); }
+    function unlockPost(postId){ const input=strictInput(document.getElementById("post-pass-"+postId).value); if(input==="不是她"){ localStorage.setItem("echo07_forum_post_"+postId,"unlocked"); renderPosts(); setTimeout(()=>togglePost(postId), 0); } else alert("密码错误。提示：验尸台上死者说出的三个字，不含标点。"); }
     renderPosts();
   </script>
 </body>

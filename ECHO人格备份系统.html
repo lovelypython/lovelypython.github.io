@@ -36,15 +36,16 @@
     pre, .terminal { background: #020604; color: #9ff7ca; border: 1px solid rgba(124,255,189,.2); border-radius: 8px; padding: 14px; overflow-x: auto; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
     .terminal p { font-family: inherit; margin: 8px 0; }
     ul { padding-left: 22px; }
+    .inline-version { color: rgba(216,239,229,.74); font-size: .82rem; font-weight: 700; }
     .version-badge { position: fixed; right: 12px; bottom: 10px; z-index: 20; padding: 5px 9px; border-radius: 6px; background: rgba(5,11,9,.82); color: rgba(216,239,229,.74); font-size: .72rem; line-height: 1.2; box-shadow: 0 4px 16px rgba(0,0,0,.24); pointer-events: none; border: 1px solid rgba(124,255,189,.12); }
     @media (max-width: 820px) { #dashboard { grid-template-columns: 1fr; } .side { position: static; } }
   </style>
 </head>
 <body>
-  <div class="version-badge">ECHO后台 v20260603-1</div>
-  <a class="back-link" href="./index.html?v=20260603-1">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">ECHO后台 v20260604-1</div>
+  <a class="back-link" href="./index.html?v=20260604-1">⬅ 返回特调局档案系统</a>
   <div class="shell">
-    <section class="hero"><h1>ECHO人格备份系统</h1><p>Internal Neural Continuity Console / B2-17</p></section>
+    <section class="hero"><h1>ECHO人格备份系统 <span class="inline-version">v20260604-1</span></h1><p>Internal Neural Continuity Console / B2-17</p></section>
 
     <section id="login-panel" class="card center">
       <h2>负责人登录</h2>
@@ -110,8 +111,9 @@
       else if (localStorage.getItem("echo07_backend_logged_in") === "true") showVerify();
       document.querySelectorAll('.menu').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.menu').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(btn.dataset.view); }));
     });
-    function login(){ const u=document.getElementById('user').value.trim(); const p=document.getElementById('pass').value; if(u===backendUser && p===backendPass){ localStorage.setItem("echo07_backend_logged_in","true"); showVerify(); } else document.getElementById('login-error').textContent='登录失败。'; }
-    function verify2fa(){ const v=document.getElementById('verify').value.trim(); if(["green","绿色","GREEN"].includes(v)){ localStorage.setItem("echo07_backend_2fa","true"); showDashboard(); } else document.getElementById('verify-error').textContent='二级验证失败。'; }
+    function strictInput(value){ return String(value || "").trim(); }
+    function login(){ const u=strictInput(document.getElementById('user').value); const p=strictInput(document.getElementById('pass').value); if(u===backendUser && p===backendPass){ localStorage.setItem("echo07_backend_logged_in","true"); showVerify(); } else document.getElementById('login-error').textContent='账号或密码错误。账号格式：姓拼音.名拼音；密码格式：项目代号大写-两位编号。'; }
+    function verify2fa(){ const v=strictInput(document.getElementById('verify').value); if(v==="green"){ localStorage.setItem("echo07_backend_2fa","true"); showDashboard(); } else document.getElementById('verify-error').textContent='二级验证失败。提示：ECHO-07最新自主偏好，英文小写。'; }
     function showVerify(){ document.getElementById('login-panel').style.display='none'; document.getElementById('verify-panel').style.display='block'; }
     function showDashboard(){ document.getElementById('login-panel').style.display='none'; document.getElementById('verify-panel').style.display='none'; document.getElementById('dashboard').style.display='grid'; render('subjects'); }
     function render(name){ document.getElementById('content').innerHTML=views[name]; }
