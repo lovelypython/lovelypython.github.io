@@ -1,0 +1,292 @@
+特调局总站云存档 Workers 设置教程（D1 版）
+
+一、当前结构
+
+index.html
+- 特调局总站
+- 负责通用账号登录
+- 负责案件列表
+- 管理员登录后显示账号与存档管理面板
+- 总站级存档写入同一账号的 site 字段
+
+ECHO07验尸台上的少女.html
+- ECHO-07 案件主页面
+- 读取总站登录状态和 session token
+- 案件存档写入同一账号下的 cases.echo07
+
+cloud-save-worker.js
+- Cloudflare Worker 后端
+- 使用 D1 数据库存储，不再使用 KV
+- D1 binding 名称继续使用 TTJ_SAVES
+- 负责登录、session、权限验证、账号管理、云存档读写
+- 密码使用 PBKDF2 + salt 哈希后存入 D1，不保存明文密码
+- Cloudflare Workers 当前 PBKDF2 迭代次数使用 100000
+- 用户不存在时不会自动注册，只能由管理员创建
+
+
+二、D1 Binding 要求
+
+你当前已经创建 D1 数据库：
+
+database_name: ttj-saves
+binding: TTJ_SAVES
+
+Worker 代码会通过下面方式访问 D1：
+
+env.TTJ_SAVES.prepare(...).bind(...).first()
+env.TTJ_SAVES.prepare(...).bind(...).run()
+env.TTJ_SAVES.prepare(...).bind(...).all()
+
+注意：TTJ_SAVES 现在是 D1 Database binding，不是 KV binding。
+
+
+三、Worker 部署步骤
+
+1. 登录 Cloudflare
+   https://dash.cloudflare.com
+
+2. 进入 Workers & Pages
+
+3. 打开你的 Worker
+
+4. 进入 Worker 编辑器
+
+5. 删除默认代码
+
+6. 把本文件夹里的 cloud-save-worker.js 全部复制进去
+
+7. 点击 Deploy
+
+
+四、绑定 D1 到 Worker
+
+1. 回到 Worker：
+   Workers & Pages -> lovelypython
+
+2. 进入 Settings
+
+3. 找到 Bindings
+
+4. 点击 Add binding
+
+5. 类型选择：
+   D1 Database
+
+6. Variable name 必须填：
+   TTJ_SAVES
+
+7. D1 database 选择：
+   ttj-saves
+
+8. 保存并重新 Deploy
+
+如果网页登录时提示：
+
+D1 binding TTJ_SAVES missing
+云存档后端未绑定 D1 数据库
+
+说明 Worker 代码已经被访问到了，但 D1 没有绑定成功。回到本节检查类型是否是 D1 Database，并确认 Variable name 正好是 TTJ_SAVES。
+
+
+五、数据库自动建表
+
+Worker 第一次请求时会自动创建缺失的数据表：
+
+users
+- username
+- role
+- password_json
+- created_at
+- updated_at
+
+accounts
+- username
+- site_json
+- cases_json
+- updated_at
+
+sessions
+- token
+- username
+- role
+- created_at
+- expires_at
+
+settings
+- key
+- value
+
+audit_logs
+- created_at
+- actor_username
+- target_username
+- action
+- case_id
+- ip
+- user_agent
+- country
+- city
+- detail_json
+
+不需要你手动执行 SQL。
+
+
+六、设置初始账号密码
+
+Worker 首次初始化时会自动创建三个账号：
+
+- guest，普通用户
+- winne，普通用户
+- admin，管理员
+
+必须在 Cloudflare Worker 的 Settings -> Variables 里添加环境变量：
+
+ADMIN_PASSWORD
+GUEST_PASSWORD
+WINNE_PASSWORD
+
+这些环境变量只用于第一次初始化账号。初始化后，密码会以哈希形式存入 D1。
+
+如果首次部署时没有设置这三个变量，Worker 会返回：
+
+初始账号密码环境变量未设置
+
+如果数据库已经初始化过，后来才改环境变量，已有账号密码不会自动变化。需要用管理员面板重置密码，或者删除 settings 表里 key 为 bootstrapped 的记录后重新初始化。
+
+
+七、Worker 地址
+
+你当前填写在网页里的 Worker 地址是：
+
+https://ttj-save.charles1206.qzz.io
+
+index.html 和 ECHO07验尸台上的少女.html 都已经写入这个地址：
+
+const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
+
+如果之后换 Worker 地址，就在这两个 HTML 里修改同一个常量。
+
+
+八、上传 GitHub Pages
+
+把整个文件夹内容上传到 GitHub Pages 仓库。
+
+必须包含：
+- index.html
+- ECHO07验尸台上的少女.html
+- 林雨薇的手机.html
+- A大校园论坛 - 验尸台上的少女.html
+- ECHO人格备份系统.html
+- 特调局档案系统 - ECHO07验尸台事件.html
+- version.json
+
+cloud-save-worker.js 和本教程可以不上传，但 Worker 后端必须在 Cloudflare 里部署最新版。
+
+
+九、测试普通用户
+
+1. 打开 GitHub Pages 的 index.html
+
+2. 登录普通账号
+
+   如果这个浏览器里存在旧版 ECHO-07 本地存档，并且当前账号还没有新格式本地存档，页面会询问是否上传旧存档到当前账号。
+
+3. 进入 ECHO-07 案件
+
+4. 解锁任意档案
+
+5. 右上角应显示：
+   云存档: 已同步
+
+6. 换浏览器或无痕窗口
+
+7. 再登录同一个账号
+
+8. 进入 ECHO-07
+
+9. 如果之前解锁的档案仍然存在，说明 D1 云存档成功。
+
+
+十、测试管理员
+
+1. 在总站登录管理员账号
+
+2. 页面下方会出现管理员面板
+
+管理员可以：
+- 创建账号
+- 删除账号
+- 重置密码
+- 查看所有账号列表
+- 查看用户完整存档
+- 修改用户完整存档
+- 删除指定账号的指定案件存档
+- 在“更多详情”里查看登录记录、账号创建记录、IP、浏览器、粗略地区、解锁档案和案件进度
+
+说明：地区来自 Cloudflare 请求信息，只能作为粗略参考，不是精确定位。
+
+普通用户不会显示管理员面板。即使普通用户自己打开浏览器控制台调用管理员接口，Worker 也会检查 session token 和 role，不会允许操作。
+
+
+十一、存档结构
+
+D1 的 accounts 表中：
+
+site_json 保存总站存档。
+cases_json 保存所有案件存档。
+
+读取时 Worker 会 JSON.parse 回：
+
+{
+  "username": "guest",
+  "site": {
+    "version": "20260604-6",
+    "visitedCases": {}
+  },
+  "cases": {
+    "echo07": { "caseId": "echo07" },
+    "futureCaseId": { "caseId": "futureCaseId" }
+  },
+  "updatedAt": "..."
+}
+
+
+十二、以后做续集怎么接入
+
+每个新案件页面只需要：
+
+1. 设置自己的 CASE_ID
+   例如：
+   const CASE_ID = "case08";
+
+2. 使用同一个：
+   const CLOUD_SAVE_ENDPOINT = "同一个 Worker 地址";
+
+3. 同步时发送：
+   action: "pullCase" / "pushCase"
+   sessionToken: localStorage.getItem("ttj_session_token")
+   caseId: CASE_ID
+
+4. 在总站 index.html 的 cases 数组里加一张案件卡片。
+
+这样所有案件共用同一套账号、权限和 D1 云存档结构。
+
+
+十三、缓存和版本
+
+当前版本号：
+
+20260604-6
+
+网页链接使用：
+
+?v=20260604-6
+
+version.json 也会提示最新版本。以后改 CSS、JS 或 HTML 时，把所有版本号一起改成新版本，可以减少 GitHub Pages 和浏览器缓存导致的旧页面问题。
+
+
+十四、安全说明
+
+现在账号权限已经由 Worker 后端验证，不再依赖前端隐藏按钮。
+
+但这仍是剧情互动网站的轻量账号系统，不建议保存真实隐私、支付信息或高价值数据。

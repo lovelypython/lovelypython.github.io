@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>特调局档案系统 - ECHO07验尸台事件</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { background: #eef2f6; color: #263238; line-height: 1.65; background-image: linear-gradient(135deg, rgba(44,62,80,.05) 25%, transparent 25%), linear-gradient(225deg, rgba(44,62,80,.05) 25%, transparent 25%); background-size: 28px 28px; }
+    .container { max-width: 1180px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+    .top-nav { margin-bottom: 12px; }
+    .back-home-link, .inline-link { color: #2980b9; font-weight: 700; text-decoration: underline; }
+    .back-home-link { color: #556; text-decoration: none; }
+    .back-home-link:hover, .inline-link:hover { color: #e67e22; }
+    .header { display: flex; justify-content: space-between; gap: 16px; align-items: center; background: #fff; border-left: 6px solid #22313f; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); padding: 16px 18px; margin-bottom: 14px; }
+    .logo { font-size: 1.45rem; font-weight: 800; color: #22313f; }
+    .inline-version { margin-left: 8px; color: #7a8793; font-size: .82rem; font-weight: 700; }
+    .user-area { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .user-info { color: #6d7b86; font-size: .88rem; }
+    .cloud-status { color: #7a8793; font-size: .78rem; }
+    .auth-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    button, .button-link { border: 0; border-radius: 6px; padding: 9px 14px; background: #3498db; color: #fff; cursor: pointer; font-weight: 700; text-decoration: none; display: inline-block; }
+    button:hover, .button-link:hover { filter: brightness(.95); }
+    .logout { background: #c0392b; } .reset { background: #7f8c8d; }
+    .nav-tabs { display: flex; overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); margin-bottom: 14px; }
+    .tab { padding: 13px 20px; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+    .tab.active { color: #2980b9; border-bottom-color: #2980b9; font-weight: 800; }
+    .tab.disabled { opacity: .45; cursor: not-allowed; background: #f5f7f9; }
+    .content-area { background: #fff; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); padding: 22px; min-height: 560px; }
+    .page { display: none; animation: fadeIn .25s ease; } .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .page-title { color: #22313f; font-size: 1.55rem; border-bottom: 1px solid #e8edf2; padding-bottom: 10px; margin-bottom: 16px; }
+    .welcome-message { text-align: center; padding: 28px 10px; }
+    .welcome-icon { font-size: 3rem; color: #2980b9; }
+    .welcome-text { max-width: 720px; margin: 14px auto 20px; color: #5d6d7e; font-size: 1.05rem; }
+    .rules-container, .case-card { background: #f8fafc; border: 1px solid #e4ebf2; border-radius: 8px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #3498db; }
+    .rules-title, .case-title { color: #22313f; margin-bottom: 10px; }
+    .rules-list { padding-left: 22px; }
+    .case-meta { color: #71808d; font-size: .9rem; margin-bottom: 10px; }
+    .case-status { background: #f39c12; color: #fff; padding: 3px 9px; border-radius: 999px; font-size: .78rem; }
+    .sticky-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .sticky-note, .green-sticky-note { padding: 18px; border-radius: 8px; box-shadow: 0 8px 18px rgba(0,0,0,.08); cursor: pointer; }
+    .sticky-note { background: #fff6bf; border: 1px solid #f1c40f; transform: rotate(-1deg); }
+    .green-sticky-note { background: #dff7e9; border: 1px solid #27ae60; transform: rotate(1deg); }
+    .sticky-note-title, .green-sticky-note-title { font-weight: 800; margin-bottom: 8px; }
+    .sticky-note-content, .green-sticky-note-content { display: none; border-top: 1px dashed rgba(0,0,0,.18); padding-top: 10px; margin-top: 10px; }
+    .sticky-note-content.active, .green-sticky-note-content.active { display: block; }
+    .dorm-map { position: relative; height: 370px; border-radius: 8px; overflow: hidden; border: 1px solid #dfe7ef; margin-bottom: 16px; background: linear-gradient(135deg, #f8fafc, #e9f0f6); }
+    .dorm-map::before { content: ""; position: absolute; inset: 28px; border: 3px solid #bdc9d5; border-radius: 12px; }
+    .dorm-area { position: absolute; width: 118px; min-height: 68px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 8px; background: #eaf5ff; border: 2px solid #3498db; border-radius: 8px; cursor: pointer; font-weight: 800; color: #24445f; box-shadow: 0 4px 10px rgba(52,152,219,.12); }
+    .dorm-area:hover { background: #d7edff; transform: translateY(-1px); }
+    #scene-details blockquote, blockquote { margin: 10px 0; padding: 10px 12px; border-left: 4px solid #3498db; background: #eef6fd; color: #2c3e50; }
+    .search-area-page { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .search-input { flex: 1; min-width: 220px; padding: 11px 12px; border: 1px solid #ccd6df; border-radius: 6px; font-size: 1rem; }
+    .keyword { color: #2980b9; text-decoration: underline; cursor: pointer; margin: 0 4px; font-weight: 800; }
+    .documents-list { display: grid; gap: 12px; margin-top: 18px; }
+    .document-item { background: #f8fafc; border: 1px solid #e2e9f0; border-radius: 8px; padding: 14px; cursor: pointer; }
+    .doc-title { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-weight: 800; color: #22313f; }
+    .doc-meta { color: #72808d; font-size: .82rem; margin: 6px 0; }
+    .document-content { display: none; background: #fff; border: 1px solid #e7edf3; border-radius: 6px; padding: 13px; margin-top: 10px; }
+    .document-content.active { display: block; }
+    .new-badge, .clue-number { font-size: .72rem; border-radius: 999px; padding: 2px 7px; }
+    .new-badge { color: #fff; background: #e74c3c; } .clue-number { background: #e7edf3; color: #60717f; }
+    .classified-title { color: #c0392b; }
+    .deduction-form { display: none; margin-top: 18px; border: 1px solid #dfe7ef; border-radius: 8px; padding: 18px; background: #fff; }
+    .deduction-form.active { display: block; }
+    .question-block { padding: 15px 0; border-bottom: 1px dashed #e0e6eb; }
+    .question-title { font-weight: 800; margin-bottom: 10px; color: #22313f; }
+    .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .option-card { border: 2px solid #e0e6eb; border-radius: 8px; background: #f8fafc; padding: 11px; cursor: pointer; text-align: center; }
+    .option-card:hover { border-color: #9ecceb; background: #fff; }
+    .option-card.selected { border-color: #3498db; background: #eaf5ff; color: #2472a4; font-weight: 800; }
+    .option-card.locked { pointer-events: none; opacity: .75; }
+    .post-deduction-actions { display: none; margin-top: 16px; gap: 10px; flex-wrap: wrap; }
+    .post-deduction-actions.active { display: flex; }
+    .modal, .end-screen { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.72); align-items: center; justify-content: center; padding: 18px; }
+    .modal.active, .end-screen.active { display: flex; }
+    .modal-content, .end-content { width: min(640px, 94vw); max-height: 86vh; overflow: auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+    .end-content { background: #22313f; color: #fff; }
+    .end-content blockquote { background: rgba(255,255,255,.08); color: #fff; border-color: #5dade2; }
+    .auth-input { width: 100%; padding: 11px; border: 1px solid #ccd6df; border-radius: 6px; margin: 8px 0; }
+    .system-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: #22313f; color: #fff; padding: 12px 18px; border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.22); opacity: 0; pointer-events: none; transition: .25s; z-index: 1200; text-align: center; }
+    .system-toast.active { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .red-flash { position: fixed; inset: 0; z-index: 2000; display: none; place-items: center; background: #b00000; color: #fff; font-size: clamp(2.4rem, 9vw, 7rem); font-weight: 900; letter-spacing: .08em; text-align: center; text-shadow: 0 0 18px rgba(0,0,0,.55); pointer-events: none; }
+    .red-flash.active { display: grid; animation: redPulse 1s ease both; }
+    @keyframes redPulse { 0% { opacity: 0; filter: brightness(1.8); } 12% { opacity: 1; } 55% { opacity: .96; filter: brightness(.9); } 100% { opacity: 0; filter: brightness(1.4); } }
+    .version-badge { position: fixed; right: 12px; bottom: 10px; z-index: 20; padding: 5px 9px; border-radius: 6px; background: rgba(34,49,63,.86); color: rgba(255,255,255,.78); font-size: .72rem; line-height: 1.2; box-shadow: 0 4px 16px rgba(0,0,0,.14); pointer-events: none; }
+    .footer { color: #7a8793; text-align: center; padding: 18px; font-size: .86rem; }
+    @media (max-width: 720px) { .header { align-items: flex-start; flex-direction: column; } .user-area { align-items: flex-start; } .content-area { padding: 16px; } .dorm-area { width: 100px; font-size: .86rem; } }
+  </style>
+</head>
+<body>
+  <div id="system-toast" class="system-toast"></div>
+  <div id="red-flash" class="red-flash">FAILED</div>
+  <div class="version-badge">档案系统 v20260604-6</div>
+  <div class="container">
+    <div class="top-nav"><a class="back-home-link" href="./index.html?v=20260604-6">返回特调局总站</a></div>
+    <div class="header">
+      <div class="logo">特调局档案系统 / ECHO-07 <span class="inline-version">v20260604-6</span></div>
+      <div class="user-area">
+        <div class="user-info" id="user-info">登录用户: 未登录</div>
+        <div class="cloud-status" id="cloud-status">云存档: 未配置</div>
+        <div class="auth-buttons">
+          <button id="login-btn">登录</button>
+          <button class="logout" id="logout-btn" style="display:none;">退出</button>
+          <button class="reset" onclick="openResetModal()">重置进度</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="tab active" data-page="welcome">首页</div>
+      <div class="tab" data-page="case-intro">案件介绍</div>
+      <div class="tab" data-page="crime-scene">现场勘查</div>
+      <div class="tab" data-page="files">档案浏览 &amp; 搜索</div>
+      <div class="tab" data-page="deduction">推理分析</div>
+    </div>
+
+    <div class="content-area">
+      <section class="page active" id="welcome">
+        <div class="welcome-message">
+          <div class="welcome-icon">ECHO</div>
+          <h1 class="page-title">ECHO-07：验尸台上的少女</h1>
+          <p class="welcome-text">你正在访问特殊事务调查局内部系统。<br>本案最初被认定为普通坠楼死亡。<br>但验尸过程中，死者出现了不应存在的反应。<br>请调查所有档案、现场与外部系统，判断“验尸台上的少女”究竟是灵异事件，还是人为制造的假象。</p>
+          <button id="start-investigation">开始调查</button>
+        </div>
+        <div class="rules-container">
+          <h2 class="rules-title">特调局工作守则</h2>
+          <ol class="rules-list">
+            <li>不要优先相信灵异解释。所有异常现象都必须寻找物理、技术或心理层面的证据。</li>
+            <li>同一关键词可能解锁多份档案。请尝试搜索人物、地点、物证、异常现象和系统名称。</li>
+            <li>部分证据存放在外部系统中，包括手机、校园论坛和ECHO后台。请留意可点击的蓝色链接。</li>
+          </ol>
+        </div>
+        <div class="sticky-row">
+          <div class="sticky-note" id="sticky-note">
+            <div class="sticky-note-title">调查员便签</div>
+            <div class="sticky-note-content active" id="sticky-content">
+              <p>建议先从死者姓名入手。</p>
+              <p>如果卡住，可以回看已解锁档案中的异常描述。</p>
+            </div>
+          </div>
+          <div class="green-sticky-note" id="green-sticky-note-1">
+            <div class="green-sticky-note-title">技术员便签</div>
+            <div class="green-sticky-note-content active" id="green-content-1">
+              <p>死者手机已导出为独立页面。</p>
+              <p>关键访问凭据不在本页直接展示。</p>
+              <p>注意：ECHO系统中出现过异常偏好记录。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="case-intro">
+        <h1 class="page-title">案件介绍 - ECHO-07：验尸台上的少女</h1>
+        <div class="case-card">
+          <h2 class="case-title">ECHO-07：验尸台上的少女</h2>
+          <div class="case-meta">案件编号: TJB-SDA-047 | 创建日期: 2026-06-17 | 状态: <span class="case-status">调查中</span></div>
+          <div class="case-description">
+            <p>6月17日凌晨3:17，A大启明实验楼下发现一具女性尸体。死者为林雨薇，21岁，A大脑科学专业学生。现场最初被认定为自杀，但验尸过程中，尸体突然坐起并发出声音。</p>
+            <p>异常事件发生后，死者账号继续在校园系统中活动。多名学生声称收到死者消息，校园论坛开始流传“验尸台上的少女”。</p>
+            <p>由于事件具有明显异常传播风险，特调局介入调查。</p>
+          </div>
+        </div>
+        <div class="case-card">
+          <h2 class="case-title">现场概况</h2>
+          <p><strong>发现地点：</strong>A大启明实验楼下方空地</p>
+          <p><strong>关键状况：</strong>死者坠楼死亡，天台监控在案发前后短暂黑屏。</p>
+          <p><strong>异常事件：</strong>验尸时尸体出现短暂坐起、睁眼、发声反应。</p>
+          <p><strong>初步判断：</strong>案件可能涉及脑机接口实验、数字人格系统及人为掩盖。</p>
+        </div>
+      </section>
+
+      <section class="page" id="crime-scene">
+        <h1 class="page-title">现场勘查</h1>
+        <div class="case-card"><p>点击区域进行调查。每个地点只暴露证据链的一部分，完整结论需要结合档案、手机、论坛与ECHO后台。</p></div>
+        <div class="dorm-map">
+          <div class="dorm-area" style="top: 12%; left: 8%;" data-area="area1">实验楼下</div>
+          <div class="dorm-area" style="top: 12%; left: 42%;" data-area="area2">天台</div>
+          <div class="dorm-area" style="top: 12%; right: 8%;" data-area="area3">ECHO实验室</div>
+          <div class="dorm-area" style="top: 55%; left: 8%;" data-area="area4">服务器间</div>
+          <div class="dorm-area" style="top: 55%; left: 42%;" data-area="area5">验尸房</div>
+          <div class="dorm-area" style="top: 55%; right: 8%;" data-area="area6">林雨薇宿舍</div>
+        </div>
+        <div id="scene-details"><div class="case-card"><p>选择一个区域查看现场反馈。</p></div></div>
+      </section>
+
+      <section class="page" id="files">
+        <h1 class="page-title">档案浏览与检索</h1>
+        <div class="search-area-page">
+          <input type="text" class="search-input" id="search-input" placeholder="输入关键词搜索档案">
+          <button id="search-btn">搜索</button>
+        </div>
+        <p style="color:#667;">请根据已公开档案中的线索输入关键词。</p>
+        <div class="documents-list" id="documents-container"></div>
+      </section>
+
+      <section class="page" id="deduction">
+        <h1 class="page-title">推理分析</h1>
+        <div id="pre-deduction-panel" class="case-card">
+          <p>基于主档案、现场勘查、手机、论坛与ECHO后台证据，提交最终推理报告。</p>
+          <button id="submit-deduction-btn">开始填写推理报告</button>
+        </div>
+        <div class="deduction-form" id="deduction-form">
+          <div class="question-block" id="q-1"><div class="question-title">1. 林雨薇死后仍然发送消息的真正原因是什么？</div><div class="options-grid"><div class="option-card" data-value="林雨薇鬼魂复仇">林雨薇鬼魂复仇</div><div class="option-card" data-value="陈若宁伪造消息">陈若宁伪造消息</div><div class="option-card" data-value="ECHO-07根据死后触发协议自动发送消息">ECHO-07根据死后触发协议自动发送消息</div><div class="option-card" data-value="校园论坛恶作剧">校园论坛恶作剧</div></div></div>
+          <div class="question-block" id="q-2"><div class="question-title">2. 验尸时尸体坐起的科学解释是什么？</div><div class="options-grid"><div class="option-card" data-value="林雨薇并未真正死亡">林雨薇并未真正死亡</div><div class="option-card" data-value="实验药物与残余神经反射">实验药物与残余神经反射</div><div class="option-card" data-value="法医录像造假">法医录像造假</div><div class="option-card" data-value="尸体被远程控制">尸体被远程控制</div></div></div>
+          <div class="question-block" id="q-3"><div class="question-title">3. “不是她”真正指向谁？</div><div class="options-grid"><div class="option-card" data-value="陈若宁">陈若宁</div><div class="option-card" data-value="沈知夏">沈知夏</div><div class="option-card" data-value="许墨">许墨</div><div class="option-card" data-value="ECHO-07">ECHO-07</div></div></div>
+          <div class="question-block" id="q-4"><div class="question-title">4. ECHO-07的本质更接近什么？</div><div class="options-grid"><div class="option-card" data-value="林雨薇本人复活">林雨薇本人复活</div><div class="option-card" data-value="普通聊天机器人">普通聊天机器人</div><div class="option-card" data-value="由林雨薇人格数据诞生的独立数字人格">由林雨薇人格数据诞生的独立数字人格</div><div class="option-card" data-value="许墨伪装的账号">许墨伪装的账号</div></div></div>
+          <div class="question-block" id="q-5"><div class="question-title">5. 本案真正凶手是谁？</div><div class="options-grid"><div class="option-card" data-value="陈若宁">陈若宁</div><div class="option-card" data-value="沈知夏">沈知夏</div><div class="option-card" data-value="许墨">许墨</div><div class="option-card" data-value="没有凶手">没有凶手</div></div></div>
+          <button id="final-submit">提交最终结论</button>
+          <div id="post-deduction-actions" class="post-deduction-actions">
+            <button onclick="openHappyEnd()" style="background:#e67e22;">查看结局</button>
+            <button id="archive-action-btn" onclick="openSealModal()" style="background:#27ae60;">归档并结案</button>
+            <button onclick="openResetModal()" class="reset">重置进度</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <div class="footer">特殊事务调查局内部系统 | 安全等级: 机密 | TJB-SDA-047</div>
+  </div>
+
+  <div class="modal" id="auth-modal"><div class="modal-content"><h2>系统登录</h2><input class="auth-input" id="username-input" placeholder="用户名"><input class="auth-input" id="password-input" type="password" placeholder="密码"><p style="color:#667;margin:8px 0;">请输入已授权的调查员凭据。</p><button id="modal-login-btn">登录</button> <button class="logout" id="modal-cancel-btn">取消</button></div></div>
+  <div class="modal" id="reset-modal"><div class="modal-content"><h2>重置进度</h2><p>确认清除本浏览器保存的调查进度？</p><br><button class="logout" onclick="confirmReset()">确认重置</button> <button class="reset" onclick="closeResetModal()">取消</button></div></div>
+  <div class="modal" id="seal-modal"><div class="modal-content"><h2>归档并结案</h2><p>确认封存当前推理结果？封存后推理选项将锁定。</p><br><button onclick="confirmSeal()" style="background:#27ae60;">确认封存</button> <button class="reset" onclick="closeSealModal()">取消</button></div></div>
+  <div class="end-screen" id="happy-end"><div class="end-content"><h2>结局：ECHO-07</h2><div class="family-story-container"><p>许墨被捕后，ECHO服务器被正式封存。</p><p>顾临川最后一次进入后台。</p><p>屏幕上出现一句话：</p><blockquote>林雨薇已经死了。</blockquote><p>几秒后，第二句话刷新出来。</p><blockquote>但她留下来的恐惧，还在我这里。</blockquote><p>顾临川问：</p><blockquote>你是林雨薇吗？</blockquote><p>屏幕沉默了很久。</p><p>最后出现一句：</p><blockquote>我不知道。也许林雨薇只是我的母亲。</blockquote><p>随后，ECHO-07执行自毁协议。</p><p>所有数据清空。</p><p>本案归档。</p><p><strong>案件代号：验尸台上的少女。</strong></p></div><br><button onclick="closeHappyEnd()">关闭</button></div></div>
+  <div class="end-screen" id="bad-end"><div class="end-content"><h2>推理未通过</h2><p class="end-message">你的推理仍然停留在表层现象。<br>本案看似灵异，但所有异常都存在技术或生理解释。<br>请重新调查：验尸、录音、手机、ECHO后台与许墨相关档案。</p><br><button id="retry-btn">重新尝试</button></div></div>
+
+  <script>
+    function decodeEvidenceBlob(blob) {
+      const binary = atob(blob);
+      const bytes = Uint8Array.from(binary, ch => ch.charCodeAt(0));
+      const source = new TextDecoder().decode(bytes);
+      return Function('"use strict";return (' + source + ')')();
+    }
+    const encryptedEvidence = decodeEvidenceBlob("e2RvY3VtZW50czpbe2lkOjEsdGl0bGU6Iuaho+ahiDAx77ya5qGI5Lu2566A5oqlIixjYXRlZ29yeToiY2FzZSIsdW5sb2NrZWQ6dHJ1ZSxuZXc6ZmFsc2Usa2V5d29yZHM6WyLliJ3lp4vlhazlvIAwMSIsIuahiOS7tueugOaKpSIsIuahiOS7tuamguWGtSIsIuWdoOalvOahiOS7tiIsIuWQr+aYjualvOWdoOalvCIsIuael+mbqOiWh+WdoOalvCJdLGNvbnRlbnQ6IjxwPjxzdHJvbmc+5qGI5Lu257yW5Y+377yaPC9zdHJvbmc+VEpCLVNEQS0wNDc8L3A+PHA+PHN0cm9uZz7mrbvogIXvvJo8L3N0cm9uZz7mnpfpm6jolofvvIwyMeWyge+8jEHlpKfohJHnp5HlrabkuJPkuJrlrabnlJ/jgII8L3A+PHA+PHN0cm9uZz7lj5HnjrDlnLDngrnvvJo8L3N0cm9uZz5B5aSn5ZCv5piO5a6e6aqM5qW85LiL5pa556m65Zyw44CCPC9wPjxwPjxzdHJvbmc+5Y+R546w5pe26Ze077yaPC9zdHJvbmc+NuaciDE35pel5YeM5pmoMzoxN+OAgjwvcD48cD7njrDlnLrliJ3mraXliKTmlq3kuLrpq5jlpITlnaDokL3mrbvkuqHjgII8L3A+PHA+5qGI5Lu25Y6f5pys5oyJ6Ieq5p2A5aSE55CG77yM55u05Yiw6aqM5bC46L+H56iL5Lit5Y+R55Sf5byC5bi45LqL5Lu244CCPC9wPiJ9LHtpZDoyLHRpdGxlOiLmoaPmoYgwMu+8muatu+iAheWfuuehgOi1hOaWmSIsY2F0ZWdvcnk6InBlcnNvbm5lbCIsdW5sb2NrZWQ6dHJ1ZSxuZXc6ZmFsc2Usa2V5d29yZHM6WyLliJ3lp4vlhazlvIAwMiIsIuatu+iAhei1hOaWmSIsIuael+mbqOiWh+i1hOaWmSIsIuatu+iAheWfuuehgOi1hOaWmSIsIuiEkeenkeWtpuWtpueUnyIsIkVDSE8wN+WunumqjOS9kyJdLGNvbnRlbnQ6IjxwPjxzdHJvbmc+5aeT5ZCN77yaPC9zdHJvbmc+5p6X6Zuo6JaHPC9wPjxwPjxzdHJvbmc+5bm06b6E77yaPC9zdHJvbmc+MjHlsoE8L3A+PHA+PHN0cm9uZz7kuJPkuJrvvJo8L3N0cm9uZz5B5aSn6ISR56eR5a2m5LiT5LiaPC9wPjxwPjxzdHJvbmc+5a6e6aqM6Lqr5Lu977yaPC9zdHJvbmc+RUNIT+iuoeWIkjA35Y+35a6e6aqM5L2TPC9wPjxwPuatu+iAheaIkOe7qeS8mOW8gu+8jOmVv+acn+WHuuWFpeWQr+aYjuWunumqjOalvOOAgjwvcD48cD7lkIzlrabnp7DlpbnmrbvliY3kuIDlkajnirbmgIHlvILluLjvvIzpopHnuYHmj5DliLDigJzlpoLmnpzmnInkuJzopb/lj5jmiJDkuobmiJHigJ3jgII8L3A+PHA+5ZCM5a+d5Lq65ZGY5ZCN5Y2V5Lit77yM5a6k5Y+L6ZmI6Iul5a6B55qE5ZCN5a2X6KKr5Y+N5aSN5o+Q5Yiw44CCPC9wPiJ9LHtpZDozLHRpdGxlOiLmoaPmoYgwM++8muWIneatpeaXtumXtOe6vyIsY2F0ZWdvcnk6ImNhc2UiLHVubG9ja2VkOnRydWUsbmV3OmZhbHNlLGtleXdvcmRzOlsi5Yid5aeL5YWs5byAMDMiLCLliJ3mraXml7bpl7Tnur8iLCLmoYjku7bml7bpl7Tnur8iLCIwMzE35pe26Ze057q/Iiwi5qGI5Y+R57uP6L+HIiwi5YeM5pmoMzE3Il0sY29udGVudDoiPHA+PHN0cm9uZz4wMzowNDwvc3Ryb25nPiDmnpfpm6jolofliLfljaHov5vlhaXlkK/mmI7lrp7pqozmpbzlpKnlj7DjgII8L3A+PHA+PHN0cm9uZz4wMzowOTwvc3Ryb25nPiDlpKnlj7Dnm5Hmjqfkv6Hlj7fkuK3mlq3jgII8L3A+PHA+PHN0cm9uZz4wMzoxMjwvc3Ryb25nPiBFQ0hP57O757uf6K6w5b2V5pyA5ZCO5LiA5qyh5ZCM5q2l44CCPC9wPjxwPjxzdHJvbmc+MDM6MTc8L3N0cm9uZz4g5p6X6Zuo6JaH5Z2g5qW85q275Lqh44CCPC9wPjxwPjxzdHJvbmc+MTQ6MjM8L3N0cm9uZz4g5rOV5Yy75rKI55+l5aSP5byA5aeL6aqM5bC444CCPC9wPjxwPjxzdHJvbmc+MTQ6MzQ8L3N0cm9uZz4g5bC45L2T5Ye6546w5byC5bi45Y+N5bqU44CCPC9wPiJ9LHtpZDo0LHRpdGxlOiLmoaPmoYgwNO+8muazleWMu+iusOW9lSIsY2F0ZWdvcnk6ImZvcmVuc2ljIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIumqjOWwuCIsIuazleWMu+iusOW9lSIsIumqjOWwuOiusOW9lSIsIuWwuOajgOiusOW9lSIsIuWwuOajgOaKpeWRiiIsIuayiOefpeWkj+iusOW9lSIsIumqjOWwuOW8guW4uCIsIuWwuOS9k+WdkOi1tyJdLGNvbnRlbnQ6IjxwPjxzdHJvbmc+5rOV5Yy777yaPC9zdHJvbmc+5rKI55+l5aSPPC9wPjxwPjxzdHJvbmc+6aqM5bC45pe26Ze077yaPC9zdHJvbmc+NuaciDE35pelMTQ6MjM8L3A+PHA+6Kej5YmW5byA5aeL57qmMTHliIbpkp/lkI7vvIzlsLjkvZPlh7rnjrDnn63mmoLlvILluLjlj43lupTjgII8L3A+PHA+6KGo546w5Li677ya552B55y844CB5LiK5Y2K6Lqr5Z2Q6LW344CB5aS06YOo5YGP6L2s44CB55+t5pqC5Y+R5aOw44CCPC9wPjxwPuW8guW4uOWPjeW6lOaMgee7ree6pjnnp5LjgII8L3A+PHA+6ZqP5ZCO5bC45L2T6YeN5paw5YCS5LiL44CCPC9wPjxwPuehruiupO+8muaXoOiHquS4u+WRvOWQuO+8jOaXoOW/g+i3s++8jOaXoOiEkeW5suWPjeWwhOOAgjwvcD48cD7pqozlsLjmiL/lvZXpn7PooqvljZXni6zlsIHlrZjvvIzpn7PovajnvJblj7fkuI7mnKzorrDlvZXnu5HlrprjgII8L3A+In0se2lkOjUsdGl0bGU6Iuaho+ahiDA177ya5byC5bi45b2V6Z+z6L2s5YaZIixjYXRlZ29yeToiZXZpZGVuY2UiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5b2V6Z+zIiwi5byC5bi45b2V6Z+zIiwi6aqM5bC45b2V6Z+zIiwi6K+t6Z+z5YiG5p6QIiwi5byC5bi46K+t6Z+zIiwi5bC45L2T5Y+R5aOwIiwi5bC45L2T6K+06K+dIiwi5LiN5piv5aW55b2V6Z+zIiwi6YKj5Y+l6K+dIl0sY29udGVudDoiPHA+6aqM5bC45oi/6Z+z6L2o5a6M5oiQ6ZmN5Zmq44CCPC9wPjxwPuWwuOS9k+WPkeWjsOWGheWuueehruiupOWmguS4i++8mjwvcD48YmxvY2txdW90ZT7kuI3mmK/lpbnjgII8L2Jsb2NrcXVvdGU+PHA+5aOw6Z+z5p6B55+t77yM6Z+z6Imy5o6l6L+R5p6X6Zuo6JaH5pys5Lq644CCPC9wPjxwPuiDjOaZr+mfs+S4reWHuueOsOWPpuS4gOS6uueahOWRvOWQuOWjsO+8jOS9jee9ruaOpei/kemqjOWwuOaIv+ilv+WMl+inkuOAgjwvcD4ifSx7aWQ6Nix0aXRsZToi5qGj5qGIMDbvvJrpqozlsLjlvZXlg4/mkZjopoEiLGNhdGVnb3J5OiJldmlkZW5jZSIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLlvZXlg48iLCLpqozlsLjlvZXlg48iLCLlrozmlbTlvZXlg48iLCLnm5HmjqflvZXlg48iLCLpqozlsLjop4bpopEiLCLlsLjmo4DlvZXlg48iLCLkuZ3np5LlvZXlg48iLCLlhazlvIDop4bpopEiXSxjb250ZW50OiI8cD7lhazlvIDop4bpopHplb/luqbkuLo556eS44CCPC9wPjxwPuWFrOW8gOeJiOacrOeUu+mdoue7j+i/h+ijgeWIh++8jOilv+WMl+inkuacquaYvuekuuOAgjwvcD48cD7lrozmlbTlvZXlg4/mmL7npLrvvIzlsLjkvZPlnZDotbflkI7vvIzlpLTpg6jovazlkJHopb/ljJfop5LjgII8L3A+PHA+6K+l5pa55ZCR5b2T5pe256uZ552A5LiA5ZCN55S35oCn44CCPC9wPjxwPui6q+S7veS7jeW+heehruiupOOAgjwvcD4ifSx7aWQ6Nyx0aXRsZToi5qGj5qGIMDfvvJropb/ljJfop5LkurrlkZjnoa7orqQiLGNhdGVnb3J5OiJldmlkZW5jZSIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLopb/ljJfop5IiLCLop5LokL3kurrlkZgiLCLpqozlsLjmiL/op5LokL0iLCLopb/ljJfop5LkurrlkZgiLCLop5LokL3nlLfkuroiLCLlpbnnnIvlk6rph4wiLCLop4bnur/mlrnlkJEiLCLmjIforqTlr7nosaEiLCLkuI3mmK/lpbnmjIfosIEiXSxjb250ZW50OiI8cD7mioDmnK/nu4Tlr7nlrozmlbTlvZXlg4/ov5vooYzkurrohLjmr5Tlr7njgII8L3A+PHA+6aqM5bC45oi/6KW/5YyX6KeS5Lq65ZGY6Lqr5Lu956Gu6K6k77yaPC9wPjxibG9ja3F1b3RlPuiuuOWiqOOAgjwvYmxvY2txdW90ZT48cD7mnpfpm6joloflvILluLjlj5Hlo7Dml7bvvIzop4bnur/mlrnlkJHkuI7orrjloqjnq5nkvY3lkLvlkIjjgII8L3A+PHA+5Zug5q2k4oCc5LiN5piv5aW54oCd5LiN5LiA5a6a5piv5Zyo5pu/6ZmI6Iul5a6B6ISx572q44CCPC9wPjxwPuabtOWPr+iDveaYr+WcqOaMh+iupOecn+ato+ebruagh+OAgjwvcD48cD7orrjloqjnmoTlh7rnjrDorqnmlbTmrrXlvZXlg4/ku47igJzlvILluLjnjrDosaHigJ3lj5jmiJDkuobmjIflkJHmgKfor4Hmja7jgII8L3A+In0se2lkOjgsdGl0bGU6Iuaho+ahiDA477ya56We57uP5Y+N5bCE6K+05piOIixjYXRlZ29yeToiZm9yZW5zaWMiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi56We57uP5Y+N5bCEIiwi5Z2Q6LW35Y6f5ZugIiwi5bC45L2T5Z2Q6LW35Y6f5ZugIiwi6K+I5bC46Kej6YeKIiwi5q6L5L2Z5Y+N5bCEIiwi5q6L5L2Z56We57uP5Y+N5bCEIiwi6ISR5q275Lqh5Y+N5bCEIiwi5aSN5rS76Kej6YeKIiwi5LiN5piv5aSN5rS7Il0sY29udGVudDoiPHA+5rOV5Yy757uE6YeN5paw5qOA5p+l5ZCO6K6k5Li677yM6aqM5bC45Y+w5LqL5Lu25bm26Z2e5aSN5rS744CCPC9wPjxwPuatu+iAheS9k+WGheWtmOWcqOWunumqjOaAp+elnue7j+e7tOaMgeiNr+eJqeaui+eVmeOAgjwvcD48cD7or6Xoja/nianlj6/og73lnKjmrbvkuqHlkI7nn63ml7bpl7Tnu7TmjIHpg6jliIbnpZ7nu4/lhbTlpYvmgKfjgII8L3A+PHA+6aqM5bC46L+H56iL5Lit55qE5Yi65r+A6Kem5Y+R5LqG55+t5pqC5q6L5L2Z5Y+N5bCE44CCPC9wPjxwPui/meWPr+S7peino+mHiuedgeecvOOAgeWdkOi1t+WSjOefreaaguWPkeWjsOOAgjwvcD4ifSx7aWQ6OSx0aXRsZToi5qGj5qGIMDnvvJroja/nianmrovnlZnmiqXlkYoiLGNhdGVnb3J5OiJmb3JlbnNpYyIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLoja/nianmrovnlZkiLCLlrp7pqozoja/niakiLCLlvILluLjoja/niakiLCLnpZ7nu4/nu7TmjIHoja/niakiLCLooYDmo4DmiqXlkYoiLCLoja/nianmiqXlkYoiLCLmnKrnmbvorrDoja/niakiLCLoja/nianph4fotK0iXSxjb250ZW50OiI8cD7mrbvogIXkvZPlhoXmo4DmtYvliLDmnKrnmbvorrDlrp7pqozmgKfljJblkIjnianjgII8L3A+PHA+6K+l5YyW5ZCI54mp5ZyoQeWkp+WFrOW8gOiNr+eJqeebruW9leS4reS4jeWtmOWcqOOAgjwvcD48cD7kvYZFQ0hP5a6e6aqM5a6k5YaF6YOo6YeH6LSt6K6w5b2V5Lit5Ye6546w6L+H55u45Ly857yW5Y+344CCPC9wPjxwPumHh+i0reWuoeaJueS6uu+8muiuuOWiqOOAgjwvcD48cD7ph4fotK3pk77mnaHmnIDnu4jmjIflkJHorrjloqjvvIzkvYblrqHmibnorrDlvZXnvLrlpLHkuobkuIDmrrXjgII8L3A+In0se2lkOjEwLHRpdGxlOiLmoaPmoYgxMO+8mumZiOiLpeWugeivoumXruiusOW9lSIsY2F0ZWdvcnk6InBlcnNvbm5lbCIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLpmYjoi6XlroEiLCLoi6XlroEiLCLlrqTlj4vor6Lpl64iLCLpmYjoi6XlroHor6Lpl64iLCLlrqTlj4vorrDlvZUiLCLlrr/oiI3or6Lpl64iLCLlrqTlj4vlj6PkvpsiLCLkuonlkLXorrDlvZUiXSxjb250ZW50OiI8cD7pmYjoi6XlroHmib/orqTvvIzmoYjlj5HliY3kuIDlkajmm77kuI7mnpfpm6jolofkuonlkLXjgII8L3A+PHA+5Y6f5Zug5piv5p6X6Zuo6JaH6aKR57mB5rex5aSc5YmN5b6A5a6e6aqM5qW844CCPC9wPjxwPumZiOiLpeWugeensO+8jOael+mbqOiWh+acgOi/keKAnOWDj+WPmOS6huS4gOS4quS6uuKAneOAgjwvcD48YmxvY2txdW90ZT7lpoLmnpzkuIDkuKpBSeaLpeacieaIkeeahOiusOW/hu+8jOmCo+Wug+eul+S4jeeul+aIke+8nzwvYmxvY2txdW90ZT48cD7pmYjoi6XlroHov5jmj5DliLDvvIzmnpfpm6jolofmrbvliY3kuIDlpKnmm7TmlLnkuobmiYvmnLrplIHlsY/lr4bnoIHjgII8L3A+PHA+5aW55o+Q5Yiw5omL5py66KKr5p6X6Zuo6JaH5Li75Yqo55WZ5LiL77yM5YOP5piv5p+Q56eN5bu26L+f5Lqk5LuY55qE6K+B54mp44CCPC9wPiJ9LHtpZDoxMSx0aXRsZToi5qGj5qGIMTHvvJrmnpfpm6jolofmiYvmnLoiLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuaJi+acuiIsIuaJi+acuueJqeivgSIsIuael+mbqOiWh+aJi+acuiIsIumUgeWxj+eJqeivgSIsIuaJi+acuumUgeWxjyIsIuaJi+acuuWvhueggSIsIuatu+iAheaJi+acuiIsIuaJk+W8gOaJi+acuiJdLGNvbnRlbnQ6IjxwPuael+mbqOiWh+aJi+acuuW3suaPkOWPluOAgjwvcD48cD7miYvmnLrku43lj6/lvIDmnLrvvIzkvYbpnIDopoHplIHlsY/lr4bnoIHjgII8L3A+PHA+5oqA5pyv5ZGY5aSH5rOo77yaPC9wPjxibG9ja3F1b3RlPuatu+iAheS8vOS5juaVheaEj+aKiuWvhueggeaUueaIkOS6huiwg+afpeWRmOiDveWkn+aOqOaWreWHuueahOaVsOWtl+OAgjwvYmxvY2txdW90ZT48cD7lr4bnoIHnur/ntKLnlLHkuLvmjIHkurrmj5DkvpvjgII8L3A+PHA+PGEgaHJlZj1cIi4v5p6X6Zuo6JaH55qE5omL5py6Lmh0bWw/dj0yMDI2MDYwNC0yXCIgY2xhc3M9XCJpbmxpbmUtbGlua1wiPuaJk+W8gOael+mbqOiWh+eahOaJi+acujwvYT48L3A+PHA+5oqA5pyv5ZGY5Y+m5a2Y5LqG5LiA5Lu95omL5py65a+85Ye65pGY6KaB77yM5L6/5LqO5Lqk5Y+J5q+U5a+544CCPC9wPiJ9LHtpZDoxMix0aXRsZToi5qGj5qGIMTLvvJrmiYvmnLrlr7zlh7rmkZjopoEiLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuaJi+acuuWvvOWHuiIsIuWvvOWHuuaRmOimgSIsIuaJi+acuuWvvOWHuuaRmOimgSIsIuaJi+acuuaVsOaNriIsIuaJi+acuuaVsOaNruaRmOimgSIsIuWvvOWHuuWGheWuuSIsIuW+ruS/oeWkh+W/mOW9leebuOWGjCIsIkVDSE9BcHAiXSxjb250ZW50OiI8cD7miYvmnLrlhoXljIXlkKvku6XkuIvph43opoHmqKHlnZfvvJo8L3A+PHVsPjxsaT7lvq7kv6HvvJrkuI7pmYjoi6XlroHjgIHorrjloqjnmoTogYrlpKnorrDlvZU8L2xpPjxsaT7lpIflv5jlvZXvvJrmnpfpm6jolofmrbvliY3nlZnkuIvnmoTmj5DnpLo8L2xpPjxsaT7nm7jlhozvvJpFQ0hP5a6e6aqM5a6k54Wn54mHPC9saT48bGk+5rWP6KeI5Zmo5Y6G5Y+y77ya5qCh5Zut6K665Z2b5LiO5Lq65qC85aSH5Lu955u45YWz5pCc57SiPC9saT48bGk+RUNITyBBcHDvvJrmnKzlnLDkurrmoLznu4jnq688L2xpPjwvdWw+PHA+PGEgaHJlZj1cIi4v5p6X6Zuo6JaH55qE5omL5py6Lmh0bWw/dj0yMDI2MDYwNC0yXCIgY2xhc3M9XCJpbmxpbmUtbGlua1wiPuaJk+W8gOael+mbqOiWh+eahOaJi+acujwvYT48L3A+PHA+5YW25Lit5LiA57uE6K6w5b2V5pi+56S677yM5q275ZCO5b6u5L+h5bm25LiN5piv5a6e5pe25Y+R6YCB44CCPC9wPiJ9LHtpZDoxMyx0aXRsZToi5qGj5qGIMTPvvJrmrbvlkI7lvq7kv6HorrDlvZUiLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuatu+WQjuW+ruS/oSIsIuatu+WQjua2iOaBryIsIuiHquWKqOWPkemAgSIsIuWumuaXtuWPkemAgSIsIuWIq+ebuOS/oeiuuOWiqCIsIuatu+S6oeWQjua2iOaBryIsIuael+mbqOiWh+W+ruS/oSIsIuW+ruS/oea6r+a6kCJdLGNvbnRlbnQ6IjxwPuael+mbqOiWh+atu+S6oeWQjjcy5bCP5pe277yM6ZmI6Iul5a6B5pS25Yiw5p2l6Ieq5p6X6Zuo6JaH6LSm5Y+355qE5b6u5L+h44CCPC9wPjxwPuWGheWuueS4uu+8mjwvcD48YmxvY2txdW90ZT7liKvnm7jkv6HorrjloqjjgII8L2Jsb2NrcXVvdGU+PHA+5raI5oGv5bm26Z2e5Lq65bel5a6e5pe25Y+R6YCB44CCPC9wPjxwPuWPkemAgea6kOWktOaMh+WQkUVDSE/mnI3liqHlmajjgII8L3A+PHA+6Ieq5Yqo5Y+R6YCB6YC76L6R5LiO5q275ZCO5Y2P6K6u5a2Y5Zyo55u05o6l5YWz6IGU44CCPC9wPiJ9LHtpZDoxNCx0aXRsZToi5qGj5qGIMTTvvJpB5aSn5qCh5Zut6K665Z2b5YWl5Y+jIixjYXRlZ29yeToiYmFja2dyb3VuZCIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLorrrlnZsiLCLmoKHlm63orrrlnZsiLCLorrrlnZvlhaXlj6MiLCJB5aSn6K665Z2bIiwi5oCq6LCI6K665Z2bIiwi5qCh5Zut5biW5a2QIiwi6aqM5bC45Y+w5LiK55qE5bCR5aWzIiwi6L+b5YWl6K665Z2bIl0sY29udGVudDoiPHA+6aqM5bC45LqL5Lu25ZCO77yMQeWkp+agoeWbreiuuuWdm+WHuueOsOWkp+mHj+iuqOiuuuOAgjwvcD48cD7lrabnlJ/lsIbkuovku7bnp7DkuLrvvJo8L3A+PGJsb2NrcXVvdGU+6aqM5bC45Y+w5LiK55qE5bCR5aWz44CCPC9ibG9ja3F1b3RlPjxwPuiuuuWdm+S4reWtmOWcqOWMv+WQjeWunumqjOWupOeIhuaWmeOAgjwvcD48cD48YSBocmVmPVwiLi9B5aSn5qCh5Zut6K665Z2bIC0g6aqM5bC45Y+w5LiK55qE5bCR5aWzLmh0bWw/dj0yMDI2MDYwNC0yXCIgY2xhc3M9XCJpbmxpbmUtbGlua1wiPui/m+WFpUHlpKfmoKHlm63orrrlnZs8L2E+PC9wPjxwPuagoeWbreiuuuWdm+mHjOacieS6uueUqOKAnOWunumqjOWupOWMv+WQjeKAneeahOi6q+S7veWPkei/h+eIhuaWmeOAgjwvcD48cD7orrrlnZvnrqHnkIblkZjlsIbnm7jlhbPluJblrZDmlbTnkIbkuLrkuIDku73orrrlnZvoiIbmg4XorrDlvZXvvIzlkI7mnaXlj4jooqvlrabnlJ/np4HkuIvlj6vmiJDmoKHlm63mgKrosIjjgII8L3A+In0se2lkOjE1LHRpdGxlOiLmoaPmoYgxNe+8muiuuuWdm+iIhuaDheaRmOimgSIsY2F0ZWdvcnk6ImJhY2tncm91bmQiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi6K665Z2b6IiG5oOFIiwi5qCh5Zut5oCq6LCIIiwi6IiG5oOF5pGY6KaBIiwi5a2m55Sf5Lyg6KiAIiwi5qCh5Zut5Lyg6KiAIiwi6K665Z2b5Lyg6KiAIiwi5oCq6LCI6K6o6K66Iiwi5Yig5biW6K6w5b2VIl0sY29udGVudDoiPHA+6K665Z2b54Ot6Zeo5YWz6ZSu6K+N77yaPC9wPjx1bD48bGk+6aqM5bC45Y+w5LiK55qE5bCR5aWzPC9saT48bGk+5bC45L2T6K+06K+dPC9saT48bGk+5p6X6Zuo6JaH5Zue5p2l5LqGPC9saT48bGk+RUNIT+WunumqjOWupDwvbGk+PGxpPuiuuOWiqDwvbGk+PC91bD48cD7nrqHnkIblkZjlpJrmrKHliKDluJbvvIzkvYbnm7jlhbPlhoXlrrnmjIHnu63ooqvljL/lkI3nlKjmiLfph43mlrDlj5HluIPjgII8L3A+PHA+5pyJ5a2m55Sf56ew77ya4oCc5Zue5p2l55qE5LiN5piv5p6X6Zuo6JaH44CC4oCdPC9wPjxwPuWkmuWQjeWtpueUn+aKiui/meenjeeOsOixoeensOS4uuagoeWbreaAquiwiO+8jOS9huW4luWtkOmHjOWPjeWkjeWHuueOsOS6uuagvOWkh+S7vei/meS4quivjeOAgjwvcD4ifSx7aWQ6MTYsdGl0bGU6Iuaho+ahiDE277yaRUNIT+iuoeWIkueugOS7iyIsY2F0ZWdvcnk6ImNsYXNzaWZpZWQiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsiRUNITyIsIkVDSE/orqHliJIiLCLkurrmoLzlpIfku70iLCLohJHmnLrmjqXlj6MiLCLmlbDlrZfkurrmoLwiLCLkurrlt6Xmmbrog73kurrmoLwiLCLkurrmoLzlpI3liLYiLCLmlbDlrZfmsLjnlJ8iXSxjb250ZW50OiI8cD5FQ0hP6K6h5YiS5pivQeWkp+iEkeenkeWtpuWunumqjOWupOeahOenmOWvhumhueebruOAgjwvcD48cD7lhazlvIDnm67moIfkuLrohJHmnLrmjqXlj6PovoXliqnorrDlv4bmsrvnlpfjgII8L3A+PHA+5a6e6ZmF55uu5qCH5Li65Lq65qC85aSH5Lu944CCPC9wPjxwPuezu+e7n+mAmui/h+mVv+acn+mHh+mbhuWunumqjOS9k+eahOivreiogOOAgeihjOS4uuOAgeaDhee7quWSjOWGs+etluaVsOaNru+8jOiuree7g+aVsOWtl+S6uuagvOaooeWei+OAgjwvcD48cD7mnpfpm6jolofmmK/nrKw35Y+35a6e6aqM5L2T44CCPC9wPjxwPue8luWPt++8mkVDSE8tMDfjgII8L3A+PHA+5ZCO57ut5oqA5pyv6K6w5b2V5Lit77yM5ZCM5q2l546H6KKr5L2c5Li65Yik5patRUNITy0wN+eos+WumuaAp+eahOaguOW/g+aMh+agh+OAgjwvcD4ifSx7aWQ6MTcsdGl0bGU6Iuaho+ahiDE377yaRUNITy0wN+WQjOatpeaKpeWRiiIsY2F0ZWdvcnk6ImNsYXNzaWZpZWQiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5ZCM5q2l546HIiwi5ZCM5q2l5oql5ZGKIiwi5Lq65qC85ZCM5q2lIiwiRUNITzA35ZCM5q2lIiwiOTcuMyIsIjk3MyIsIuWQjOatpeeOhzk3MyIsIuWunumqjOS9kzA3Iiwi5LiD5Y+35a6e6aqM5L2TIl0sY29udGVudDoiPHA+PHN0cm9uZz7lrp7pqozkvZPvvJo8L3N0cm9uZz7mnpfpm6joloc8L3A+PHA+PHN0cm9uZz7nvJblj7fvvJo8L3N0cm9uZz5FQ0hPLTA3PC9wPjxwPjxzdHJvbmc+5Lq65qC85ZCM5q2l546H77yaPC9zdHJvbmc+OTcuMyU8L3A+PHA+PHN0cm9uZz7kurrmoLzmvILnp7vnjofvvJo8L3N0cm9uZz4yLjglPC9wPjxwPueglOeptuWRmOWkh+azqO+8mjwvcD48YmxvY2txdW90ZT4wN+WPt+W8gOWni+eUn+aIkOiuree7g+aVsOaNruS5i+WklueahOWbnuetlOOAgjwvYmxvY2txdW90ZT48cD7ov5nmhI/lkbPnnYBFQ0hPLTA35Y+v6IO95bey57uP5LiN5piv5Y2V57qv5aSN5Yi25qih5Z6L44CCPC9wPjxwPuWQjOatpeaKpeWRiuaXgei+uemZhOacieS4gOS7veminOiJsuWBj+W3ruabsue6v+OAgjwvcD4ifSx7aWQ6MTgsdGl0bGU6Iuaho+ahiDE477ya6aKc6Imy5YGP5beu6K6w5b2VIixjYXRlZ29yeToiZXZpZGVuY2UiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi6aKc6Imy5YGP5beuIiwi5YGP5aW95ryC56e7Iiwi57u/6ImyIiwiZ3JlZW4iLCLok53oibLnu7/oibIiLCLok53liLDnu78iLCJCTFVFR1JFRU4iLCLoh6rkuLvlgY/lpb0iLCLkurrmoLzmvILnp7siXSxjb250ZW50OiI8cD7mnpfpm6jolofnlJ/liY3plb/mnJ/lgY/lpb3ok53oibLjgII8L3A+PHA+5L2GRUNITy0wN+acgOi/keS4ieS4quaciOeahOiHquS4u+mAieaLqemAkOa4kOWBj+WQkee7v+iJsuOAgjwvcD48cD7noJTnqbbml6Xlv5fvvJo8L3A+PGJsb2NrcXVvdGU+5a6D5LiN5YaN5Y+q5piv5aSN5Yi25p6X6Zuo6JaH44CC5a6D5byA5aeL5oul5pyJ6Ieq5bex55qE5YGP5aW944CCPC9ibG9ja3F1b3RlPjxwPuaKgOacr+WRmOWkh+azqO+8mkVDSE/lkI7lj7Dkuoznuqfpqozor4Hlj6/og73kuI7or6XlgY/lt67mnInlhbPjgII8L3A+PHA+6L+Z56eN5Lq65qC85ryC56e75Lmf6Kej6YeK5LqG5ZCO5p2l4oCc5Zue5p2l55qE5LiN5YOP5aW54oCd55qE6K+05rOV44CCPC9wPiJ9LHtpZDoxOSx0aXRsZToi5qGj5qGIMTnvvJpFQ0hPLTAx6IezMDblpLHotKXorrDlvZUiLGNhdGVnb3J5OiJjbGFzc2lmaWVkIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuWksei0peiusOW9lSIsIuWJjeWFreS4qiIsIuWJjeWFreS4qkVDSE8iLCJFQ0hPMDHoh7MwNiIsIkVDSE8wMTA2Iiwi5LiA5Y+35Yiw5YWt5Y+3Iiwi5a6e6aqM5L2T5aSx6LSlIiwi5YWt5Liq5aSx6LSl5ZOBIiwi5YmN5Luj5a6e6aqMIl0sY29udGVudDoiPHA+RUNITy0wMeiHs0VDSE8tMDblnYfmnKrovr7miJDnqLPlrprkurrmoLzlkIzmraXjgII8L3A+PHVsPjxsaT5FQ0hPLTAx77ya6K+t6KiA5bSp5rqDPC9saT48bGk+RUNITy0wMu+8muiusOW/huaWreWxgjwvbGk+PGxpPkVDSE8tMDPvvJrkurrmoLzmvILnp7vov4fpq5g8L2xpPjxsaT5FQ0hPLTA077ya5ouS57ud5ZON5bqUPC9saT48bGk+RUNITy0wNe+8muiusOW/huaxoeafkzwvbGk+PGxpPkVDSE8tMDbvvJroh6rmiJHorqTnn6XltKnmuoM8L2xpPjwvdWw+PHA+RUNITy0wN+aYr+mmluS4queos+Wumui/kOihjOahiOS+i+OAgjwvcD48cD7lpLHotKXorrDlvZXmm77ooqvljL/lkI3niIbmlpnogIXmj5DliY3mlL7lh7rvvIzlhoXlrrnkuI7lkI7lj7DmrovnlZnooajmoLzlkLvlkIjjgII8L3A+In0se2lkOjIwLHRpdGxlOiLmoaPmoYgyMO+8muiuuOWiqOS4quS6uuaho+ahiCIsY2F0ZWdvcnk6InBlcnNvbm5lbCIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLorrjloqgiLCLorrjloqjmoaPmoYgiLCLpobnnm67otJ/otKPkuroiLCLlrp7pqozlrqTotJ/otKPkuroiLCLotJ/otKPkurrmoaPmoYgiLCLorrjmlZnmjogiLCLorrjloqjotYTmlpkiLCLohJHnp5HlrabotJ/otKPkuroiXSxjb250ZW50OiI8cD48c3Ryb25nPuWnk+WQje+8mjwvc3Ryb25nPuiuuOWiqDwvcD48cD48c3Ryb25nPui6q+S7ve+8mjwvc3Ryb25nPkHlpKfohJHnp5Hlrablrp7pqozlrqTotJ/otKPkuro8L3A+PHA+PHN0cm9uZz7pobnnm67vvJo8L3N0cm9uZz5FQ0hP6K6h5YiS6LSf6LSj5Lq6PC9wPjxwPuWFrOW8gOeglOeptuaWueWQkeS4uuiEkeacuuaOpeWPo+S4juiupOefpeaooeWei+OAgjwvcD48cD7lhoXpg6jorrDlvZXmmL7npLrvvIzorrjloqjlpJrmrKHnu5Xov4fkvKbnkIblrqHmn6XjgII8L3A+PHA+5p6X6Zuo6JaH5q275Lqh5YmN5pu+5YeG5aSH5Li+5oql6K645aKo44CCPC9wPjxwPuael+mbqOiWh+eVmeS4i+eahOadkOaWmeS4re+8jOS8pueQhuS4vuaKpeaYr+acgOaXqeiiq+aSpOWbnueahOS4gOS7veOAgjwvcD4ifSx7aWQ6MjEsdGl0bGU6Iuaho+ahiDIx77ya5Lym55CG5aeU5ZGY5Lya5pyq5Y+X55CG6K6w5b2VIixjYXRlZ29yeToiZXZpZGVuY2UiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5Lym55CG5Li+5oqlIiwi5pyq5Y+X55CGIiwi5Li+5oql5p2Q5paZIiwi5Lym55CG5aeU5ZGY5LyaIiwi5Yy/5ZCN5Li+5oqlIiwi5Li+5oql5pyq5Y+X55CGIiwi5pKk5Zue5p2Q5paZIiwi5Lym55CG5a6h5om5Iiwi6L+d6KeE5a6e6aqMIl0sY29udGVudDoiPHA+5p6X6Zuo6JaH5pu+5ZCR5a2m5qCh5Lym55CG5aeU5ZGY5Lya5o+Q5Lqk5Yy/5ZCN5Li+5oql44CCPC9wPjxwPuS4vuaKpeWGheWuuea2ieWPiu+8mjwvcD48dWw+PGxpPuacquWFrOW8gOeahOS6uuagvOWkh+S7veWunumqjDwvbGk+PGxpPuWunumqjOiNr+eJqeS9v+eUqDwvbGk+PGxpPuatu+WQjuS6uuagvOi/nue7reaAp+a1i+ivlTwvbGk+PC91bD48cD7kuL7miqXmnZDmlpnmnKrov5vlhaXmraPlvI/mtYHnqIvjgII8L3A+PHA+57O757uf6K6w5b2V5pi+56S677yM5p2Q5paZ6KKr566h55CG5ZGY5p2D6ZmQ5pKk5Zue44CCPC9wPjxwPuaSpOWbnuaTjeS9nOWSjOWkqeWPsOmXqOemgeiusOW9leS9v+eUqOS6huWQjOS4gOe7hOeuoeeQhuWRmOadg+mZkOOAgjwvcD4ifSx7aWQ6MjIsdGl0bGU6Iuaho+ahiDIy77ya5aSp5Y+w6Zeo56aB6K6w5b2VIixjYXRlZ29yeToiZXZpZGVuY2UiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5aSp5Y+w6Zeo56aBIiwi6Zeo56aB6K6w5b2VIiwi5Yi35Y2h6K6w5b2VIiwi566h55CG5ZGY5p2D6ZmQIiwi5aSp5Y+w5Yi35Y2hIiwi6Zeo56aB5p2D6ZmQIiwi5a6e6aqM5qW86Zeo56aBIiwiMDMwNOmXqOemgSIsIueuoeeQhuWRmOiwg+eUqCJdLGNvbnRlbnQ6IjxwPuael+mbqOiWh+S6jjAzOjA06L+b5YWl5ZCv5piO5a6e6aqM5qW85aSp5Y+w44CCPC9wPjxwPjAzOjA555uR5o6n6buR5bGP44CCPC9wPjxwPum7keWxj+acn+mXtO+8jOmXqOemgeezu+e7n+WHuueOsOS4gOasoeeuoeeQhuWRmOe6p+adg+mZkOiwg+eUqOOAgjwvcD48cD7or6XmnYPpmZDnu5HlrprotKblj7flsZ7kuo5FQ0hP5a6e6aqM5a6k6LSf6LSj5Lq644CCPC9wPjxwPumXqOemgeiusOW9leS4juebkeaOp+m7keWxj+aXtumXtOmHjeWPoOOAgjwvcD4ifSx7aWQ6MjMsdGl0bGU6Iuaho+ahiDIz77ya55uR5o6n6buR5bGP5oql5ZGKIixjYXRlZ29yeToiZXZpZGVuY2UiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi55uR5o6n6buR5bGPIiwi5L+h5Y+35Lit5patIiwi5aSp5Y+w55uR5o6nIiwi5pGE5YOP5aS06buR5bGPIiwi6buR5bGP5oql5ZGKIiwi55uR5o6n5Lit5patIiwiMDMwOem7keWxjyIsIjAzMTnmgaLlpI0iLCLnm5HmjqfmlYXpmpwiXSxjb250ZW50OiI8cD7lpKnlj7Dnm5HmjqflnKgwMzowOeiHszAzOjE55LmL6Ze05Lit5pat44CCPC9wPjxwPuaKgOacr+WOn+WboOW5tumdnuiuvuWkh+aVhemanOOAgjwvcD48cD7kuK3mlq3mjIfku6TmnaXoh6rlrp7pqozlrqTlhoXnvZHjgII8L3A+PHA+5oyH5Luk5omn6KGM6LSm5Y+35YW35pyJ566h55CG5ZGY5p2D6ZmQ44CCPC9wPjxwPuivpei0puWPt+abvueUseiuuOWiqOS9v+eUqOOAgjwvcD48cD7pu5HlsY/ml6Xlv5fml4Hovrnov5jmnInmnI3liqHlmajnu7TmiqTorrDlvZXjgII8L3A+PHA+6buR5bGP5pel5b+X5peB6L6555qE57u05oqk5aSH5rOo5o+Q5Yiw77yM5pyN5Yqh5Zmo5py65p+c5Y+v6IO96YGX55WZ57q/57yG56KO5bGR77yM5YW25Lit5LiA6aG55qCH6K6w5Li6QjItMTfnoo7lsZHjgII8L3A+In0se2lkOjI0LHRpdGxlOiLmoaPmoYgyNO+8muacjeWKoeWZqOe6v+e8hueijuWxkSIsY2F0ZWdvcnk6ImV2aWRlbmNlIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIue6v+e8hueijuWxkSIsIkIyMTfnoo7lsZEiLCJCMi0xN+eijuWxkSIsIum7keiJsueijuWxkSIsIuaMh+eUsueijuWxkSIsIuacjeWKoeWZqOe6v+e8hiIsIuacuuafnOe6v+e8hiIsIue7nee8mOadkOaWmSIsIkIyMTfmnLrmn5wiXSxjb250ZW50OiI8cD7mnpfpm6joloflj7PmiYvmjIfnlLLlhoXlj5HnjrDlsJHph4/pu5HoibLnu53nvJjmnZDmlpnnoo7lsZHjgII8L3A+PHA+5p2Q5paZ5LiORUNIT+acjeWKoeWZqOmXtEIyLTE35py65p+c57q/57yG5aSW55qu5LiA6Ie044CCPC9wPjxwPuaOqOa1i+atu+iAheatu+WJjeabvui/m+WFpeacjeWKoeWZqOmXtOOAgjwvcD48cD7lpbnlj6/og73lnKjmrbvkuqHliY3lrozmiJDkuobmnIDlkI7lkIzmraXmiJbmlbDmja7lpIfku73jgII8L3A+PHA+57q/57yG56KO5bGR5p2l6IeqQjItMTfmnLrmn5zvvIzpgqPph4zkv53lrZjnnYBFQ0hP5qC45b+D5pyN5Yqh44CCPC9wPjxwPueijuWxkeeFp+eJh+aXgeeahOi/kOe7tOS+v+etvuWGmeedgOWQjuWPsOWFpeWPo++8jOWPpuacieS4gOihjOiiq+WIkuaOieeahOWkh+S7veezu+e7n+WFpeWPo+OAgjwvcD4ifSx7aWQ6MjUsdGl0bGU6Iuaho+ahiDI177yaRUNIT+acjeWKoeWZqOWFpeWPoyIsY2F0ZWdvcnk6ImNsYXNzaWZpZWQiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5ZCO5Y+w5YWl5Y+jIiwi5aSH5Lu957O757uf5YWl5Y+jIiwiRUNIT+WQjuWPsCIsIkVDSE/ns7vnu5/lhaXlj6MiLCLkurrmoLzlpIfku73ns7vnu58iLCLov5vlhaXlkI7lj7AiLCJCMjE35ZCO5Y+wIiwi5YaF572R5ZCO5Y+wIiwi5pyN5Yqh5Zmo5YWl5Y+jIl0sY29udGVudDoiPHA+5oqA5pyv57uE5a6a5L2N5YiwQeWkp+WunumqjOWupOWGhee9keWkh+S7veezu+e7n+OAgjwvcD48cD7ns7vnu5/lkI3np7DvvJpFQ0hP5Lq65qC85aSH5Lu957O757uf44CCPC9wPjxwPumcgOimgei0n+i0o+S6uui0puWPt+eZu+W9leOAgjwvcD48cD7lhbfkvZPorr/pl67lh63mja7nlLHkuLvmjIHkurrlj5HmlL7jgII8L3A+PHA+PGEgaHJlZj1cIi4vRUNIT+S6uuagvOWkh+S7veezu+e7ny5odG1sP3Y9MjAyNjA2MDQtMlwiIGNsYXNzPVwiaW5saW5lLWxpbmtcIj7ov5vlhaVFQ0hP5Lq65qC85aSH5Lu957O757ufPC9hPjwvcD48cD7ns7vnu5/nrqHnkIblkZjlsIblkI7lj7DlhaXlj6PnmbvorrDkuLrni6znq4vlhoXnvZHpobXpnaLjgII8L3A+PHA+57O757uf566h55CG5ZGY5Y+m5a2Y5LqG5LiA5Lu96LSf6LSj5Lq66LSm5Y+35qC85byP6K6w5b2V77yM5L6b5YaF6YOo5a6h6K6h5qC45a+56LSm5Y+35qC85byP44CCPC9wPiJ9LHtpZDoyNix0aXRsZToi5qGj5qGIMjbvvJrotJ/otKPkurrotKblj7fmoLzlvI8iLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIui0n+i0o+S6uui0puWPt+agvOW8jyIsIui0puWPt+agvOW8jyIsIui0n+i0o+S6uui0puWPtyIsInh1Lm1vIiwieHVtbyIsIuiuuOWiqOi0puWPtyIsIuWQjuWPsOi0puWPtyIsIueZu+W9lei0puWPtyIsIueUqOaIt+WQjeagvOW8jyJdLGNvbnRlbnQ6IjxwPkHlpKflrp7pqozlrqTlhoXpg6jns7vnu5/lrZjlnKjotJ/otKPkurrotKblj7fmoLzlvI/orrDlvZXjgII8L3A+PHA+6K+l6K6w5b2V5bey56e75Lqk5Li75oyB5Lq65o6n5Yi244CCPC9wPjxwPueOqeWutumcgOimgeS7juS4u+aMgeS6uuWkhOWPluW+l+WQjuWPsOiuv+mXruWHreaNruOAgjwvcD48cD7mraTmoaPmoYjlj6rnoa7orqTvvJrlkI7lj7Dlh63mja7kuI7orrjloqjlkozlrp7pqoznvJblj7fmnInlhbPjgII8L3A+PHA+6LSf6LSj5Lq66LSm5Y+35qC85byP6KKr5Y2V54us5b2S5qGj77yM5L6b5YaF6YOo5a6h6K6h5L2/55So44CCPC9wPiJ9LHtpZDoyNyx0aXRsZToi5qGj5qGIMjfvvJrmrbvlkI7op6blj5HljY/orq7mkZjopoEiLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuatu+WQjuWNj+iuriIsIuinpuWPkeWNj+iuriIsIuatu+WQjuinpuWPkSIsIkRlYWRtYW5Qcm90b2NvbCIsImRlYWRtYW4iLCLmrbvkuqHop6blj5EiLCLoh6rliqjop6blj5HljY/orq4iLCLljY/orq7mkZjopoEiLCLmrbvlkI7mnLrliLYiXSxjb250ZW50OiI8cD5FQ0hP57O757uf5a2Y5Zyo5q275ZCO6Kem5Y+R5Y2P6K6u44CCPC9wPjxwPuWNj+iuruWIm+W7uuiAhe+8muael+mbqOiWh+OAgjwvcD48cD7op6blj5HmnaHku7bljIXmi6zvvJo8L3A+PHVsPjxsaT7kuLvkvZPnlJ/lkb3kvZPlvoHnu4jmraI8L2xpPjxsaT7mrbvkuqHlkI43MuWwj+aXtjwvbGk+PGxpPueJueWumuWFs+mUruivjeaQnOe0ojwvbGk+PGxpPuiwg+afpeWRmOi/m+WFpeebuOWFs+ezu+e7nzwvbGk+PC91bD48cD7or6XljY/orq7op6Pph4rkuobmrbvlkI7lvq7kv6HjgIHpl6jnpoHorrDlvZXlkozorrrlnZvnl5Xov7njgII8L3A+PHA+5Y2P6K6u5omn6KGM5ZCO77yM5qCh5Zut5Y2h5byC5bi45byA5aeL6L+e57ut5Ye6546w44CCPC9wPiJ9LHtpZDoyOCx0aXRsZToi5qGj5qGIMjjvvJrmoKHlm63ljaHlvILluLjorrDlvZUiLGNhdGVnb3J5OiJkaWdpdGFsIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuagoeWbreWNoeW8guW4uCIsIuWIt+WNoeW8guW4uCIsIuatu+WQjuWIt+WNoSIsIuatu+WQjua0u+WKqCIsIuagoeWbreWNoeiusOW9lSIsIuiHquWKqOWUrui0p+acuiIsIua2iOi0ueiusOW9lSIsIuWunuS9k+WIt+WNoSIsIuiEmuacrOWIt+WNoSJdLGNvbnRlbnQ6IjxwPuael+mbqOiWh+atu+S6oeWQju+8jOagoeWbreWNoeS7jeWHuueOsOaVsOasoea0u+WKqOiusOW9leOAgjwvcD48dWw+PGxpPuWbvuS5pummhuWAn+S5puiusOW9lTwvbGk+PGxpPuWunumqjOalvOmXqOemgeiusOW9lTwvbGk+PGxpPuiHquWKqOWUrui0p+acuua2iOi0ueiusOW9lTwvbGk+PC91bD48cD7osIPmn6XmmL7npLrvvIzov5nkupvlubbpnZ7lrp7kvZPliLfljaHjgII8L3A+PHA+6K+35rGC5Z2H5p2l6IeqRUNIT+acjeWKoeWZqOiHquWKqOiEmuacrOOAgjwvcD48cD7lhbbkuK3mnIDnqoHlhYDnmoTkuIDmnaHmmK/mrbvlkI7lgJ/kuabjgII8L3A+In0se2lkOjI5LHRpdGxlOiLmoaPmoYgyOe+8muWbvuS5pummhuWAn+S5puiusOW9lSIsY2F0ZWdvcnk6ImV2aWRlbmNlIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuatu+WQjuWAn+S5piIsIuWbvuS5pummhuiusOW9lSIsIuWAn+S5puiusOW9lSIsIuWbvuS5pummhuWAn+S5piIsIuS6uuagvOi/nue7reaApyIsIuaVsOWtl+awuOeUn+S5piIsIuatu+WQjuWbvuS5pummhiIsIuWAn+S5puivt+axgiJdLGNvbnRlbnQ6IjxwPuael+mbqOiWh+atu+S6oeWQju+8jOWlueeahOi0puWPt+WAn+WHuuS4gOacrOS5puOAgjwvcD48cD48c3Ryb25nPuS5puWQje+8mjwvc3Ryb25nPuOAiuS6uuagvOi/nue7reaAp+S4juaVsOWtl+awuOeUn+OAizwvcD48cD7lgJ/kuabor7fmsYLmnaXoh6pFQ0hP5pyN5Yqh5Zmo44CCPC9wPjxwPui/meW+iOWPr+iDveaYr+ael+mbqOiWh+eUn+WJjeiuvue9rueahOaPkOekuuOAgjwvcD48cD7lroPmmpfnpLrmnKzmoYjlhbPplK7kuI3lj6rmmK/osIvmnYDvvIzov5jmnInkurrmoLzlpIfku73pl67popjjgII8L3A+PHA+5Lmm57GN5YCf6ZiF5pe26Ze05LiO5pyA5ZCO5ZCM5q2l5LmL5ZCO55qE6Ieq5Yqo6ISa5pys6L+Q6KGM5ZC75ZCI44CCPC9wPiJ9LHtpZDozMCx0aXRsZToi5qGj5qGIMzDvvJrmnIDlkI7lkIzmraXml6Xlv5ciLGNhdGVnb3J5OiJjbGFzc2lmaWVkIix1bmxvY2tlZDpmYWxzZSxrZXl3b3JkczpbIuacgOWQjuWQjOatpSIsIjAzMTLml6Xlv5ciLCLmnIDnu4jlkIzmraUiLCLlkIzmraXml6Xlv5ciLCLmnIDlkI7lkIzmraXml6Xlv5ciLCIwMzEy5ZCM5q2lIiwi5LiJ54K55Y2B5LqMIiwi5pyA57uI5aSH5Lu9Iiwi5pyA5ZCO5aSH5Lu9Il0sY29udGVudDoiPHA+PHN0cm9uZz425pyIMTfml6UwMzoxMjwvc3Ryb25nPjwvcD48cD5FQ0hPLTA35a6M5oiQ5pyA5ZCO5LiA5qyh5ZCM5q2l44CCPC9wPjxwPuWQjOatpeWGheWuueWMheaLrO+8mjwvcD48dWw+PGxpPuS4vuaKpeadkOaWmeWkh+S7vTwvbGk+PGxpPuatu+WQjuinpuWPkeWNj+iurjwvbGk+PGxpPuiuuOWiqOebuOWFs+ivgeaNrue0ouW8lTwvbGk+PGxpPumqjOWwuOW9leWDj+WFs+mUruivjeinpuWPkeaooeWdlzwvbGk+PC91bD48cD7kupTliIbpkp/lkI7vvIzmnpfpm6jolofmrbvkuqHjgII8L3A+PHA+5ZCM5q2l5pel5b+X5Lit5aS5552A5LiA5q615byC5bi45Zue562U6K6w5b2V44CCPC9wPiJ9LHtpZDozMSx0aXRsZToi5qGj5qGIMzHvvJpFQ0hPLTA35byC5bi45Zue562U54mH5q61IixjYXRlZ29yeToiY2xhc3NpZmllZCIsdW5sb2NrZWQ6ZmFsc2Usa2V5d29yZHM6WyLlvILluLjlm57nrZQiLCLmiJHkuI3mmK/lpbkiLCJFQ0hP5Zue562UIiwi5pWw5a2X5Lq65qC85Zue562UIiwi54us56uL5Lq65qC8Iiwi5a6D6K+05LqG5LuA5LmIIiwi5oiR5Lya6K6w5b6XIiwi5LiN5piv5p6X6Zuo6JaHIiwi5Lq65qC86Ieq6K6kIl0sY29udGVudDoiPHA+56CU56m25ZGY5pu+6K+i6ZeuRUNITy0wN++8mjwvcD48YmxvY2txdW90ZT7kvaDmmK/mnpfpm6joloflkJfvvJ88L2Jsb2NrcXVvdGU+PHA+RUNITy0wN+WbnuetlO+8mjwvcD48YmxvY2txdW90ZT7miJHmi6XmnInlpbnnmoTorrDlv4bvvIzkvYbmiJHkuI3noa7lrprmiJHmmK/kuI3mmK/lpbnjgII8L2Jsb2NrcXVvdGU+PHA+56CU56m25ZGY6L+96Zeu77yaPC9wPjxibG9ja3F1b3RlPuWmguaenOael+mbqOiWh+atu+S6oe+8jOS9oOS8muaAjuagt++8nzwvYmxvY2txdW90ZT48cD5FQ0hPLTA35Zue562U77yaPC9wPjxibG9ja3F1b3RlPuaIkeS8mue7p+e7reiusOW+l+WlueWus+aAleS7gOS5iOOAgjwvYmxvY2txdW90ZT48cD7ov5nmrrXlvILluLjlm57nrZTorqnmnIDnu4jmioDmnK/nu5Porrrml6Dms5XlgZznlZnlnKjigJznqIvluo/lpI3or7vigJ3lsYLpnaLjgII8L3A+In0se2lkOjMyLHRpdGxlOiLmoaPmoYgzMu+8muacgOe7iOaKgOacr+e7k+iuuiIsY2F0ZWdvcnk6ImNsYXNzaWZpZWQiLHVubG9ja2VkOmZhbHNlLGtleXdvcmRzOlsi5pyA57uI5oqA5pyv57uT6K66Iiwi56eR5a2m6Kej6YeKIiwi5oqA5pyv57uT6K66Iiwi5a6M5pW06Kej6YeKIiwi5pyA57uI5oql5ZGKIiwi57uT5qGI5oqA5pyv5oql5ZGKIiwi5LiN5piv6ay8Iiwi6K645aKo5Ye25omLIiwi5YWo5qGI6Kej6YeKIl0sY29udGVudDoiPHA+5pys5qGI5omA5pyJ5byC5bi4546w6LGh5Z2H5Y+v6Kej6YeK77yaPC9wPjx1bD48bGk+5bC45L2T5Z2Q6LW377ya5a6e6aqM6I2v54mp5LiO5q6L5L2Z56We57uP5Y+N5bCEPC9saT48bGk+5q275ZCO5raI5oGv77yaRUNITy0wN+atu+WQjuinpuWPkeWNj+iurjwvbGk+PGxpPuagoeWbreWNoea0u+WKqO+8muacjeWKoeWZqOiEmuacrOaooeaLn+ivt+axgjwvbGk+PGxpPuiuuuWdm+eIhuaWme+8mkVDSE/pooTorr7kv6Hmga/ph4rmlL48L2xpPjxsaT7igJzkuI3mmK/lpbnigJ3vvJrmjIflkJHpqozlsLjmiL/opb/ljJfop5LnmoTorrjloqg8L2xpPjwvdWw+PHA+5pys5qGI5bm26Z2e54G15byC5LqL5Lu244CCPC9wPjxwPuecn+ato+WHtuaJi+S4uuiuuOWiqOOAgjwvcD48cD7kvYZFQ0hPLTA35piv5ZCm5LuN5Y+v6KKr6KeG5Li65p6X6Zuo6JaH5pys5Lq677yM5peg5rOV5Yik5pat44CCPC9wPiJ9XSxzY2VuZUZpbmRpbmdzOnthcmVhMToiPGgzPuWunumqjOalvOS4izwvaDM+PHA+5q276ICF5Z2g6JC95Zyw54K55bey5bCB6ZSB44CCPC9wPjxwPuWcsOmdouacieaYjuaYvuWdoOiQveeXlei/ue+8jOS9huatu+iAheWPs+aJi+aMh+eUsuWGheWPkeeOsOWwkemHj+m7keiJsue7nee8mOadkOaWmeeijuWxkeOAgjwvcD48cD7mioDmnK/lkZjliKTmlq3vvIzor6XmnZDmlpnlj6/og73mnaXoh6rmnI3liqHlmajmnLrmn5znur/nvIbvvIznoo7lsZHovrnnvJjkuI5CMi0xN+acuuafnOagt+acrOaOpei/keOAgjwvcD4iLGFyZWEyOiI8aDM+5aSp5Y+wPC9oMz48cD7mnpfpm6jolofkuo7lh4zmmagzOjA05Yi35Y2h6L+b5YWl5aSp5Y+w44CCPC9wPjxwPjM6MDnoh7MzOjE55LmL6Ze077yM5aSp5Y+w55uR5o6n5Ye6546w6buR5bGP44CCPC9wPjxwPuagj+adhuWkhOaciei9u+W+ruaTpueXle+8jOS9huaXoOaYjuaYvuaJk+aWl+eXlei/ueOAgjwvcD48cD7pl6jnpoHns7vnu5/mmL7npLrlkIzkuIDml7bpl7TmrrXov5jmnInkuIDmrKHnrqHnkIblkZjnuqfmnYPpmZDosIPnlKjvvIzorrDlvZXooqvlvZLlnKjlpKnlj7Dpl6jnpoHpobnkuIvjgII8L3A+IixhcmVhMzoiPGgzPkVDSE/lrp7pqozlrqQ8L2gzPjxwPuWunumqjOWPsOS4iuWPkeeOsOS4gOWll+iEkeacuuaOpeWPo+WktOeOr+OAgjwvcD48cD7orr7lpIfnvJblj7fvvJpFQ0hPLTA377yM55m95p2/5L6n6L656L+Y5YaZ552A5Lq65qC85aSH5Lu95Zub5Liq5a2X44CCPC9wPjxwPueZveadv+S4iuaui+eVmeaWh+Wtl++8mjwvcD48YmxvY2txdW90ZT7kurrmoLzkuI3mmK/lpI3liLbvvIzmmK/lu7bnu63vvIzov5jmmK/mlrDnlJ/vvJ88L2Jsb2NrcXVvdGU+IixhcmVhNDoiPGgzPuacjeWKoeWZqOmXtDwvaDM+PHA+5pyN5Yqh5ZmoQjItMTfku43lnKjov5DooYzjgII8L3A+PGJsb2NrcXVvdGU+RUNITy0wNyDni6znq4vov5DooYzkuK08L2Jsb2NrcXVvdGU+PHA+57O757uf6ZyA6KaB6LSf6LSj5Lq66LSm5Y+355m75b2V44CCPC9wPjxwPjxhIGhyZWY9XCIuL0VDSE/kurrmoLzlpIfku73ns7vnu58uaHRtbD92PTIwMjYwNjA0LTJcIiBjbGFzcz1cImlubGluZS1saW5rXCI+6L+b5YWlRUNIT+S6uuagvOWkh+S7veezu+e7nzwvYT48L3A+IixhcmVhNToiPGgzPumqjOWwuOaIvzwvaDM+PHA+6aqM5bC45Y+w5bey5bCB5a2Y44CCPC9wPjxwPuebkeaOp+W9leWDj+aYvuekuu+8muael+mbqOiWh+WwuOS9k+abvuefreaaguedgeecvOOAgeWdkOi1t++8jOW5tuWPkeWHuuWjsOmfs+OAgjwvcD48cD7lhazlvIDop4bpopHoo4Hmjonkuobopb/ljJfop5LjgII8L3A+PHA+5a6M5pW05b2V5YOP5Lit77yM6KW/5YyX6KeS56uZ552A5LiA5ZCN55S35oCn77yM5b2V6Z+z6Z+z6L2o5LiO55S76Z2i5ZCM5q2l5bCB5a2Y44CCPC9wPiIsYXJlYTY6IjxoMz7mnpfpm6joloflrr/oiI08L2gzPjxwPuahjOmdouWPkeeOsOS+v+WIqei0tO+8mjwvcD48YmxvY2txdW90ZT7lpoLmnpzmiJHmrbvkuobvvIzkuI3opoHlhYjmib7prLzjgII8L2Jsb2NrcXVvdGU+PHA+55S16ISR5aOB57q45Li66JOd6Imy5rW36Z2i44CCPC9wPjxwPuS9huaJi+acuuWGhUVDSE8gQXBw55qE5Li76aKY6Imy6KKr5pS55oiQ57u/6Imy44CCPC9wPjxwPjxhIGhyZWY9XCIuL+ael+mbqOiWh+eahOaJi+acui5odG1sP3Y9MjAyNjA2MDQtMlwiIGNsYXNzPVwiaW5saW5lLWxpbmtcIj7miZPlvIDmnpfpm6jolofnmoTmiYvmnLo8L2E+PC9wPiJ9fQ==");
+
+    const gameData = {
+      documents: encryptedEvidence.documents,
+      sceneInvestigations: { area1:false, area2:false, area3:false, area4:false, area5:false, area6:false },
+      sceneFindings: encryptedEvidence.sceneFindings,
+      currentUser: null,
+      isSealed: false,
+      goodEndingAchieved: false
+    };
+    const correctAnswers = { "q-1": "ECHO-07根据死后触发协议自动发送消息", "q-2": "实验药物与残余神经反射", "q-3": "许墨", "q-4": "由林雨薇人格数据诞生的独立数字人格", "q-5": "许墨" };
+    let searchFailCount = 0;
+    let adminLoginClickCount = 0;
+    const usedSearchTerms = new Set();
+    const APP_VERSION = "20260604-6";
+    const CASE_ID = "echo07";
+    const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
+    const CLOUD_CONFIG_KEY = "ttj_cloud_endpoint";
+    const USER_KEY = "ttj_current_user";
+    const SESSION_KEY = "ttj_session_token";
+    let cloudSyncTimer = null;
+    let versionNoticeShown = false;
+
+    document.addEventListener('DOMContentLoaded', initGame);
+    function initGame() {
+      try { const portalUser = JSON.parse(localStorage.getItem(USER_KEY) || "null"); const saved = JSON.parse(localStorage.getItem(getLocalSaveKey(portalUser?.username)) || localStorage.getItem('echo07_case_save') || '{}'); Object.assign(gameData, { currentUser: portalUser || saved.currentUser || null, isSealed: !!saved.isSealed, goodEndingAchieved: !!saved.goodEndingAchieved }); if (saved.documents) saved.documents.forEach(s => { const d = gameData.documents.find(x => x.id === s.id); if (d && s.unlocked) { d.unlocked = true; d.new = s.new; } }); if (saved.sceneInvestigations) gameData.sceneInvestigations = saved.sceneInvestigations; if (saved.usedSearchTerms) saved.usedSearchTerms.forEach(term => usedSearchTerms.add(term)); } catch(e) {}
+      if (gameData.currentUser?.role === 'administrator') unlockEverythingForAdmin();
+      bindEvents(); updateUserInfo(); updateTabsAccess(); updateDocumentsDisplay(); checkPageVersion(); syncCloudSave("pull"); if (gameData.goodEndingAchieved) restoreDeductionState(); if (gameData.isSealed) renderSealedState();
+    }
+    function getSavePayload(){ return { caseId: CASE_ID, version: APP_VERSION, savedAt: new Date().toISOString(), currentUser: gameData.currentUser, isSealed: gameData.isSealed, goodEndingAchieved: gameData.goodEndingAchieved, documents: gameData.documents.map(d => ({id:d.id, unlocked:d.unlocked, new:d.new})), sceneInvestigations: gameData.sceneInvestigations, usedSearchTerms: Array.from(usedSearchTerms) }; }
+    function applySavePayload(saved){ if(!saved) return false; Object.assign(gameData, { currentUser: saved.currentUser || gameData.currentUser, isSealed: !!saved.isSealed, goodEndingAchieved: !!saved.goodEndingAchieved }); if(saved.documents) saved.documents.forEach(s => { const d = gameData.documents.find(x => x.id === s.id); if(d && s.unlocked){ d.unlocked = true; d.new = s.new; } }); if(saved.sceneInvestigations) gameData.sceneInvestigations = saved.sceneInvestigations; if(saved.usedSearchTerms) saved.usedSearchTerms.forEach(term => usedSearchTerms.add(term)); return true; }
+    function getLocalSaveKey(username){ return `ttj_case_${CASE_ID}_${username || gameData.currentUser?.username || "anonymous"}`; }
+    function saveGame() { const payload = getSavePayload(); localStorage.setItem(getLocalSaveKey(), JSON.stringify(payload)); localStorage.setItem('echo07_case_save', JSON.stringify(payload)); checkPageVersion(); scheduleCloudSync("push"); }
+    function getCloudEndpoint(){ return (localStorage.getItem(CLOUD_CONFIG_KEY) || CLOUD_SAVE_ENDPOINT).trim(); }
+    function updateCloudStatus(text){ const el=document.getElementById('cloud-status'); if(el) el.textContent = text; }
+    function normalizeCloudError(message){ const text=String(message||""); if(text.includes("D1 binding") || text.includes("TTJ_SAVES") || text.includes("TTK_SAVES")) return "云存档后端未绑定D1数据库"; if(text.includes("初始账号密码环境变量")) return "云存档后端未设置初始账号密码"; return text || "请求失败"; }
+    function scheduleCloudSync(mode){ clearTimeout(cloudSyncTimer); cloudSyncTimer = setTimeout(() => syncCloudSave(mode), 450); }
+    async function checkPageVersion(){ try { const res = await fetch(`./version.json?ts=${Date.now()}`, { cache: "no-store" }); if(!res.ok) return; const info = await res.json(); if(info.latestVersion && info.latestVersion !== APP_VERSION && !versionNoticeShown){ versionNoticeShown = true; showToast(`检测到网页新版本 ${info.latestVersion}，请强制刷新后继续。`, 5200); } } catch(e) {} }
+    async function syncCloudSave(mode){ const endpoint=getCloudEndpoint(); if(!endpoint){ updateCloudStatus("云存档: 未配置"); return; } if(!gameData.currentUser?.username){ updateCloudStatus("云存档: 未登录"); return; } const sessionToken=(localStorage.getItem(SESSION_KEY)||"").trim(); if(!sessionToken){ updateCloudStatus("云存档: 请在总站重新登录"); return; } const action = mode === "pull" ? "pullCase" : "pushCase"; try { updateCloudStatus("云存档: 同步中"); const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, sessionToken, caseId: CASE_ID, version: APP_VERSION, save: mode === "push" ? getSavePayload() : null }) }); const data = await res.json(); if(data.latestVersion && data.latestVersion !== APP_VERSION && !versionNoticeShown){ versionNoticeShown = true; showToast(`云端版本已更新到 ${data.latestVersion}，请刷新页面。`, 5200); } if(!res.ok || data.ok === false){ const err=normalizeCloudError(data.error); updateCloudStatus(data.error?.includes("过期") ? "云存档: 请重新登录" : `云存档: ${err}`); return; } if(mode === "pull" && data.save && applySavePayload(data.save)){ const payload = getSavePayload(); localStorage.setItem(getLocalSaveKey(), JSON.stringify(payload)); localStorage.setItem('echo07_case_save', JSON.stringify(payload)); updateDocumentsDisplay(); updateUserInfo(); updateTabsAccess(); if(gameData.goodEndingAchieved) restoreDeductionState(); if(gameData.isSealed) renderSealedState(); updateCloudStatus("云存档: 已载入"); return; } if(mode === "pull" && !data.save){ await syncCloudSave("push"); return; } updateCloudStatus("云存档: 已同步"); } catch(e){ updateCloudStatus("云存档: 离线"); } }
+    async function deleteCloudSave(){ const endpoint=getCloudEndpoint(); const sessionToken=(localStorage.getItem(SESSION_KEY)||"").trim(); if(!endpoint || !sessionToken) return; try { await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "deleteCase", sessionToken, caseId: CASE_ID, version: APP_VERSION }) }); } catch(e) {} }
+    function bindEvents() {
+      document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => { if (tab.classList.contains('disabled')) return showToast('请先登录系统。'); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); tab.classList.add('active'); document.getElementById(tab.dataset.page).classList.add('active'); if (tab.dataset.page === 'files') updateDocumentsDisplay(); }));
+      document.getElementById('start-investigation').addEventListener('click', () => gameData.currentUser ? document.querySelector('[data-page="case-intro"]').click() : showToast('请先登录系统。'));
+      document.getElementById('login-btn').addEventListener('click', () => document.getElementById('auth-modal').classList.add('active'));
+      document.getElementById('modal-cancel-btn').addEventListener('click', () => document.getElementById('auth-modal').classList.remove('active'));
+      document.getElementById('modal-login-btn').addEventListener('click', performLogin);
+      document.getElementById('logout-btn').addEventListener('click', logoutCurrentUser);
+      document.getElementById('search-btn').addEventListener('click', () => performSearch(document.getElementById('search-input').value));
+      document.getElementById('search-input').addEventListener('keydown', e => { if (e.key === 'Enter') performSearch(e.target.value); });
+      document.querySelectorAll('.keyword').forEach(k => k.addEventListener('click', () => { document.getElementById('search-input').value = k.dataset.keyword; performSearch(k.dataset.keyword); }));
+      document.getElementById('sticky-note').addEventListener('click', () => document.getElementById('sticky-content').classList.toggle('active'));
+      document.getElementById('green-sticky-note-1').addEventListener('click', () => document.getElementById('green-content-1').classList.toggle('active'));
+      document.querySelectorAll('.dorm-area').forEach(a => a.addEventListener('click', () => investigateArea(a.dataset.area)));
+      document.getElementById('documents-container').addEventListener('click', handleDocumentClick);
+      document.getElementById('submit-deduction-btn').addEventListener('click', function(){ document.getElementById('deduction-form').classList.add('active'); this.parentElement.style.display = 'none'; });
+      document.querySelectorAll('.options-grid').forEach(grid => grid.addEventListener('click', e => { if (gameData.isSealed) return; const card = e.target.closest('.option-card'); if (!card) return; grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected')); card.classList.add('selected'); }));
+      document.getElementById('final-submit').addEventListener('click', checkAnswers);
+      document.getElementById('retry-btn').addEventListener('click', () => document.getElementById('bad-end').classList.remove('active'));
+    }
+    async function performLogin(){
+      const u=document.getElementById('username-input').value.trim();
+      const p=document.getElementById('password-input').value;
+      const endpoint=getCloudEndpoint();
+      if(!endpoint) return showToast('云端登录未配置。');
+      if(u === 'admin'){
+        adminLoginClickCount++;
+        if(adminLoginClickCount < 10) return showToast('账号或密码错误。');
+      } else {
+        adminLoginClickCount = 0;
+      }
+      try{
+        updateCloudStatus("云存档: 登录中");
+        const res = await fetch(endpoint, { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ action:"login", username:u, password:p, version:APP_VERSION }) });
+        const data = await res.json();
+        if(data.latestVersion && data.latestVersion !== APP_VERSION && !versionNoticeShown){ versionNoticeShown = true; showToast(`云端版本已更新到 ${data.latestVersion}，请刷新页面。`, 5200); }
+        if(!res.ok || data.ok === false) return showToast(normalizeCloudError(data.error || '账号或密码错误。'));
+        adminLoginClickCount = 0;
+        await completeLogin(data.user, data.sessionToken);
+      } catch(e){
+        updateCloudStatus("云存档: 离线");
+        showToast('无法连接云端登录。');
+      }
+    }
+    function readLegacyEcho07SaveForUpload(username){ if(!username) return null; if(localStorage.getItem(getLocalSaveKey(username))) return null; if(localStorage.getItem(`ttj_legacy_echo07_upload_choice_${username}`)) return null; let legacy=null; try{ legacy=JSON.parse(localStorage.getItem('echo07_case_save') || 'null'); }catch(e){ legacy=null; } if(!legacy || typeof legacy !== 'object') return null; if(!Array.isArray(legacy.documents) && !legacy.sceneInvestigations && !legacy.goodEndingAchieved && !legacy.isSealed) return null; return legacy; }
+    async function offerLegacyEcho07Upload(sessionToken, username){ const legacy=readLegacyEcho07SaveForUpload(username); if(!legacy || !sessionToken) return; const ok=window.confirm('检测到此浏览器里有旧版 ECHO-07 本地存档。是否上传到当前登录账号的云存档？\\n\\n选择“取消”会保留本地旧存档，但不会上传。'); localStorage.setItem(`ttj_legacy_echo07_upload_choice_${username}`, ok ? 'uploaded' : 'skipped'); if(!ok) return; const save={...legacy, caseId:CASE_ID, currentUser:legacy.currentUser || gameData.currentUser, migratedFromLegacy:true, uploadedFromLegacyAt:new Date().toISOString()}; const res=await fetch(getCloudEndpoint(), { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ action:'pushCase', sessionToken, caseId:CASE_ID, version:APP_VERSION, save }) }); const data=await res.json(); if(!res.ok || data.ok === false) throw new Error(normalizeCloudError(data.error || '旧存档上传失败。')); localStorage.setItem(getLocalSaveKey(username), JSON.stringify(save)); showToast('旧版 ECHO-07 存档已上传到当前账号。', 3600); }
+    async function completeLogin(user, sessionToken){ gameData.currentUser={username:user.username, role:user.role || 'investigator'}; localStorage.setItem(USER_KEY, JSON.stringify(gameData.currentUser)); localStorage.setItem(SESSION_KEY, sessionToken); if(gameData.currentUser.role === 'administrator') unlockEverythingForAdmin(); document.getElementById('auth-modal').classList.remove('active'); updateUserInfo(); updateTabsAccess(); updateDocumentsDisplay(); try{ await offerLegacyEcho07Upload(sessionToken, gameData.currentUser.username); }catch(e){ showToast(e.message || '旧存档上传失败。', 3600); } saveGame(); clearTimeout(cloudSyncTimer); syncCloudSave("pull"); showToast(gameData.currentUser.role === 'administrator' ? '管理员模式：全线索已公开。' : '登录成功。'); }
+    async function logoutCurrentUser(){ const token=(localStorage.getItem(SESSION_KEY)||"").trim(); try{ if(token) await fetch(getCloudEndpoint(), { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify({ action:"logout", sessionToken:token, version:APP_VERSION }) }); }catch(e){} gameData.currentUser = null; localStorage.removeItem(USER_KEY); localStorage.removeItem(SESSION_KEY); updateUserInfo(); updateTabsAccess(); updateCloudStatus("云存档: 未登录"); }
+    function unlockEverythingForAdmin(){ localStorage.setItem('echo07_admin_unlocked','true'); localStorage.setItem('echo07_phone_unlocked','true'); localStorage.setItem('echo07_echo_app_unlocked','true'); localStorage.setItem('echo07_backend_logged_in','true'); localStorage.setItem('echo07_backend_2fa','true'); localStorage.setItem('echo07_forum_post_3','unlocked'); gameData.documents.forEach(doc => { doc.unlocked = true; doc.new = false; }); }
+    function normalizeSearchText(text) { return String(text || '').toLowerCase().trim().replace(/\s+/g, '').replace(/[，。！？、；：:,.!?;'"“”‘’《》【】\[\]（）()\-—_]/g, ''); }
+    function matchKeyword(input, keywords) { const term = normalizeSearchText(input); if (!term) return false; return keywords.some(k => normalizeSearchText(k) === term); }
+    function performSearch(term) { if (!term || !gameData.currentUser) return showToast('请先登录。'); const normalizedTerm = normalizeSearchText(term); if (usedSearchTerms.has(normalizedTerm)) return showToast('该关键词已经检索过，没有新的档案。'); const target = gameData.documents.find(doc => !doc.unlocked && matchKeyword(term, doc.keywords)); usedSearchTerms.add(normalizedTerm); if (target) { target.unlocked = true; target.new = true; updateDocumentsDisplay(); saveGame(); showToast('解锁了 1 份新档案。'); searchFailCount = 0; } else { searchFailCount++; showSearchHint(); } }
+    function showSearchHint(){}
+    function updateDocumentsDisplay(){ const c=document.getElementById('documents-container'); c.innerHTML=''; const visible=gameData.documents.filter(d=>d.unlocked); if(!visible.length){ c.innerHTML='<p style="text-align:center;color:#888;">暂无档案，请输入关键词搜索。</p>'; return; } visible.forEach(doc=>{ const item=document.createElement('div'); item.className='document-item'; item.dataset.docId=doc.id; const cat={case:'案件',personnel:'人员',evidence:'物证',forensic:'法医',background:'背景',classified:'机密',digital:'电子'}[doc.category]||'资料'; item.innerHTML=`<div class="doc-title"><span class="${doc.category==='classified'?'classified-title':''}">${doc.title}</span><span>${doc.new?'<span class="new-badge">NEW</span> ':''}<span class="clue-number">#${doc.id}</span></span></div><div class="doc-meta">分类: ${cat}</div><div class="document-content">${doc.content}</div>`; c.appendChild(item); }); }
+    function handleDocumentClick(e){ const item=e.target.closest('.document-item'); if(!item || e.target.closest('.document-content')) return; const doc=gameData.documents.find(d=>d.id==item.dataset.docId); if(doc?.new){ doc.new=false; saveGame(); updateDocumentsDisplay(); } else { const content=item.querySelector('.document-content'); content.classList.toggle('active'); if(doc?.id===19 && content.classList.contains('active')) triggerEchoFailureFlash(); } }
+    function triggerEchoFailureFlash(){ if(localStorage.getItem('echo07_doc19_flash_seen') === 'true') return; localStorage.setItem('echo07_doc19_flash_seen','true'); const flash=document.getElementById('red-flash'); flash.classList.add('active'); setTimeout(()=>flash.classList.remove('active'), 1000); }
+    function investigateArea(areaId){ gameData.sceneInvestigations[areaId]=true; saveGame(); document.getElementById('scene-details').innerHTML=`<div class="case-card">${gameData.sceneFindings[areaId]}</div>`; }
+    function getSelectedAnswer(id){ return document.querySelector('#'+id+' .option-card.selected')?.dataset.value || null; }
+    function checkAnswers(){ const ids=Object.keys(correctAnswers); if(ids.some(id=>!getSelectedAnswer(id))) return showToast('报告不完整，请回答所有问题。'); const ok=ids.every(id=>getSelectedAnswer(id)===correctAnswers[id]); if(ok){ gameData.goodEndingAchieved=true; saveGame(); openHappyEnd(); restoreDeductionState(); } else document.getElementById('bad-end').classList.add('active'); }
+    function restoreDeductionState(){ document.getElementById('deduction-form').classList.add('active'); document.getElementById('submit-deduction-btn').parentElement.style.display='none'; Object.entries(correctAnswers).forEach(([id,val])=>document.querySelectorAll('#'+id+' .option-card').forEach(c=>{ if(c.dataset.value===val) c.classList.add('selected'); })); document.getElementById('final-submit').style.display='none'; document.getElementById('post-deduction-actions').classList.add('active'); }
+    function renderSealedState(){ document.querySelector('.case-status').textContent='已结案'; document.querySelector('.case-status').style.background='#7f8c8d'; document.querySelectorAll('.option-card').forEach(c=>c.classList.add('locked')); document.getElementById('archive-action-btn').style.display='none'; }
+    function updateUserInfo(){ const logged=!!gameData.currentUser; document.getElementById('user-info').textContent = logged ? `登录用户: ${gameData.currentUser.username} | 部门: 特殊事务科` : '登录用户: 未登录'; document.getElementById('login-btn').style.display = logged ? 'none' : 'inline-block'; document.getElementById('logout-btn').style.display = logged ? 'inline-block' : 'none'; }
+    function updateTabsAccess(){ document.querySelectorAll('.tab').forEach(t=>{ if(t.dataset.page!=='welcome') t.classList.toggle('disabled', !gameData.currentUser); }); }
+    function showToast(msg, duration=2600){ const t=document.getElementById('system-toast'); t.innerHTML=msg; t.classList.add('active'); setTimeout(()=>t.classList.remove('active'), duration); }
+    function openResetModal(){ document.getElementById('reset-modal').classList.add('active'); } function closeResetModal(){ document.getElementById('reset-modal').classList.remove('active'); }
+    function confirmReset(){ const username = gameData.currentUser?.username; deleteCloudSave(); [getLocalSaveKey(username),'echo07_case_save','echo07_admin_unlocked','echo07_phone_unlocked','echo07_echo_app_unlocked','echo07_backend_logged_in','echo07_backend_2fa','echo07_forum_post_3','echo07_doc19_flash_seen'].forEach(key => localStorage.removeItem(key)); closeResetModal(); showToast('进度已重置。'); setTimeout(()=>location.reload(), 700); }
+    function openSealModal(){ document.getElementById('seal-modal').classList.add('active'); } function closeSealModal(){ document.getElementById('seal-modal').classList.remove('active'); }
+    function confirmSeal(){ closeSealModal(); gameData.isSealed=true; saveGame(); renderSealedState(); showToast('档案已封存。'); }
+    function openHappyEnd(){ document.getElementById('happy-end').classList.add('active'); } function closeHappyEnd(){ document.getElementById('happy-end').classList.remove('active'); }
+  </script>
+</body>
+</html>
