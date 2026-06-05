@@ -240,7 +240,7 @@ cases_json 保存所有案件存档。
 {
   "username": "guest",
   "site": {
-    "version": "20260605-1",
+    "version": "20260605-2",
     "visitedCases": {}
   },
   "cases": {
@@ -276,11 +276,11 @@ cases_json 保存所有案件存档。
 
 当前版本号：
 
-20260605-1
+20260605-2
 
 网页链接使用：
 
-?v=20260605-1
+?v=20260605-2
 
 version.json 也会提示最新版本。以后改 CSS、JS 或 HTML 时，把所有版本号一起改成新版本，可以减少 GitHub Pages 和浏览器缓存导致的旧页面问题。
 

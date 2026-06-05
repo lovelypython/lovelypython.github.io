@@ -47,52 +47,144 @@
     .modal-card { max-width: 760px; width: 100%; max-height: 86vh; overflow: auto; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 18px 60px rgba(0,0,0,.35); }
     .question { border: 1px solid #e0e8ee; border-radius: 8px; padding: 12px; margin: 10px 0; background: #f9fbfc; }
     .footer { text-align: center; color: #7f8c8d; padding: 18px; }
-    @media (max-width: 850px) { header, main { display: block; } .user { text-align: left; margin-top: 10px; } .panel { margin-bottom: 14px; } }
+    .container { max-width: 1180px; margin: 0 auto; padding: 16px; min-height: 100vh; }
+    .top-nav { margin-bottom: 12px; }
+    .back-home-link, .inline-link { color: #2980b9; font-weight: 700; text-decoration: underline; }
+    .back-home-link { color: #556; text-decoration: none; }
+    .back-home-link:hover, .inline-link:hover { color: #e67e22; }
+    .header { display: flex; justify-content: space-between; gap: 16px; align-items: center; background: #fff; border-left: 6px solid #22313f; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); padding: 16px 18px; margin-bottom: 14px; }
+    .inline-version { margin-left: 8px; color: #7a8793; font-size: .82rem; font-weight: 700; }
+    .user-area { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .user-info { color: #6d7b86; font-size: .88rem; }
+    .cloud-status { color: #7a8793; font-size: .78rem; }
+    .auth-buttons { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .logout { background: #c0392b; }
+    .reset { background: #7f8c8d; }
+    .nav-tabs { display: flex; overflow-x: auto; background: #fff; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); margin-bottom: 14px; }
+    .tab { padding: 13px 20px; border-bottom: 3px solid transparent; cursor: pointer; white-space: nowrap; }
+    .tab.active { color: #2980b9; border-bottom-color: #2980b9; font-weight: 800; }
+    .content-area { background: #fff; border-radius: 8px; box-shadow: 0 4px 18px rgba(25,40,60,.08); padding: 22px; min-height: 560px; }
+    .page { display: none; animation: fadeIn .25s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .page-title { color: #22313f; font-size: 1.55rem; border-bottom: 1px solid #e8edf2; padding-bottom: 10px; margin-bottom: 16px; }
+    .welcome-message { text-align: center; padding: 28px 10px; }
+    .welcome-icon { font-size: 3rem; color: #2980b9; font-weight: 900; }
+    .welcome-text { max-width: 720px; margin: 14px auto 20px; color: #5d6d7e; font-size: 1.05rem; }
+    .rules-container, .case-card { background: #f8fafc; border: 1px solid #e4ebf2; border-radius: 8px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #3498db; }
+    .rules-title, .case-title { color: #22313f; margin-bottom: 10px; }
+    .rules-list { padding-left: 22px; }
+    .case-status { background: #f39c12; color: #fff; padding: 3px 9px; border-radius: 999px; font-size: .78rem; }
+    .search-area-page { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .search-input { flex: 1; min-width: 220px; padding: 11px 12px; border: 1px solid #ccd6df; border-radius: 6px; font-size: 1rem; }
+    .documents-list { display: grid; gap: 12px; margin-top: 18px; }
+    .document-item { background: #f8fafc; border: 1px solid #e2e9f0; border-radius: 8px; padding: 14px; cursor: pointer; }
+    .document-content { display: none; background: #fff; border: 1px solid #e7edf3; border-radius: 6px; padding: 13px; margin-top: 10px; }
+    .document-content.active { display: block; }
+    .new-badge, .clue-number { font-size: .72rem; border-radius: 999px; padding: 2px 7px; }
+    .new-badge { color: #fff; background: #e74c3c; }
+    .clue-number { background: #e7edf3; color: #60717f; }
+    .classified-title { color: #c0392b; }
+    .system-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+    .system-card { background: #f8fafc; border: 1px solid #e4ebf2; border-left: 4px solid #3498db; border-radius: 8px; padding: 16px; text-decoration: none; color: inherit; }
+    .system-card:hover { border-left-color: #e67e22; transform: translateY(-1px); }
+    .deduction-form { margin-top: 18px; border: 1px solid #dfe7ef; border-radius: 8px; padding: 18px; background: #fff; }
+    .question-block { padding: 15px 0; border-bottom: 1px dashed #e0e6eb; }
+    .question-title { font-weight: 800; margin-bottom: 10px; color: #22313f; }
+    .footer { color: #7a8793; text-align: center; padding: 18px; font-size: .86rem; }
+    .version-badge { position: fixed; right: 12px; bottom: 10px; z-index: 20; padding: 5px 9px; border-radius: 6px; background: rgba(34,49,63,.86); color: rgba(255,255,255,.78); font-size: .72rem; line-height: 1.2; box-shadow: 0 4px 16px rgba(0,0,0,.14); pointer-events: none; }
+    @media (max-width: 720px) { .header { align-items: flex-start; flex-direction: column; } .user-area { align-items: flex-start; } .content-area { padding: 16px; } }
   </style>
 </head>
 <body>
   <div class="toast" id="toast"></div>
-  <div class="wrap">
-    <header>
-      <div class="logo">特调局档案系统 / K713 <span class="version">v20260605-1</span></div>
-      <div class="user">
-        <div id="user-info">登录用户: 未登录</div>
-        <div id="cloud-info">云存档: 未同步</div>
-        <a class="link-btn secondary" href="./index.html?v=20260605-1">返回总站</a>
-        <button onclick="openDeduction()">提交推理</button>
-        <button class="danger" onclick="resetCase()">重置本案</button>
+  <div class="version-badge">档案系统 v20260605-2</div>
+  <div class="container">
+    <div class="top-nav"><a class="back-home-link" href="./index.html?v=20260605-2">返回特调局总站</a></div>
+    <div class="header">
+      <div class="logo">特调局档案系统 / K713 <span class="inline-version">v20260605-2</span></div>
+      <div class="user-area">
+        <div class="user-info" id="user-info">登录用户: 未登录</div>
+        <div class="cloud-status" id="cloud-info">云存档: 未同步</div>
+        <div class="auth-buttons">
+          <button onclick="openDeduction()">提交推理</button>
+          <button class="reset" onclick="resetCase()">重置进度</button>
+        </div>
       </div>
-    </header>
+    </div>
 
-    <main>
-      <aside class="panel">
-        <h1>第十三名乘客</h1>
-        <div class="case-meta">案件编号: K713-13 | 状态: 调查中 | 车厢: 三号车厢</div>
-        <p>夜行列车 K713 中，调查记者韩越死亡。官方名单只有 12 名乘客，但监控、广播、票务、论坛与证词都开始指向同一个不存在的人。</p>
-        <div class="stats">
-          <div class="stat"><strong id="doc-count">0/36</strong><span>已解锁档案</span></div>
-          <div class="stat"><strong id="step-label">初始</strong><span>调查阶段</span></div>
-        </div>
-        <div class="search-box">
-          <input id="search-input" placeholder="输入档案入口词">
-          <button onclick="searchDocs()">检索</button>
-        </div>
-        <h2>外部系统</h2>
-        <div class="system-list">
-          <a href="./韩越的手机.html?v=20260605-1">韩越的手机</a>
-          <a href="./K713票务记录.html?v=20260605-1">K713票务记录</a>
-          <a href="./K713列车监控系统.html?v=20260605-1">K713列车监控系统</a>
-          <a href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">夜行列车论坛</a>
-        </div>
-      </aside>
+    <div class="nav-tabs">
+      <div class="tab active" data-page="welcome">首页</div>
+      <div class="tab" data-page="case-intro">案件介绍</div>
+      <div class="tab" data-page="external">外部系统</div>
+      <div class="tab" data-page="files">档案浏览 &amp; 搜索</div>
+      <div class="tab" data-page="deduction">推理分析</div>
+    </div>
 
-      <section class="panel">
-        <h1>已解锁档案</h1>
-        <div id="docs"></div>
+    <div class="content-area">
+      <section class="page active" id="welcome">
+        <div class="welcome-message">
+          <div class="welcome-icon">K713</div>
+          <h1 class="page-title">K713：第十三名乘客</h1>
+          <p class="welcome-text">你正在访问特殊事务调查局内部系统。<br>夜行列车 K713 中，调查记者韩越死亡。<br>官方名单只有 12 名乘客，但多个系统开始指向一个未登记的人。<br>请通过档案、手机、票务、监控与论坛，还原“第十三名乘客”的来源。</p>
+          <button onclick="switchPage('case-intro')">开始调查</button>
+        </div>
+        <div class="rules-container">
+          <h2 class="rules-title">特调局工作守则</h2>
+          <ol class="rules-list">
+            <li>不要优先相信灵异解释。所有异常现象都必须寻找物理、技术或心理层面的证据。</li>
+            <li>密码错误不会提供格式提示。关键格式隐藏在已公开证据中。</li>
+            <li>不要依赖公共词检索。每个入口词只解锁强相关档案。</li>
+          </ol>
+        </div>
       </section>
-    </main>
 
-    <div class="footer">特殊事务调查局内部系统 | K713 案件程序 v20260605-1</div>
+      <section class="page" id="case-intro">
+        <h1 class="page-title">案件介绍 - K713：第十三名乘客</h1>
+        <div class="case-card">
+          <h2 class="case-title">K713：第十三名乘客</h2>
+          <div class="case-meta">案件编号: K713-13 | 车厢: 三号车厢 | 状态: <span class="case-status">调查中</span></div>
+          <p>6月24日凌晨，K713夜行列车进入无信号隧道后，调查记者韩越死亡。</p>
+          <p>车上官方名单只有 12 名乘客。但案发后，监控、广播、票务缓存、多名证词与论坛传闻均指向“第十三名乘客”。</p>
+          <p>本案重点不是猜测幽灵是否存在，而是确认每份异常记录由谁制造、为何制造，以及这些碎片如何拼成了一个虚假的嫌疑人。</p>
+        </div>
+        <div class="case-card">
+          <h2 class="case-title">调查进度</h2>
+          <p><strong id="doc-count">0/36</strong> 已解锁档案</p>
+          <p><strong id="step-label">初始</strong> 调查阶段</p>
+        </div>
+      </section>
+
+      <section class="page" id="external">
+        <h1 class="page-title">外部系统</h1>
+        <div class="system-grid">
+          <a class="system-card" href="./韩越的手机.html?v=20260605-2"><h2>韩越的手机</h2><p>锁屏、备忘录、录音、浏览器历史与加密文件。</p></a>
+          <a class="system-card" href="./K713票务记录.html?v=20260605-2"><h2>K713票务记录</h2><p>本地补票缓存、值班长身份验证与不存在座位。</p></a>
+          <a class="system-card" href="./K713列车监控系统.html?v=20260605-2"><h2>K713列车监控系统</h2><p>走廊监控、播放层异常与 UNKNOWN-13 标记。</p></a>
+          <a class="system-card" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-2"><h2>夜行列车论坛</h2><p>13C 传闻、锁帖与提前投放的都市传说。</p></a>
+        </div>
+      </section>
+
+      <section class="page" id="files">
+        <h1 class="page-title">档案浏览与检索</h1>
+        <div class="search-area-page">
+          <input type="text" class="search-input" id="search-input" placeholder="输入关键词搜索档案">
+          <button onclick="searchDocs()">搜索</button>
+        </div>
+        <p style="color:#667;">请根据已公开档案中的线索输入关键词。</p>
+        <div class="documents-list" id="docs"></div>
+      </section>
+
+      <section class="page" id="deduction">
+        <h1 class="page-title">推理分析</h1>
+        <div class="case-card">
+          <p>基于主档案、手机、票务、监控与论坛证据，提交最终推理报告。</p>
+          <button onclick="openDeduction()">开始填写推理报告</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">特殊事务调查局内部系统 | K713 案件程序 v20260605-2</div>
   </div>
 
   <div class="modal" id="deduction-modal">
@@ -110,7 +202,7 @@
   </div>
 
   <script>
-    const APP_VERSION = "20260605-1";
+    const APP_VERSION = "20260605-2";
     const CASE_ID = "k713";
     const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
     const USER_KEY = "ttj_current_user";
@@ -131,7 +223,7 @@
       doc(6,"档案06：13C补票记录","evidence",["13C补票记录","异常补票","不存在的票","13C车票","临时补票","不存在座位","13C","K71313C","K713-13C","离线补票"],`<p>票务缓存中出现一条临时补票记录。</p><table><tr><td>车次</td><td>K713</td></tr><tr><td>座位</td><td>13C</td></tr><tr><td>状态</td><td>离线补票缓存</td></tr><tr><td>生成时间</td><td>02:31</td></tr></table><p>三号车厢座位图中不存在13C。</p>`),
       doc(7,"档案07：乘客证词汇总","evidence",["乘客证词","证词汇总","目击证词","第十三人证词","证人描述","描述不同","证词分歧","见过第十三人"],`<p>乘客均声称见过“第十三名乘客”，但描述无法统一。</p><ul><li>蒋闻：深色外套，成年男性。</li><li>唐伊：像一名老人。</li><li>白洛：身形很小，像少年。</li><li>任青：只看到背影。</li><li>沈其安：不像活人。</li></ul><p>白洛认为，描述分歧可能来自疲劳、暗示与环境噪声。</p>`),
       doc(8,"档案08：死者录音","digital",["死者录音","韩越录音","最后录音","别查第十三个人","录音文件","十三不是乘客","韩越最后录音","录音中断"],`<p>韩越手机云端残留一段未完整同步录音。</p><blockquote>如果我没下车……别查第十三个人。十三不是乘客，是……</blockquote><p>录音在此处中断。背景音可听见列车广播提示音。</p>`),
-      doc(9,"档案09：韩越手机入口","digital",["韩越手机","死者手机","手机入口","韩越的手机","加密文件","第十三人文件","韩越手机入口","打开韩越手机"],`<p>韩越手机已提取，锁屏仍处于启用状态。</p><p>手机备注贴纸残留：</p><blockquote>临时锁屏：只留四位。</blockquote><p>韩越采访习惯显示，他常用关键事件时间作为临时密码。</p><p><a class="link-btn" href="./韩越的手机.html?v=20260605-1">打开韩越的手机</a></p>`),
+      doc(9,"档案09：韩越手机入口","digital",["韩越手机","死者手机","手机入口","韩越的手机","加密文件","第十三人文件","韩越手机入口","打开韩越手机"],`<p>韩越手机已提取，锁屏仍处于启用状态。</p><p>手机备注贴纸残留：</p><blockquote>临时锁屏：只留四位。</blockquote><p>韩越采访习惯显示，他常用关键事件时间作为临时密码。</p><p><a class="link-btn" href="./韩越的手机.html?v=20260605-2">打开韩越的手机</a></p>`),
       doc(10,"档案10：韩越调查方向","case",["韩越调查","调查方向","医疗转运","旧案调查","责任链","韩越旧案","韩越调查方向","不是设备事故"],`<p>韩越生前正在调查十三年前的K713医疗转运事故。</p><blockquote>这不是设备事故，是一条责任链。</blockquote><p>编辑回复中提到：“名单不要放云端。”</p>`),
       doc(11,"档案11：十三年前医疗转运事故","case",["医疗转运事故","十三年前事故","K713旧案","转运事故","医疗列车","K713医疗转运","氧气事故","十三年前K713"],`<p>十三年前，K713曾被临时改造为医疗转运列车，用于转运爆炸事故伤员。</p><p>途中氧气供应系统出现异常。</p><blockquote>设备故障，责任不明。</blockquote><p>相关原始材料多处缺失。</p>`),
       doc(12,"档案12：旧事故官方报告摘要","case",["旧事故官方报告","官方报告摘要","设备故障","责任不明","死亡人数12","12人死亡","官方死亡人数","事故报告"],`<p>官方报告记录死亡人数：12人。</p><p>事故原因：便携氧气供应模块故障。</p><p>报告附件缺失报警日志原件、随车广播记录、医院接收编号表。</p>`),
@@ -151,10 +243,10 @@
       doc(26,"档案26：UNKNOWN-13记录","digital",["UNKNOWN13","UNKNOWN-13","UNKNOWN13记录","未知乘客记录","陆川乘客","虚假乘客","LuChuan","UNKNOWN","Seat13C","未知乘客"],`<pre>Name: UNKNOWN\nSeat: 13C\nStatus: Unregistered</pre><p>后续系统曾自动补全 Lu Chuan，但年龄与实际残缺记录不符。</p>`),
       doc(27,"档案27：证词聚合脚本","digital",["证词聚合脚本","聚合脚本","passengerprofilebuilder","档案脚本","自动补全脚本","生成虚假乘客","missingprofile","witnessdescription"],`<pre>collect(witness.description)\nmerge(conflicting_traits)\ngenerate(missing_profile)</pre><p>脚本目的不是查找真实乘客，而是生成一个足够像嫌疑人的乘客。</p>`),
       doc(28,"档案28：监控播放层异常","digital",["监控播放层异常","播放层异常","监控叠帧","延迟叠帧","反光叠帧","播放层","原始文件未修改","监控识别不可靠"],`<p>原始监控文件没有被直接修改，异常出现在播放层。</p><p>播放器将反光区域、前一帧残影和走廊灯闪烁叠加显示，使模糊轮廓接近人形。</p>`),
-      doc(29,"档案29：论坛传闻投放","background",["论坛传闻投放","夜行列车论坛","第十三名乘客传闻","13C传闻","论坛入口","不要坐13C","K713传闻","传闻投放"],`<p>案发前数小时，夜行列车论坛已有关于K713的传闻帖。</p><blockquote>不要坐13C。</blockquote><p>但三号车厢没有13C。发帖IP与列车公共Wi-Fi有关。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">进入夜行列车论坛</a></p>`),
-      doc(30,"档案30：票务系统入口","digital",["票务系统入口","K713票务系统","票务后台","补票后台","票务记录入口","K713票务记录","进入票务系统","票务缓存"],`<p>已截取K713本地票务缓存。访问需要值班长身份。</p><p>交接表中可能保留旧版账号格式。</p><p><a class="link-btn" href="./K713票务记录.html?v=20260605-1">进入K713票务记录</a></p>`),
-      doc(31,"档案31：监控系统入口","digital",["监控系统入口","K713监控系统","列车监控入口","走廊监控入口","监控检索","进入监控系统","0213监控","目标时间码"],`<p>K713监控系统已镜像。检索需要输入目标时间码。</p><p>注意：监控异常首次出现于某个关键时间点。</p><p><a class="link-btn" href="./K713列车监控系统.html?v=20260605-1">进入K713列车监控系统</a></p>`),
-      doc(32,"档案32：论坛入口","background",["论坛入口","夜行列车论坛入口","都市传说论坛","13C论坛","第十三名乘客论坛","进入论坛","夜行列车怪谈","列车论坛"],`<p>夜行列车论坛中出现“K713第十三名乘客”相关传闻。</p><p>部分帖子需要口令。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">进入夜行列车论坛</a></p>`),
+      doc(29,"档案29：论坛传闻投放","background",["论坛传闻投放","夜行列车论坛","第十三名乘客传闻","13C传闻","论坛入口","不要坐13C","K713传闻","传闻投放"],`<p>案发前数小时，夜行列车论坛已有关于K713的传闻帖。</p><blockquote>不要坐13C。</blockquote><p>但三号车厢没有13C。发帖IP与列车公共Wi-Fi有关。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-2">进入夜行列车论坛</a></p>`),
+      doc(30,"档案30：票务系统入口","digital",["票务系统入口","K713票务系统","票务后台","补票后台","票务记录入口","K713票务记录","进入票务系统","票务缓存"],`<p>已截取K713本地票务缓存。访问需要值班长身份。</p><p>交接表中可能保留旧版账号格式。</p><p><a class="link-btn" href="./K713票务记录.html?v=20260605-2">进入K713票务记录</a></p>`),
+      doc(31,"档案31：监控系统入口","digital",["监控系统入口","K713监控系统","列车监控入口","走廊监控入口","监控检索","进入监控系统","0213监控","目标时间码"],`<p>K713监控系统已镜像。检索需要输入目标时间码。</p><p>注意：监控异常首次出现于某个关键时间点。</p><p><a class="link-btn" href="./K713列车监控系统.html?v=20260605-2">进入K713列车监控系统</a></p>`),
+      doc(32,"档案32：论坛入口","background",["论坛入口","夜行列车论坛入口","都市传说论坛","13C论坛","第十三名乘客论坛","进入论坛","夜行列车怪谈","列车论坛"],`<p>夜行列车论坛中出现“K713第十三名乘客”相关传闻。</p><p>部分帖子需要口令。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-2">进入夜行列车论坛</a></p>`),
       doc(33,"档案33：加密名单摘要","digital",["加密名单摘要","责任链名单","第十三人文件","加密文件摘要","K713责任链","第十三人enc","第十三人.enc","不要相信乘客名单","韩越加密文件"],`<p>韩越手机内存在加密文件：</p><blockquote>第十三人.enc</blockquote><p>文件最后修改时间：02:13。文件备注：不要相信乘客名单。</p>`),
       doc(34,"档案34：责任链交叉表","classified",["责任链交叉表","旧案关联人员","K713责任链","乘客旧身份","关联人员表","责任链名单","韩越名单","旧案人员","六名关联者"],`<table><tr><th>现乘客</th><th>十三年前身份</th><th>关联点</th></tr><tr><td>蒋闻</td><td>副列车长</td><td>未立即停车</td></tr><tr><td>唐伊</td><td>广播员</td><td>安抚广播</td></tr><tr><td>沈其安</td><td>随车实习医生</td><td>死亡时间记录</td></tr><tr><td>白洛</td><td>医学院实习生</td><td>家属访谈口径</td></tr><tr><td>任青</td><td>铁路系统实习技术员</td><td>日志删除</td></tr><tr><td>陆明</td><td>供应商代表</td><td>设备合格确认</td></tr></table>`),
       doc(35,"档案35：第十三名死者","classified",["陆川","第十三名死者","真实第十三人","陆川死者","被删除的死者","第十三人真相","K713M013","K713-M-013","M013","17岁陆川","陆川17岁","陆川死亡","被抹掉的人","第十三个死者","十三年前第十三人"],`<p>官方报告记录死亡人数为12。</p><p>医院残页显示编号 K713-M-013 缺失。残缺姓名：陆川，年龄：17。</p><blockquote>十三年前确实存在被删除的第十三名死者。</blockquote><p>这与本次列车上的“第十三名乘客”并非同一概念。</p>`),
@@ -171,6 +263,13 @@
 
     function init() {
       try { currentUser = JSON.parse(localStorage.getItem(USER_KEY) || "null"); } catch(e) { currentUser = null; }
+      document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => switchPage(tab.dataset.page)));
+      document.getElementById("docs").addEventListener("click", event => {
+        const item = event.target.closest(".document-item");
+        if (!item) return;
+        const content = item.querySelector(".document-content");
+        if (content) content.classList.toggle("active");
+      });
       loadLocal();
       if (currentUser?.role === "administrator") documents.forEach(d => { d.unlocked = true; d.new = false; });
       render();
@@ -184,6 +283,10 @@
     function getEndpoint() { return (localStorage.getItem(CLOUD_CONFIG_KEY) || CLOUD_SAVE_ENDPOINT).trim(); }
     function getLocalKey() { return `${LOCAL_SAVE_KEY}_${currentUser?.username || "anonymous"}`; }
     function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("active"); setTimeout(() => t.classList.remove("active"), 2600); }
+    function switchPage(pageId) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.page === pageId));
+      document.querySelectorAll(".page").forEach(page => page.classList.toggle("active", page.id === pageId));
+    }
 
     function getPayload() {
       return { caseId: CASE_ID, version: APP_VERSION, savedAt: new Date().toISOString(), currentUser, goodEndingAchieved, documents: documents.map(d => ({ id: d.id, unlocked: d.unlocked, new: d.new })), usedSearchTerms: Array.from(usedSearchTerms) };
@@ -247,7 +350,7 @@
       document.getElementById("doc-count").textContent = `${unlocked.length}/36`;
       document.getElementById("step-label").textContent = unlocked.length >= 30 ? "后期复盘" : unlocked.length >= 17 ? "旧案交叉" : unlocked.length >= 8 ? "系统误导" : "初始";
       document.getElementById("user-info").textContent = `登录用户: ${currentUser?.username || "未登录"}`;
-      document.getElementById("docs").innerHTML = unlocked.map(d => `<article class="doc"><div class="doc-title"><span>${d.title}</span><span>#${d.id}${d.new ? " NEW" : ""}</span></div><div class="doc-cat">分类: ${d.category}</div>${d.content}</article>`).join("") || "<p>暂无档案。</p>";
+      document.getElementById("docs").innerHTML = unlocked.map(d => `<article class="document-item" data-doc-id="${d.id}"><div class="doc-title"><span class="${d.category === "classified" ? "classified-title" : ""}">${d.title}</span><span>${d.new ? '<span class="new-badge">NEW</span> ' : ''}<span class="clue-number">#${d.id}</span></span></div><div class="doc-meta">分类: ${d.category}</div><div class="document-content">${d.content}</div></article>`).join("") || "<p style=\"text-align:center;color:#888;\">暂无档案，请输入关键词搜索。</p>";
       unlocked.forEach(d => d.new = false);
       localStorage.setItem(getLocalKey(), JSON.stringify(getPayload()));
     }
