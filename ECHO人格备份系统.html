@@ -42,10 +42,10 @@
   </style>
 </head>
 <body>
-  <div class="version-badge">ECHO后台 v20260604-6</div>
-  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260604-6">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">ECHO后台 v20260605-1</div>
+  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-1">⬅ 返回特调局档案系统</a>
   <div class="shell">
-    <section class="hero"><h1>ECHO人格备份系统 <span class="inline-version">v20260604-6</span></h1><p>Internal Neural Continuity Console / B2-17</p></section>
+    <section class="hero"><h1>ECHO人格备份系统 <span class="inline-version">v20260605-1</span></h1><p>Internal Neural Continuity Console / B2-17</p></section>
 
     <section id="login-panel" class="card center">
       <h2>负责人登录</h2>
@@ -112,8 +112,8 @@
       document.querySelectorAll('.menu').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.menu').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(btn.dataset.view); }));
     });
     function strictInput(value){ return String(value || "").trim(); }
-    function login(){ const u=strictInput(document.getElementById('user').value); const p=strictInput(document.getElementById('pass').value); if(u===backendUser && p===backendPass){ localStorage.setItem("echo07_backend_logged_in","true"); showVerify(); } else document.getElementById('login-error').textContent='账号或密码错误。账号格式：姓拼音.名拼音；密码格式：项目代号大写-两位编号。'; }
-    function verify2fa(){ const v=strictInput(document.getElementById('verify').value); if(v==="green"){ localStorage.setItem("echo07_backend_2fa","true"); showDashboard(); } else document.getElementById('verify-error').textContent='二级验证失败。提示：ECHO-07最新自主偏好，英文小写。'; }
+    function login(){ const u=strictInput(document.getElementById('user').value); const p=strictInput(document.getElementById('pass').value); if(u===backendUser && p===backendPass){ localStorage.setItem("echo07_backend_logged_in","true"); showVerify(); } else document.getElementById('login-error').textContent='身份验证失败。'; }
+    function verify2fa(){ const v=strictInput(document.getElementById('verify').value); if(v==="green"){ localStorage.setItem("echo07_backend_2fa","true"); showDashboard(); } else document.getElementById('verify-error').textContent='二级验证失败。'; }
     function showVerify(){ document.getElementById('login-panel').style.display='none'; document.getElementById('verify-panel').style.display='block'; }
     function showDashboard(){ document.getElementById('login-panel').style.display='none'; document.getElementById('verify-panel').style.display='none'; document.getElementById('dashboard').style.display='grid'; render('subjects'); }
     function render(name){ document.getElementById('content').innerHTML=views[name]; }

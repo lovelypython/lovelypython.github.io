@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>韩越的手机</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { min-height: 100vh; background: #101820; color: #e7eef3; display: flex; justify-content: center; padding: 28px 14px; }
+    .phone { width: min(430px, 100%); min-height: 780px; border: 10px solid #222; border-radius: 34px; background: #eef3f6; color: #1d2b36; box-shadow: 0 22px 70px rgba(0,0,0,.45); overflow: hidden; }
+    .status { background: #1e2a33; color: #dce7ef; padding: 12px 18px; display: flex; justify-content: space-between; font-size: .82rem; }
+    .screen { padding: 18px; }
+    h1 { font-size: 1.35rem; margin-bottom: 12px; color: #20313f; }
+    h2 { margin: 18px 0 10px; font-size: 1.05rem; color: #20313f; }
+    p, li { line-height: 1.65; color: #536370; }
+    input { width: 100%; padding: 12px; border: 1px solid #c8d4dc; border-radius: 8px; margin: 10px 0; }
+    button, a { border: 0; border-radius: 8px; padding: 10px 12px; background: #2878a8; color: #fff; font-weight: 800; text-decoration: none; display: inline-block; cursor: pointer; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tabs button { padding: 8px 9px; font-size: .82rem; background: #6f7f8b; }
+    .card { border: 1px solid #d7e1e7; background: #fff; border-radius: 10px; padding: 13px; margin-bottom: 12px; box-shadow: 0 6px 18px rgba(20,35,50,.06); }
+    .error { color: #b1302a; font-weight: 800; min-height: 24px; }
+    .hidden { display: none; }
+    .file-content { border-left: 4px solid #b1302a; padding-left: 12px; }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="status"><span>K713 Evidence Device</span><span>v20260605-1</span></div>
+    <div class="screen" id="lock-screen">
+      <h1>韩越的手机</h1>
+      <p>请输入锁屏密码</p>
+      <input id="phone-pass" type="password" inputmode="numeric">
+      <button onclick="unlockPhone()">解锁</button>
+      <a href="./K713第十三名乘客.html?v=20260605-1">返回档案系统</a>
+      <p class="error" id="phone-error"></p>
+    </div>
+
+    <div class="screen hidden" id="home-screen">
+      <h1>韩越的手机</h1>
+      <div class="tabs">
+        <button onclick="showTab('sms')">短信</button>
+        <button onclick="showTab('recordings')">录音</button>
+        <button onclick="showTab('notes')">备忘录</button>
+        <button onclick="showTab('history')">历史</button>
+        <button onclick="showTab('files')">文件</button>
+      </div>
+      <section id="sms" class="tab">
+        <div class="card"><h2>编辑</h2><p>名单不要放云端。你确定还在车上？</p></div>
+        <div class="card"><h2>韩越</h2><p>我下车后发你。现在不安全。</p></div>
+      </section>
+      <section id="recordings" class="tab hidden">
+        <div class="card"><h2>last-note.m4a</h2><p>未完整同步。</p><button onclick="toggle('last-note')">查看转写</button><div id="last-note" class="hidden"><p>韩越：如果我没下车……别查第十三个人。</p><p>韩越：十三不是乘客，是……</p><p>[录音中断]</p></div></div>
+        <div class="card"><h2>interview-tang.m4a</h2><p>采访对象未标注。</p><button onclick="toggle('tang-note')">查看转写</button><div id="tang-note" class="hidden"><p>韩越：当年广播是谁播的？</p><p>女声：我只是照读。</p><p>韩越：那时候氧气报警已经响了。</p><p>女声：我不知道。</p><p>韩越：你知道。</p></div></div>
+      </section>
+      <section id="notes" class="tab hidden">
+        <div class="card"><h2>如果我没能下车</h2><p>名单不在云端。</p><p>也不在电脑里。</p><p>它在手机里。</p><p>文件名叫“第十三人”。</p><p>密码不是名字，是那张不存在的票。</p></div>
+        <div class="card"><h2>临时密码</h2><p>采访现场不记复杂密码。</p><p>时间最安全。</p><p>四位，不写冒号。</p></div>
+        <div class="card"><h2>格式</h2><p>铁路系统喜欢死板格式。</p><p>车次在前。</p><p>座位在后。</p><p>中间一条横线。</p></div>
+      </section>
+      <section id="history" class="tab hidden">
+        <div class="card"><ul><li>K713 医疗转运事故 死亡人数</li><li>K713-M-013 陆川</li><li>车次-座位 加密口令</li><li>13C 不存在座位</li><li>离线补票缓存 修改</li></ul></div>
+      </section>
+      <section id="files" class="tab hidden">
+        <div class="card">
+          <h2>第十三人.enc</h2>
+          <p>类型：加密文件</p><p>大小：13.7 MB</p><p>最后修改：02:13</p><p>备注：不要相信乘客名单。</p>
+          <input id="file-pass" placeholder="请输入文件密码">
+          <button onclick="unlockFile()">解密</button>
+          <p id="file-error" class="error"></p>
+          <div id="file-content" class="hidden file-content">
+            <h2>K713医疗转运事故责任链名单</h2>
+            <p>官方报告称设备故障，责任不明；韩越调查发现广播记录、报警日志、分诊记录和死亡时间均被修改。</p>
+            <p><strong>蒋闻：</strong>当年为副列车长，收到氧气报警后未立即停车。</p>
+            <p><strong>唐伊：</strong>当年为广播员，播放“设备正常”的安抚广播。</p>
+            <p><strong>沈其安：</strong>当年为随车实习医生，参与修改部分伤员死亡时间。</p>
+            <p><strong>白洛：</strong>当年为医学院实习生，参与家属访谈记录统一口径。</p>
+            <p><strong>任青：</strong>当年为铁路系统实习技术员，删除报警日志备份。</p>
+            <p><strong>陆明：</strong>当年为氧气模块供应商代表，签署设备合格确认。</p>
+            <h2>第十三名死者</h2>
+            <p><strong>姓名：</strong>陆川</p><p><strong>年龄：</strong>17岁</p><p><strong>身份：</strong>爆炸事故伤员</p><p>转运编号被删除，死亡时间被并入另一名伤员。</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <script>
+    function strictInput(value) { return String(value || "").trim(); }
+    function unlockPhone() {
+      if (strictInput(document.getElementById("phone-pass").value) === "0217") {
+        localStorage.setItem("k713_phone_unlocked", "true");
+        render();
+      } else document.getElementById("phone-error").textContent = "访问失败。";
+    }
+    function unlockFile() {
+      if (strictInput(document.getElementById("file-pass").value) === "K713-13C") {
+        localStorage.setItem("k713_file_unlocked", "true");
+        render();
+      } else document.getElementById("file-error").textContent = "文件无法解密。";
+    }
+    function showTab(id) { document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden")); document.getElementById(id).classList.remove("hidden"); }
+    function toggle(id) { document.getElementById(id).classList.toggle("hidden"); }
+    function render() {
+      const unlocked = localStorage.getItem("k713_phone_unlocked") === "true";
+      document.getElementById("lock-screen").classList.toggle("hidden", unlocked);
+      document.getElementById("home-screen").classList.toggle("hidden", !unlocked);
+      document.getElementById("file-content").classList.toggle("hidden", localStorage.getItem("k713_file_unlocked") !== "true");
+    }
+    render();
+  </script>
+</body>
+</html>

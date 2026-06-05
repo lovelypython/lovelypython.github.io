@@ -69,7 +69,7 @@
   <div class="toast" id="toast"></div>
   <div class="container">
     <header class="header">
-      <div class="logo">特调局档案系统 <span class="version">总站 v20260604-6</span></div>
+      <div class="logo">特调局档案系统 <span class="version">总站 v20260605-1</span></div>
       <div class="user-panel">
         <div id="user-info">登录用户: 未登录</div>
         <div id="cloud-info">云存档: 未配置</div>
@@ -143,6 +143,7 @@
             <h3>删除案件存档</h3>
             <select id="admin-case-id">
               <option value="echo07">ECHO-07 验尸台上的少女</option>
+              <option value="k713">K713 第十三名乘客</option>
             </select>
             <button class="danger" onclick="adminDeleteCase()">删除指定案件</button>
           </div>
@@ -165,7 +166,7 @@
       </section>
     </main>
 
-    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260604-6 | GitHub Pages</footer>
+    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260605-1 | GitHub Pages</footer>
   </div>
 
   <div class="modal" id="auth-modal">
@@ -180,7 +181,7 @@
   </div>
 
   <script>
-    const PORTAL_VERSION = "20260604-6";
+    const PORTAL_VERSION = "20260605-1";
     const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
     const CLOUD_CONFIG_KEY = "ttj_cloud_endpoint";
     const USER_KEY = "ttj_current_user";
@@ -193,16 +194,15 @@
         name: "验尸台上的少女",
         desc: "A大脑科学学生林雨薇坠楼死亡后，验尸台上出现了不应存在的反应。伪灵异、脑机接口、人格备份AI交织成一场死后调查。",
         status: "已开放",
-        href: "./ECHO07验尸台上的少女.html?v=20260604-6"
+        href: "./ECHO07验尸台上的少女.html?v=20260605-1"
       },
       {
-        id: "case-next",
-        badge: "案件编号: ???",
-        name: "续集案件预留",
-        desc: "后续案件可以继续添加到总站，沿用同一套账号与云存档系统。",
-        status: "未开放",
-        href: "#",
-        locked: true
+        id: "k713",
+        badge: "案件编号: K713-13",
+        name: "第十三名乘客",
+        desc: "夜行列车K713上，调查记者韩越死亡。官方名单只有十二名乘客，但监控、广播、票务、证词和论坛都开始制造同一个不存在的人。",
+        status: "已开放",
+        href: "./K713第十三名乘客.html?v=20260605-1"
       }
     ];
 
@@ -312,6 +312,7 @@
       return legacy;
     }
     async function offerLegacyEcho07Upload(sessionToken, username) {
+      if (username === "guest") return;
       const legacy = readLegacyEcho07SaveForUpload(username);
       if (!legacy || !sessionToken) return;
       const ok = window.confirm("检测到此浏览器里有旧版 ECHO-07 本地存档。是否上传到当前登录账号的云存档？\\n\\n选择“取消”会保留本地旧存档，但不会上传。");
@@ -391,11 +392,13 @@
       const endpoint = getCloudEndpoint();
       if (!endpoint) { document.getElementById("cloud-info").textContent = "云存档: 未配置"; return; }
       if (!currentUser?.username) { document.getElementById("cloud-info").textContent = "云存档: 未登录"; return; }
+      if (currentUser.username === "guest") { document.getElementById("cloud-info").textContent = "云存档: guest不保存"; return; }
       const sessionToken = getSessionToken();
       if (!sessionToken) { document.getElementById("cloud-info").textContent = "云存档: 需重新登录"; return; }
       try {
         document.getElementById("cloud-info").textContent = "云存档: 同步中";
         const data = await cloudRequest({ action, sessionToken, site: action === "pushSite" ? siteSave : null });
+        if (data.cloudDisabled) { document.getElementById("cloud-info").textContent = "云存档: guest不保存"; return; }
         if (action === "pull" && data.site) {
           siteSave = { ...siteSave, ...data.site };
           localStorage.setItem(SITE_SAVE_KEY, JSON.stringify(siteSave));

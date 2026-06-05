@@ -41,12 +41,12 @@
   </style>
 </head>
 <body>
-  <div class="version-badge">校园论坛 v20260604-6</div>
-  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260604-6">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">校园论坛 v20260605-1</div>
+  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-1">⬅ 返回特调局档案系统</a>
   <header>
     <div class="header-inner">
       <div>
-        <h1>A大校园论坛 <span class="inline-version">v20260604-6</span></h1>
+        <h1>A大校园论坛 <span class="inline-version">v20260605-1</span></h1>
         <p class="sub">匿名版 / 怪谈讨论区 / 验尸台上的少女</p>
       </div>
       <p class="ghost">当前在线：317 人</p>
@@ -79,7 +79,7 @@
     }
     function togglePost(id){ const body=document.getElementById('post-'+id); body.classList.toggle('active'); document.getElementById('expand-'+id).textContent = body.classList.contains('active') ? '▲' : '▼'; }
     function strictInput(value){ return String(value || "").trim(); }
-    function unlockPost(postId){ const input=strictInput(document.getElementById("post-pass-"+postId).value); if(input==="不是她"){ localStorage.setItem("echo07_forum_post_"+postId,"unlocked"); renderPosts(); setTimeout(()=>togglePost(postId), 0); } else alert("密码错误。提示：验尸台上死者说出的三个字，不含标点。"); }
+    function unlockPost(postId){ const input=strictInput(document.getElementById("post-pass-"+postId).value); if(input==="不是她"){ localStorage.setItem("echo07_forum_post_"+postId,"unlocked"); renderPosts(); setTimeout(()=>togglePost(postId), 0); } else alert("口令无效。"); }
     renderPosts();
   </script>
 </body>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>K713票务记录</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { min-height: 100vh; background: #e8edf1; color: #263747; padding: 24px; }
+    .wrap { max-width: 900px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 22px; box-shadow: 0 12px 32px rgba(25,40,55,.1); border-top: 6px solid #34495e; }
+    h1 { margin-bottom: 10px; }
+    p { color: #586a78; line-height: 1.7; margin: 8px 0; }
+    input { width: 100%; padding: 11px; border: 1px solid #cdd8df; border-radius: 6px; margin: 10px 0; }
+    button, a { border: 0; border-radius: 6px; padding: 10px 13px; background: #2d7fb8; color: #fff; font-weight: 800; text-decoration: none; cursor: pointer; display: inline-block; }
+    .error { color: #b1302a; font-weight: 800; min-height: 24px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { border-bottom: 1px solid #dfe8ee; padding: 10px; text-align: left; }
+    th { background: #f3f7fa; }
+    .hidden { display: none; }
+    .meta { background: #f8fbfd; border: 1px solid #dfe8ee; border-radius: 6px; padding: 12px; margin-top: 14px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>K713 本地票务缓存 <span style="color:#7b8996;font-size:.8rem;">v20260605-1</span></h1>
+    <p>值班长身份验证</p>
+    <div id="login">
+      <input id="pass" type="password">
+      <button onclick="unlock()">进入</button>
+      <a href="./K713第十三名乘客.html?v=20260605-1">返回档案系统</a>
+      <p class="error" id="error"></p>
+    </div>
+    <div id="content" class="hidden">
+      <table>
+        <tr><th>乘客</th><th>座位</th><th>状态</th></tr>
+        <tr><td>韩越</td><td>07A</td><td>已验票</td></tr>
+        <tr><td>蒋闻</td><td>值班</td><td>系统人员</td></tr>
+        <tr><td>唐伊</td><td>值班</td><td>系统人员</td></tr>
+        <tr><td>UNKNOWN</td><td>13C</td><td>离线补票缓存</td></tr>
+      </table>
+      <div class="meta">
+        <p>座位图校验：13C 不存在。</p>
+        <p>缓存生成时间：02:31。</p>
+        <p>同步状态：未上传。</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    function strictInput(value) { return String(value || "").trim(); }
+    function unlock() {
+      if (strictInput(document.getElementById("pass").value) === "JIANG.WEN") {
+        localStorage.setItem("k713_ticket_unlocked", "true");
+        render();
+      } else document.getElementById("error").textContent = "身份验证失败。";
+    }
+    function render() {
+      const unlocked = localStorage.getItem("k713_ticket_unlocked") === "true";
+      document.getElementById("login").classList.toggle("hidden", unlocked);
+      document.getElementById("content").classList.toggle("hidden", !unlocked);
+    }
+    render();
+  </script>
+</body>
+</html>

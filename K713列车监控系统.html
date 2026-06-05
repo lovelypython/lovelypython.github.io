@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>K713列车监控系统</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { min-height: 100vh; background: #0f151b; color: #dce7ef; padding: 24px; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    header { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 16px; }
+    h1 { color: #ecf3f8; }
+    a, button { border: 0; border-radius: 6px; padding: 10px 13px; background: #2d7fb8; color: #fff; font-weight: 800; text-decoration: none; cursor: pointer; display: inline-block; }
+    .panel { background: #17222b; border: 1px solid #2d3c48; border-radius: 8px; padding: 18px; box-shadow: 0 14px 40px rgba(0,0,0,.3); }
+    input { width: 100%; padding: 12px; border: 1px solid #435461; border-radius: 6px; background: #0f151b; color: #e7eef3; margin: 12px 0; }
+    p { color: #b8c6cf; line-height: 1.7; margin: 8px 0; }
+    .error { color: #ff6b5f; font-weight: 800; min-height: 24px; }
+    .hidden { display: none; }
+    .monitor-frame { min-height: 360px; border: 1px solid #31424f; border-radius: 8px; margin-top: 16px; background: linear-gradient(90deg, #0c1116, #1a2730 45%, #0c1116); position: relative; overflow: hidden; padding: 20px; }
+    .monitor-frame:before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.04), rgba(255,255,255,.04) 1px, transparent 3px, transparent 7px); pointer-events: none; }
+    .reflection { position: absolute; top: 40px; right: 22%; width: 70px; height: 270px; background: rgba(205,230,255,.12); filter: blur(8px); transform: skewX(-8deg); }
+    .ghost { position: absolute; top: 92px; right: 31%; width: 80px; height: 210px; border-radius: 45% 45% 24% 24%; background: rgba(235,245,255,.08); filter: blur(4px); opacity: .35; }
+    .analysis { margin-top: 12px; background: #111a21; border-left: 4px solid #6f9fbb; padding: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>K713列车监控系统 <span style="color:#81909b;font-size:.8rem;">v20260605-1</span></h1>
+      <a href="./K713第十三名乘客.html?v=20260605-1">返回档案系统</a>
+    </header>
+    <section class="panel" id="login">
+      <p>请输入目标时间码。</p>
+      <input id="code" inputmode="numeric">
+      <button onclick="unlock()">检索</button>
+      <p class="error" id="error"></p>
+    </section>
+    <section class="panel hidden" id="content">
+      <h1>02:13 走廊监控</h1>
+      <div class="monitor-frame">
+        <div class="reflection"></div>
+        <div class="ghost" id="ghost"></div>
+        <p>画面：三号车厢走廊。</p>
+        <p>灯光处于低亮度模式。</p>
+        <p id="monitor-desc">车窗出现长条反光。</p>
+      </div>
+      <button onclick="review()">再次查看</button>
+      <div class="analysis">
+        <p>原始文件未被直接修改。</p>
+        <p>异常出现在播放层。</p>
+        <p>系统自动识别结果不可靠。</p>
+      </div>
+    </section>
+  </div>
+  <script>
+    let reviewCount = Number(localStorage.getItem("k713_monitor_review_count") || "0");
+    function strictInput(value) { return String(value || "").trim(); }
+    function unlock() {
+      if (strictInput(document.getElementById("code").value) === "0213") {
+        localStorage.setItem("k713_monitor_unlocked", "true");
+        render();
+      } else document.getElementById("error").textContent = "检索失败。";
+    }
+    function review() {
+      reviewCount += 1;
+      localStorage.setItem("k713_monitor_review_count", String(reviewCount));
+      renderText();
+    }
+    function renderText() {
+      const lines = ["车窗出现长条反光。", "播放层标记：未登记乘客。", "自动识别结果刷新：UNKNOWN-13。", "技术分析：反光与前一帧残影叠加，形成类似人影的轮廓。"];
+      document.getElementById("monitor-desc").textContent = lines[Math.min(reviewCount, lines.length - 1)];
+      document.getElementById("ghost").style.opacity = String(Math.min(.35 + reviewCount * .16, .9));
+    }
+    function render() {
+      const unlocked = localStorage.getItem("k713_monitor_unlocked") === "true";
+      document.getElementById("login").classList.toggle("hidden", unlocked);
+      document.getElementById("content").classList.toggle("hidden", !unlocked);
+      renderText();
+    }
+    render();
+  </script>
+</body>
+</html>

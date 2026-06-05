@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>特调局档案系统 - K713 第十三名乘客</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { min-height: 100vh; color: #24313d; background: #eef2f5; background-image: linear-gradient(90deg, rgba(50,65,80,.06) 1px, transparent 1px), linear-gradient(rgba(50,65,80,.05) 1px, transparent 1px); background-size: 24px 24px; }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 18px; }
+    header { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding: 16px 18px; background: #fff; border-left: 6px solid #34495e; border-radius: 8px; box-shadow: 0 8px 24px rgba(30,45,60,.08); }
+    .logo { font-weight: 900; font-size: 1.35rem; color: #263747; }
+    .version { margin-left: 8px; color: #7b8996; font-size: .78rem; }
+    .user { text-align: right; color: #607080; font-size: .88rem; }
+    button, .link-btn { border: 0; border-radius: 6px; padding: 9px 12px; background: #2d7fb8; color: #fff; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block; }
+    button:hover, .link-btn:hover { filter: brightness(.96); }
+    .secondary { background: #6d7d8b; }
+    .danger { background: #b83a32; }
+    main { display: grid; grid-template-columns: 320px 1fr; gap: 18px; margin-top: 18px; }
+    .panel { background: #fff; border-radius: 8px; box-shadow: 0 8px 24px rgba(30,45,60,.08); padding: 18px; }
+    h1 { font-size: 1.72rem; color: #24313d; margin-bottom: 12px; border-bottom: 1px solid #e5ebef; padding-bottom: 10px; }
+    h2 { font-size: 1.15rem; color: #24313d; margin: 16px 0 10px; }
+    p, li { color: #536575; line-height: 1.7; }
+    .case-meta { color: #7b8996; font-size: .86rem; margin-bottom: 12px; }
+    .search-box { display: flex; gap: 8px; margin-top: 12px; }
+    input, textarea { width: 100%; border: 1px solid #cdd8df; border-radius: 6px; padding: 10px; background: #fbfdff; color: #263747; }
+    .search-box button { flex: 0 0 auto; }
+    .system-list { display: grid; gap: 9px; margin-top: 12px; }
+    .system-list a { text-decoration: none; color: #1f5f88; border: 1px solid #dfe8ee; border-radius: 6px; padding: 10px; background: #f8fbfd; font-weight: 800; }
+    .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0; }
+    .stat { background: #f5f8fa; border: 1px solid #e0e8ee; border-radius: 6px; padding: 10px; }
+    .stat strong { display: block; color: #22313f; }
+    .doc { border: 1px solid #dfe8ee; border-radius: 8px; padding: 14px; background: #fbfdff; margin-bottom: 12px; }
+    .doc-title { display: flex; justify-content: space-between; gap: 8px; font-weight: 900; color: #24313d; margin-bottom: 6px; }
+    .doc-cat { color: #7b8996; font-size: .82rem; margin-bottom: 8px; }
+    .doc blockquote { border-left: 4px solid #9aa9b5; padding: 8px 12px; margin: 9px 0; color: #2d3e4f; background: #f1f5f8; }
+    .doc pre, .doc table { width: 100%; overflow: auto; background: #f1f5f8; border-radius: 6px; padding: 10px; margin: 8px 0; }
+    table { border-collapse: collapse; }
+    td, th { border-bottom: 1px solid #dae3e9; padding: 8px; text-align: left; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: #22313f; color: #fff; padding: 12px 18px; border-radius: 999px; opacity: 0; transition: .22s; z-index: 20; box-shadow: 0 10px 28px rgba(0,0,0,.22); }
+    .toast.active { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.68); z-index: 30; align-items: center; justify-content: center; padding: 18px; }
+    .modal.active { display: flex; }
+    .modal-card { max-width: 760px; width: 100%; max-height: 86vh; overflow: auto; background: #fff; border-radius: 10px; padding: 22px; box-shadow: 0 18px 60px rgba(0,0,0,.35); }
+    .question { border: 1px solid #e0e8ee; border-radius: 8px; padding: 12px; margin: 10px 0; background: #f9fbfc; }
+    .footer { text-align: center; color: #7f8c8d; padding: 18px; }
+    @media (max-width: 850px) { header, main { display: block; } .user { text-align: left; margin-top: 10px; } .panel { margin-bottom: 14px; } }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+  <div class="wrap">
+    <header>
+      <div class="logo">特调局档案系统 / K713 <span class="version">v20260605-1</span></div>
+      <div class="user">
+        <div id="user-info">登录用户: 未登录</div>
+        <div id="cloud-info">云存档: 未同步</div>
+        <a class="link-btn secondary" href="./index.html?v=20260605-1">返回总站</a>
+        <button onclick="openDeduction()">提交推理</button>
+        <button class="danger" onclick="resetCase()">重置本案</button>
+      </div>
+    </header>
+
+    <main>
+      <aside class="panel">
+        <h1>第十三名乘客</h1>
+        <div class="case-meta">案件编号: K713-13 | 状态: 调查中 | 车厢: 三号车厢</div>
+        <p>夜行列车 K713 中，调查记者韩越死亡。官方名单只有 12 名乘客，但监控、广播、票务、论坛与证词都开始指向同一个不存在的人。</p>
+        <div class="stats">
+          <div class="stat"><strong id="doc-count">0/36</strong><span>已解锁档案</span></div>
+          <div class="stat"><strong id="step-label">初始</strong><span>调查阶段</span></div>
+        </div>
+        <div class="search-box">
+          <input id="search-input" placeholder="输入档案入口词">
+          <button onclick="searchDocs()">检索</button>
+        </div>
+        <h2>外部系统</h2>
+        <div class="system-list">
+          <a href="./韩越的手机.html?v=20260605-1">韩越的手机</a>
+          <a href="./K713票务记录.html?v=20260605-1">K713票务记录</a>
+          <a href="./K713列车监控系统.html?v=20260605-1">K713列车监控系统</a>
+          <a href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">夜行列车论坛</a>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <h1>已解锁档案</h1>
+        <div id="docs"></div>
+      </section>
+    </main>
+
+    <div class="footer">特殊事务调查局内部系统 | K713 案件程序 v20260605-1</div>
+  </div>
+
+  <div class="modal" id="deduction-modal">
+    <div class="modal-card">
+      <h1>最终推理提交</h1>
+      <div class="question"><p>1. 第十三名乘客是否存在？</p><textarea id="q1"></textarea></div>
+      <div class="question"><p>2. 韩越为什么被害？</p><textarea id="q2"></textarea></div>
+      <div class="question"><p>3. 加密文件密码依据是什么？</p><textarea id="q3"></textarea></div>
+      <div class="question"><p>4. 第十三名死者是谁？</p><input id="q4"></div>
+      <div class="question"><p>5. 真正的作案结构是什么？</p><textarea id="q5"></textarea></div>
+      <button onclick="checkDeduction()">提交</button>
+      <button class="secondary" onclick="closeDeduction()">关闭</button>
+      <div id="ending" style="display:none;margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const APP_VERSION = "20260605-1";
+    const CASE_ID = "k713";
+    const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
+    const USER_KEY = "ttj_current_user";
+    const SESSION_KEY = "ttj_session_token";
+    const CLOUD_CONFIG_KEY = "ttj_cloud_endpoint";
+    const LOCAL_SAVE_KEY = "ttj_case_k713";
+
+    function doc(id, title, category, keywords, content, unlocked = false) {
+      return { id, title, category, keywords, content, unlocked, new: unlocked };
+    }
+
+    const documents = [
+      doc(1,"档案01：案件简报","case",["案件简报","K713案件","列车死亡案","韩越死亡","夜行列车案","K713死亡案","三号车厢死亡案"],`<p>6月24日凌晨，K713夜行列车进入无信号隧道后，乘客韩越死亡。</p><p>官方乘客名单显示，本节车厢共有12名乘客。</p><p>但多个系统记录均指向一名未登记乘客。</p><p>案发后，乘客间开始流传“第十三名乘客”。</p>`,true),
+      doc(2,"档案02：乘客名单","case",["乘客名单","十二名乘客","车厢名单","K713名单","名单核对","三号车厢名单","12名乘客"],`<p>K713三号车厢登记乘客共12名。</p><ol><li>韩越</li><li>蒋闻</li><li>唐伊</li><li>沈其安</li><li>白洛</li><li>任青</li><li>陆明</li><li>赵维</li><li>林栀</li><li>贺舟</li><li>陈曼</li><li>方亭</li></ol><p>备注：票务系统未显示13号乘客。</p>`,true),
+      doc(3,"档案03：初步时间线","case",["初步时间线","案件时间线","0217时间线","案发经过","K713时间线","韩越死亡时间","217时间线"],`<p><strong>02:05</strong> 韩越最后一次出现在餐车。</p><p><strong>02:13</strong> 走廊监控出现模糊人影。</p><p><strong>02:17</strong> 韩越被发现死亡。</p><p><strong>02:21</strong> 列车广播系统出现异常调用。</p><p><strong>02:31</strong> 票务系统生成临时补票缓存。</p><p>备注：韩越习惯使用事件时间作为临时锁屏。</p>`,true),
+      doc(4,"档案04：监控人影","evidence",["监控人影","模糊人影","走廊监控","0213人影","监控异常","人影监控","走廊人影","未识别物体"],`<p>02:13，三号车厢走廊监控出现模糊人影。</p><p>人影位于车窗反光区域，无法识别面部。</p><p>原始帧率异常，疑似存在延迟叠帧。</p><p>第一次查看时，系统标记为“未识别物体”。第二次查看时，系统标记为“未登记乘客”。</p>`),
+      doc(5,"档案05：异常广播","evidence",["异常广播","十三号广播","广播记录","十三号乘客","广播异常","十三号乘客广播","请回到座位","回到您的座位"],`<p>02:21，列车广播短暂播放异常内容。</p><blockquote>十三号乘客，请回到您的座位。</blockquote><p>广播控制台日志中没有对应播放记录。</p><p>乘务员唐伊承认当时听见了“类似的声音”。</p>`),
+      doc(6,"档案06：13C补票记录","evidence",["13C补票记录","异常补票","不存在的票","13C车票","临时补票","不存在座位","13C","K71313C","K713-13C","离线补票"],`<p>票务缓存中出现一条临时补票记录。</p><table><tr><td>车次</td><td>K713</td></tr><tr><td>座位</td><td>13C</td></tr><tr><td>状态</td><td>离线补票缓存</td></tr><tr><td>生成时间</td><td>02:31</td></tr></table><p>三号车厢座位图中不存在13C。</p>`),
+      doc(7,"档案07：乘客证词汇总","evidence",["乘客证词","证词汇总","目击证词","第十三人证词","证人描述","描述不同","证词分歧","见过第十三人"],`<p>乘客均声称见过“第十三名乘客”，但描述无法统一。</p><ul><li>蒋闻：深色外套，成年男性。</li><li>唐伊：像一名老人。</li><li>白洛：身形很小，像少年。</li><li>任青：只看到背影。</li><li>沈其安：不像活人。</li></ul><p>白洛认为，描述分歧可能来自疲劳、暗示与环境噪声。</p>`),
+      doc(8,"档案08：死者录音","digital",["死者录音","韩越录音","最后录音","别查第十三个人","录音文件","十三不是乘客","韩越最后录音","录音中断"],`<p>韩越手机云端残留一段未完整同步录音。</p><blockquote>如果我没下车……别查第十三个人。十三不是乘客，是……</blockquote><p>录音在此处中断。背景音可听见列车广播提示音。</p>`),
+      doc(9,"档案09：韩越手机入口","digital",["韩越手机","死者手机","手机入口","韩越的手机","加密文件","第十三人文件","韩越手机入口","打开韩越手机"],`<p>韩越手机已提取，锁屏仍处于启用状态。</p><p>手机备注贴纸残留：</p><blockquote>临时锁屏：只留四位。</blockquote><p>韩越采访习惯显示，他常用关键事件时间作为临时密码。</p><p><a class="link-btn" href="./韩越的手机.html?v=20260605-1">打开韩越的手机</a></p>`),
+      doc(10,"档案10：韩越调查方向","case",["韩越调查","调查方向","医疗转运","旧案调查","责任链","韩越旧案","韩越调查方向","不是设备事故"],`<p>韩越生前正在调查十三年前的K713医疗转运事故。</p><blockquote>这不是设备事故，是一条责任链。</blockquote><p>编辑回复中提到：“名单不要放云端。”</p>`),
+      doc(11,"档案11：十三年前医疗转运事故","case",["医疗转运事故","十三年前事故","K713旧案","转运事故","医疗列车","K713医疗转运","氧气事故","十三年前K713"],`<p>十三年前，K713曾被临时改造为医疗转运列车，用于转运爆炸事故伤员。</p><p>途中氧气供应系统出现异常。</p><blockquote>设备故障，责任不明。</blockquote><p>相关原始材料多处缺失。</p>`),
+      doc(12,"档案12：旧事故官方报告摘要","case",["旧事故官方报告","官方报告摘要","设备故障","责任不明","死亡人数12","12人死亡","官方死亡人数","事故报告"],`<p>官方报告记录死亡人数：12人。</p><p>事故原因：便携氧气供应模块故障。</p><p>报告附件缺失报警日志原件、随车广播记录、医院接收编号表。</p>`),
+      doc(13,"档案13：氧气系统报警记录","evidence",["氧气系统报警","氧气报警","报警日志","氧气故障","报警记录","氧气模块报警","已忽略","报警被忽略"],`<p>残留日志显示，氧气系统曾在事故发生前连续报警。</p><p>第一条报警时间早于官方报告记录12分钟。</p><blockquote>处理状态：已忽略。</blockquote><p>处理账号与当年K713随车管理权限有关。</p>`),
+      doc(14,"档案14：广播旧录音残片","evidence",["广播旧录音","旧广播","安抚广播","唐伊旧录音","设备正常广播","设备运行正常","广播残片","十三年前广播"],`<p>十三年前事故残留广播片段：</p><blockquote>设备运行正常，请乘客保持安静，等待下一站处理。</blockquote><p>片段时间与氧气报警重合，音色比对与现乘务员唐伊高度相似。</p>`),
+      doc(15,"档案15：医院接收编号残页","evidence",["医院接收编号","编号残页","接收记录","医院残页","缺失编号","K713M013","K713-M-013","M013","013缺失","跳号"],`<p>医院接收编号残页显示，伤员编号存在跳号。</p><pre>K713-M-011\nK713-M-012\nK713-M-014</pre><p>编号 K713-M-013 缺失。</p>`),
+      doc(16,"档案16：陆川残缺记录","evidence",["陆川","陆川记录","残缺记录","第十三名死者","K713M013","K713-M-013","17岁陆川","陆川17岁","被划除的人","并入死亡时间"],`<p>残页中出现姓名：陆川。</p><p>年龄：17。</p><p>编号疑似：K713-M-013。</p><p>记录状态：划除。</p><blockquote>并入 M-012 死亡时间……</blockquote>`),
+      doc(17,"档案17：列车长门禁删除","evidence",["列车长门禁删除","蒋闻门禁","门禁删除","通行记录删除","蒋闻记录","车厢通行记录","0210至0218","蒋闻"],`<p>案发后，车厢通行系统缺失一段02:10至02:18记录。</p><p>删除权限属于列车长级别。蒋闻称系统在隧道中自动离线，但本地日志显示删除发生在信号恢复之后。</p>`),
+      doc(18,"档案18：唐伊广播异常","evidence",["唐伊","唐伊广播异常","唐伊广播","乘务员广播","十三号乘客广播","广播伪造","唐伊异常","唐伊接触广播台"],`<p>唐伊承认，案发后曾短暂接触广播台。</p><p>广播缓存中存在一句未归档语音：</p><blockquote>十三号乘客，请回到您的座位。</blockquote><p>该句与十三年前“设备正常”广播使用了相同压缩参数。</p>`),
+      doc(19,"档案19：任青系统脚本","digital",["任青","任青系统脚本","档案脚本","系统脚本","聚合脚本","任青记录","passengerprofilebuilder","profilebuilder","临时脚本"],`<p>任青曾短暂接入特调局列车档案镜像。</p><pre>passenger_profile_builder.tmp</pre><p>脚本会从证词字段中提取描述，并补全未知乘客档案。</p>`),
+      doc(20,"档案20：白洛诱导证词","evidence",["白洛","白洛诱导证词","白洛证词","心理暗示","诱导证词","证词污染","不像乘客的人","暗示证词"],`<p>白洛在接受询问前，曾与多名乘客单独交谈。</p><blockquote>你有没有也看到那个不像乘客的人？</blockquote><p>心理暗示可能影响了后续目击描述。</p>`),
+      doc(21,"档案21：沈其安死亡时间判断","evidence",["沈其安","沈其安死亡时间","死亡时间判断","医生判断","韩越死亡时间","死亡时间误导","0213死亡时间","死亡时间复核"],`<p>沈其安最先判断韩越死亡时间为02:13前后，使监控人影看起来更接近作案时间。</p><p>法医复核后认为，死亡时间更可能接近02:17。</p>`),
+      doc(22,"档案22：陆明票务缓存注入","digital",["陆明","陆明票务缓存注入","票务缓存注入","陆明记录","离线补票缓存","13C注入","票务缓存编辑","陆明终端"],`<p>13C补票记录生成于02:31，未经过中心票务系统。</p><p>记录来源为本地离线缓存。陆明终端中保留票务缓存编辑工具残留。</p>`),
+      doc(23,"档案23：乘务员交接表","evidence",["乘务员交接表","交接表","值班表","唐伊值班","蒋闻值班","值班长账号","SURNAMEGIVEN","SURNAME.GIVEN","账号格式"],`<p>案发时段值班人员：列车长蒋闻，乘务员唐伊。</p><blockquote>值班长账号：SURNAME.GIVEN</blockquote><p>该备注可能来自旧版铁路内部终端手册。</p>`),
+      doc(24,"档案24：车厢灯光检修记录","evidence",["灯光检修","车厢灯光","反光记录","灯光记录","检修记录","低亮度模式","车窗反光","走廊灯","0208灯光"],`<p>三号车厢右侧走廊灯在案发前被手动调至低亮度模式。</p><p>低亮度会增强车窗反射。调整发生在02:08，操作人未登记。</p>`),
+      doc(25,"档案25：档案13自动生成","digital",["档案13","档案13自动生成","自动生成档案","生成档案13","未登记乘客档案","未知乘客档案","自动补全档案","第十三档案"],`<p>特调局镜像系统中曾出现异常档案：</p><blockquote>档案13：未知乘客</blockquote><p>该档案并非调查员手动创建，创建源来自临时脚本。</p>`),
+      doc(26,"档案26：UNKNOWN-13记录","digital",["UNKNOWN13","UNKNOWN-13","UNKNOWN13记录","未知乘客记录","陆川乘客","虚假乘客","LuChuan","UNKNOWN","Seat13C","未知乘客"],`<pre>Name: UNKNOWN\nSeat: 13C\nStatus: Unregistered</pre><p>后续系统曾自动补全 Lu Chuan，但年龄与实际残缺记录不符。</p>`),
+      doc(27,"档案27：证词聚合脚本","digital",["证词聚合脚本","聚合脚本","passengerprofilebuilder","档案脚本","自动补全脚本","生成虚假乘客","missingprofile","witnessdescription"],`<pre>collect(witness.description)\nmerge(conflicting_traits)\ngenerate(missing_profile)</pre><p>脚本目的不是查找真实乘客，而是生成一个足够像嫌疑人的乘客。</p>`),
+      doc(28,"档案28：监控播放层异常","digital",["监控播放层异常","播放层异常","监控叠帧","延迟叠帧","反光叠帧","播放层","原始文件未修改","监控识别不可靠"],`<p>原始监控文件没有被直接修改，异常出现在播放层。</p><p>播放器将反光区域、前一帧残影和走廊灯闪烁叠加显示，使模糊轮廓接近人形。</p>`),
+      doc(29,"档案29：论坛传闻投放","background",["论坛传闻投放","夜行列车论坛","第十三名乘客传闻","13C传闻","论坛入口","不要坐13C","K713传闻","传闻投放"],`<p>案发前数小时，夜行列车论坛已有关于K713的传闻帖。</p><blockquote>不要坐13C。</blockquote><p>但三号车厢没有13C。发帖IP与列车公共Wi-Fi有关。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">进入夜行列车论坛</a></p>`),
+      doc(30,"档案30：票务系统入口","digital",["票务系统入口","K713票务系统","票务后台","补票后台","票务记录入口","K713票务记录","进入票务系统","票务缓存"],`<p>已截取K713本地票务缓存。访问需要值班长身份。</p><p>交接表中可能保留旧版账号格式。</p><p><a class="link-btn" href="./K713票务记录.html?v=20260605-1">进入K713票务记录</a></p>`),
+      doc(31,"档案31：监控系统入口","digital",["监控系统入口","K713监控系统","列车监控入口","走廊监控入口","监控检索","进入监控系统","0213监控","目标时间码"],`<p>K713监控系统已镜像。检索需要输入目标时间码。</p><p>注意：监控异常首次出现于某个关键时间点。</p><p><a class="link-btn" href="./K713列车监控系统.html?v=20260605-1">进入K713列车监控系统</a></p>`),
+      doc(32,"档案32：论坛入口","background",["论坛入口","夜行列车论坛入口","都市传说论坛","13C论坛","第十三名乘客论坛","进入论坛","夜行列车怪谈","列车论坛"],`<p>夜行列车论坛中出现“K713第十三名乘客”相关传闻。</p><p>部分帖子需要口令。</p><p><a class="link-btn" href="./夜行列车论坛 - 第十三名乘客.html?v=20260605-1">进入夜行列车论坛</a></p>`),
+      doc(33,"档案33：加密名单摘要","digital",["加密名单摘要","责任链名单","第十三人文件","加密文件摘要","K713责任链","第十三人enc","第十三人.enc","不要相信乘客名单","韩越加密文件"],`<p>韩越手机内存在加密文件：</p><blockquote>第十三人.enc</blockquote><p>文件最后修改时间：02:13。文件备注：不要相信乘客名单。</p>`),
+      doc(34,"档案34：责任链交叉表","classified",["责任链交叉表","旧案关联人员","K713责任链","乘客旧身份","关联人员表","责任链名单","韩越名单","旧案人员","六名关联者"],`<table><tr><th>现乘客</th><th>十三年前身份</th><th>关联点</th></tr><tr><td>蒋闻</td><td>副列车长</td><td>未立即停车</td></tr><tr><td>唐伊</td><td>广播员</td><td>安抚广播</td></tr><tr><td>沈其安</td><td>随车实习医生</td><td>死亡时间记录</td></tr><tr><td>白洛</td><td>医学院实习生</td><td>家属访谈口径</td></tr><tr><td>任青</td><td>铁路系统实习技术员</td><td>日志删除</td></tr><tr><td>陆明</td><td>供应商代表</td><td>设备合格确认</td></tr></table>`),
+      doc(35,"档案35：第十三名死者","classified",["陆川","第十三名死者","真实第十三人","陆川死者","被删除的死者","第十三人真相","K713M013","K713-M-013","M013","17岁陆川","陆川17岁","陆川死亡","被抹掉的人","第十三个死者","十三年前第十三人"],`<p>官方报告记录死亡人数为12。</p><p>医院残页显示编号 K713-M-013 缺失。残缺姓名：陆川，年龄：17。</p><blockquote>十三年前确实存在被删除的第十三名死者。</blockquote><p>这与本次列车上的“第十三名乘客”并非同一概念。</p>`),
+      doc(36,"档案36：最终技术复盘","classified",["最终技术复盘","完整复盘","技术复盘","最终解释","第十三人解释","第十三名乘客不存在","虚假嫌疑人","所有谎言","完整真相"],`<p>第十三名乘客由多个独立误导组成：反光叠帧、人工插入广播、离线缓存注入、证词暗示、档案脚本自动生成。</p><p>这些误导并非全部来自同一人。每名关联者都只修改了与自己有关的一小块证据。</p><blockquote>第十三名乘客不存在。第十三名死者存在。</blockquote>`)
+    ];
+
+    const usedSearchTerms = new Set();
+    let currentUser = null;
+    let cloudTimer = null;
+    let goodEndingAchieved = false;
+
+    document.addEventListener("DOMContentLoaded", init);
+    document.getElementById("search-input").addEventListener("keydown", e => { if (e.key === "Enter") searchDocs(); });
+
+    function init() {
+      try { currentUser = JSON.parse(localStorage.getItem(USER_KEY) || "null"); } catch(e) { currentUser = null; }
+      loadLocal();
+      if (currentUser?.role === "administrator") documents.forEach(d => { d.unlocked = true; d.new = false; });
+      render();
+      syncCloud("pull");
+    }
+
+    function normalize(text) {
+      return String(text || "").toLowerCase().trim().replace(/\s+/g, "").replace(/[，。！？、；：:,.!?;'"“”‘’《》【】\[\]（）()\-—_]/g, "");
+    }
+    function strictInput(value) { return String(value || "").trim(); }
+    function getEndpoint() { return (localStorage.getItem(CLOUD_CONFIG_KEY) || CLOUD_SAVE_ENDPOINT).trim(); }
+    function getLocalKey() { return `${LOCAL_SAVE_KEY}_${currentUser?.username || "anonymous"}`; }
+    function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("active"); setTimeout(() => t.classList.remove("active"), 2600); }
+
+    function getPayload() {
+      return { caseId: CASE_ID, version: APP_VERSION, savedAt: new Date().toISOString(), currentUser, goodEndingAchieved, documents: documents.map(d => ({ id: d.id, unlocked: d.unlocked, new: d.new })), usedSearchTerms: Array.from(usedSearchTerms) };
+    }
+    function applyPayload(save) {
+      if (!save || typeof save !== "object") return false;
+      if (Array.isArray(save.documents)) save.documents.forEach(s => { const d = documents.find(x => x.id === s.id); if (d) { d.unlocked = !!s.unlocked; d.new = !!s.new; } });
+      if (Array.isArray(save.usedSearchTerms)) save.usedSearchTerms.forEach(t => usedSearchTerms.add(t));
+      goodEndingAchieved = !!save.goodEndingAchieved;
+      return true;
+    }
+    function loadLocal() {
+      try { applyPayload(JSON.parse(localStorage.getItem(getLocalKey()) || "null")); } catch(e) {}
+    }
+    function saveLocal() {
+      localStorage.setItem(getLocalKey(), JSON.stringify(getPayload()));
+      scheduleCloud();
+    }
+    function scheduleCloud() {
+      clearTimeout(cloudTimer);
+      cloudTimer = setTimeout(() => syncCloud("push"), 700);
+    }
+    async function syncCloud(mode) {
+      const token = (localStorage.getItem(SESSION_KEY) || "").trim();
+      document.getElementById("user-info").textContent = `登录用户: ${currentUser?.username || "未登录"}`;
+      if (!currentUser?.username || !token) { document.getElementById("cloud-info").textContent = "云存档: 未登录"; return; }
+      if (currentUser.username === "guest") { document.getElementById("cloud-info").textContent = "云存档: guest不保存"; return; }
+      try {
+        document.getElementById("cloud-info").textContent = "云存档: 同步中";
+        const res = await fetch(getEndpoint(), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: mode === "pull" ? "pullCase" : "pushCase", sessionToken: token, caseId: CASE_ID, version: APP_VERSION, save: mode === "push" ? getPayload() : null }) });
+        const data = await res.json();
+        if (!res.ok || data.ok === false) throw new Error(data.error || "同步失败");
+        if (data.cloudDisabled) { document.getElementById("cloud-info").textContent = "云存档: guest不保存"; return; }
+        if (mode === "pull" && data.save) { applyPayload(data.save); render(); document.getElementById("cloud-info").textContent = "云存档: 已载入"; return; }
+        if (mode === "pull" && !data.save) { await syncCloud("push"); return; }
+        document.getElementById("cloud-info").textContent = "云存档: 已同步";
+      } catch(e) {
+        document.getElementById("cloud-info").textContent = "云存档: 离线";
+      }
+    }
+
+    function searchDocs() {
+      const term = strictInput(document.getElementById("search-input").value);
+      const normalized = normalize(term);
+      if (!normalized) return;
+      let hits = [];
+      documents.forEach(d => {
+        if (d.keywords.some(k => normalize(k) === normalized)) hits.push(d);
+      });
+      if (!hits.length) { toast("未检索到可公开档案。"); return; }
+      hits.forEach(d => { d.unlocked = true; d.new = true; });
+      usedSearchTerms.add(term);
+      document.getElementById("search-input").value = "";
+      saveLocal();
+      render();
+      toast(`已解锁 ${hits.map(h => "#" + h.id).join("、")}`);
+    }
+
+    function render() {
+      const unlocked = documents.filter(d => d.unlocked);
+      document.getElementById("doc-count").textContent = `${unlocked.length}/36`;
+      document.getElementById("step-label").textContent = unlocked.length >= 30 ? "后期复盘" : unlocked.length >= 17 ? "旧案交叉" : unlocked.length >= 8 ? "系统误导" : "初始";
+      document.getElementById("user-info").textContent = `登录用户: ${currentUser?.username || "未登录"}`;
+      document.getElementById("docs").innerHTML = unlocked.map(d => `<article class="doc"><div class="doc-title"><span>${d.title}</span><span>#${d.id}${d.new ? " NEW" : ""}</span></div><div class="doc-cat">分类: ${d.category}</div>${d.content}</article>`).join("") || "<p>暂无档案。</p>";
+      unlocked.forEach(d => d.new = false);
+      localStorage.setItem(getLocalKey(), JSON.stringify(getPayload()));
+    }
+
+    function openDeduction() { document.getElementById("deduction-modal").classList.add("active"); }
+    function closeDeduction() { document.getElementById("deduction-modal").classList.remove("active"); }
+    function includesAny(text, words) { const n = normalize(text); return words.every(w => n.includes(normalize(w))); }
+    function checkDeduction() {
+      const ok = includesAny(q1.value, ["不存在","虚假"]) && includesAny(q2.value, ["十三年前","责任链"]) && includesAny(q3.value, ["K713","13C"]) && normalize(q4.value) === normalize("陆川") && includesAny(q5.value, ["多人","篡改"]);
+      if (!ok) { toast("推理未通过。"); return; }
+      goodEndingAchieved = true;
+      documents.forEach(d => { if ([33,34,35,36].includes(d.id)) d.unlocked = true; });
+      saveLocal();
+      render();
+      document.getElementById("ending").style.display = "block";
+      document.getElementById("ending").innerHTML = `<h2>结局：第十三名乘客</h2><p>第十三名乘客不存在。</p><p>但第十三名死者存在。</p><p>韩越追查的不是列车上的幽灵，而是十三年前被从名单中抹掉的陆川。</p><p>车上的每个人都只撒了一个小谎。但所有谎言站在一起，就像一个真正的人。</p><blockquote>乘客数量不一致。</blockquote><p>系统最后一行字还亮着：</p><blockquote>系统没有找到第十三名乘客，所以它开始制造一个。</blockquote>`;
+    }
+    function resetCase() {
+      if (!confirm("确认重置 K713 本案本地进度？")) return;
+      localStorage.removeItem(getLocalKey());
+      ["k713_phone_unlocked","k713_file_unlocked","k713_ticket_unlocked","k713_monitor_unlocked","k713_forum_locked_post"].forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  </script>
+</body>
+</html>

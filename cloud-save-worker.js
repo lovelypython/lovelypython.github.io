@@ -1,6 +1,7 @@
-const LATEST_VERSION = "20260604-6";
+const LATEST_VERSION = "20260605-1";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 const PBKDF2_ITERATIONS = 100000;
+const CLOUD_DISABLED_USERS = new Set(["guest"]);
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -266,6 +267,10 @@ function targetUsername(body, session) {
   return session.role === "administrator" && body.targetUsername ? String(body.targetUsername).trim() : session.username;
 }
 
+function isCloudDisabledUser(username) {
+  return CLOUD_DISABLED_USERS.has(String(username || "").trim().toLowerCase());
+}
+
 async function deleteUserAndData(env, username) {
   await env.TTJ_SAVES.prepare("DELETE FROM users WHERE username = ?").bind(username).run();
   await env.TTJ_SAVES.prepare("DELETE FROM accounts WHERE username = ?").bind(username).run();
@@ -363,6 +368,9 @@ export default {
         const session = await makeSession(env, user);
         const account = await readAccount(env, username);
         await logEvent(env, request, { actorUsername: username, targetUsername: username, action: "login_success", detail: { role: user.role } });
+        if (isCloudDisabledUser(username)) {
+          return json({ ok: true, latestVersion: LATEST_VERSION, user: publicUser(user), sessionToken: session.token, site: emptyAccount(username).site, cases: {}, cloudDisabled: true });
+        }
         return json({ ok: true, latestVersion: LATEST_VERSION, user: publicUser(user), sessionToken: session.token, site: account.site, cases: account.cases });
       } catch (error) {
         return json({ ok: false, latestVersion: LATEST_VERSION, error: `登录服务异常: ${String(error?.message || error)}` }, 500);
@@ -380,12 +388,19 @@ export default {
     const account = await readAccount(env, username);
 
     if (body.action === "pull") {
+      if (isCloudDisabledUser(username) && session.role !== "administrator") {
+        return json({ ok: true, latestVersion: LATEST_VERSION, user: { username: session.username, role: session.role }, account: emptyAccount(username), site: emptyAccount(username).site, cases: {}, cloudDisabled: true });
+      }
       return json({ ok: true, latestVersion: LATEST_VERSION, user: { username: session.username, role: session.role }, account, site: account.site, cases: account.cases });
     }
 
     if (body.action === "pushSite") {
       if (username !== session.username && session.role !== "administrator") return json({ ok: false, latestVersion: LATEST_VERSION, error: "权限不足" }, 403);
       if (!body.site || typeof body.site !== "object") return json({ ok: false, latestVersion: LATEST_VERSION, error: "Missing site save" }, 400);
+      if (isCloudDisabledUser(username)) {
+        await logEvent(env, request, { actorUsername: session.username, targetUsername: username, action: "push_site_skipped", detail: { reason: "cloud_disabled" } });
+        return json({ ok: true, latestVersion: LATEST_VERSION, site: emptyAccount(username).site, cloudDisabled: true });
+      }
       account.site = { ...account.site, ...body.site, version: body.site.version || LATEST_VERSION, updatedAt: new Date().toISOString() };
       const next = await writeAccount(env, username, account);
       await logEvent(env, request, { actorUsername: session.username, targetUsername: username, action: "push_site", detail: { visitedCases: Object.keys(next.site?.visitedCases || {}) } });
@@ -395,6 +410,9 @@ export default {
     if (body.action === "pullCase") {
       const caseId = String(body.caseId || "").trim();
       if (!caseId) return json({ ok: false, latestVersion: LATEST_VERSION, error: "Missing caseId" }, 400);
+      if (isCloudDisabledUser(username) && session.role !== "administrator") {
+        return json({ ok: true, latestVersion: LATEST_VERSION, save: null, cloudDisabled: true });
+      }
       return json({ ok: true, latestVersion: LATEST_VERSION, save: account.cases?.[caseId] || null });
     }
 
@@ -403,6 +421,10 @@ export default {
       const caseId = String(body.caseId || body.save?.caseId || "").trim();
       if (!caseId) return json({ ok: false, latestVersion: LATEST_VERSION, error: "Missing caseId" }, 400);
       if (!body.save || typeof body.save !== "object") return json({ ok: false, latestVersion: LATEST_VERSION, error: "Missing case save" }, 400);
+      if (isCloudDisabledUser(username)) {
+        await logEvent(env, request, { actorUsername: session.username, targetUsername: username, action: "push_case_skipped", caseId, detail: { reason: "cloud_disabled", progress: summarizeCaseProgress(body.save) } });
+        return json({ ok: true, latestVersion: LATEST_VERSION, save: null, site: emptyAccount(username).site, cloudDisabled: true });
+      }
       account.cases = account.cases || {};
       account.cases[caseId] = { ...body.save, caseId, currentUser: body.save.currentUser || { username }, cloudSavedAt: new Date().toISOString() };
       account.site = account.site || emptyAccount(username).site;

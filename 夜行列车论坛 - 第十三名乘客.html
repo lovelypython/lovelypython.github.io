@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>夜行列车论坛 - 第十三名乘客</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", "Microsoft YaHei", sans-serif; }
+    body { background: #f1f3f5; color: #2d3436; padding: 22px; }
+    .wrap { max-width: 980px; margin: 0 auto; }
+    header { background: #263747; color: #fff; border-radius: 8px 8px 0 0; padding: 18px; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    a, button { border: 0; border-radius: 6px; padding: 9px 12px; background: #2d7fb8; color: #fff; font-weight: 800; text-decoration: none; cursor: pointer; display: inline-block; }
+    .post { background: #fff; border: 1px solid #dfe6ec; border-top: 0; padding: 18px; }
+    .post h2 { color: #263747; margin-bottom: 8px; }
+    .meta { color: #8a98a5; font-size: .84rem; margin-bottom: 10px; }
+    p { color: #536575; line-height: 1.75; margin: 8px 0; }
+    input { width: 100%; max-width: 320px; padding: 10px; border: 1px solid #cdd8df; border-radius: 6px; margin: 8px 0; }
+    .error { color: #b1302a; font-weight: 800; min-height: 24px; }
+    .locked { background: #fff7f4; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div><h1>夜行列车论坛</h1><div style="color:#b8c6cf;font-size:.82rem;">thread archive v20260605-1</div></div>
+      <a href="./K713第十三名乘客.html?v=20260605-1">返回档案系统</a>
+    </header>
+    <article class="post">
+      <h2>K713以前也有第十三个人</h2>
+      <div class="meta">楼主：隧道白噪音 | 06-24 00:12</div>
+      <p>老乘务说，K713只要进那段无信号隧道，名单就会多一行。</p>
+      <p>有人说是乘客，有人说不是。</p>
+    </article>
+    <article class="post">
+      <h2>不要坐13C</h2>
+      <div class="meta">楼主：站台影子 | 06-24 00:38</div>
+      <p>如果你看到13C，别坐。</p>
+      <p>三号车厢的座位图里没有它。</p>
+    </article>
+    <article class="post locked">
+      <h2>给坐在13C的人</h2>
+      <div class="meta">锁帖 | 需要口令</div>
+      <div id="lock">
+        <input id="pass" type="password">
+        <button onclick="unlock()">打开</button>
+        <p class="error" id="error"></p>
+      </div>
+      <div id="locked-content" class="hidden">
+        <p>你以为13C是座位。</p>
+        <p>不是。</p>
+        <p>它是一个空洞。</p>
+        <p>每次有人想把责任扔进去，它就会变得像真的一样。</p>
+        <p>十三年前，他们少报了一个死人。</p>
+        <p>十三年后，他们多造了一个活人。</p>
+      </div>
+    </article>
+    <article class="post">
+      <h2>别信名单</h2>
+      <div class="meta">楼主：匿名 | 06-24 01:04</div>
+      <p>名单这种东西，只要有人能改，就不可信。</p>
+      <p>真名单不会放在系统里。</p>
+      <p>记者都懂这个。</p>
+    </article>
+  </div>
+  <script>
+    function strictInput(value) { return String(value || "").trim(); }
+    function unlock() {
+      if (strictInput(document.getElementById("pass").value) === "13C") {
+        localStorage.setItem("k713_forum_locked_post", "true");
+        render();
+      } else document.getElementById("error").textContent = "口令无效。";
+    }
+    function render() {
+      const unlocked = localStorage.getItem("k713_forum_locked_post") === "true";
+      document.getElementById("lock").classList.toggle("hidden", unlocked);
+      document.getElementById("locked-content").classList.toggle("hidden", !unlocked);
+    }
+    render();
+  </script>
+</body>
+</html>
