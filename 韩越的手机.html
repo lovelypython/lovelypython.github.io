@@ -26,13 +26,13 @@
 </head>
 <body>
   <div class="phone">
-    <div class="status"><span>K713 Evidence Device</span><span>v20260605-2</span></div>
+    <div class="status"><span>K713 Evidence Device</span><span>v20260605-3</span></div>
     <div class="screen" id="lock-screen">
       <h1>韩越的手机</h1>
       <p>请输入锁屏密码</p>
       <input id="phone-pass" type="password" inputmode="numeric">
       <button onclick="unlockPhone()">解锁</button>
-      <a href="./K713第十三名乘客.html?v=20260605-2">返回档案系统</a>
+      <a href="./K713第十三名乘客.html?v=20260605-3">返回档案系统</a>
       <p class="error" id="phone-error"></p>
     </div>
 
@@ -85,6 +85,8 @@
     </div>
   </div>
   <script>
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     function strictInput(value) { return String(value || "").trim(); }
     function unlockPhone() {
       if (strictInput(document.getElementById("phone-pass").value) === "0217") {
@@ -101,6 +103,10 @@
     function showTab(id) { document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden")); document.getElementById(id).classList.remove("hidden"); }
     function toggle(id) { document.getElementById(id).classList.toggle("hidden"); }
     function render() {
+      if (isAdmin()) {
+        localStorage.setItem("k713_phone_unlocked", "true");
+        localStorage.setItem("k713_file_unlocked", "true");
+      }
       const unlocked = localStorage.getItem("k713_phone_unlocked") === "true";
       document.getElementById("lock-screen").classList.toggle("hidden", unlocked);
       document.getElementById("home-screen").classList.toggle("hidden", !unlocked);

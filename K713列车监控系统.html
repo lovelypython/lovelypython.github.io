@@ -27,8 +27,8 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>K713列车监控系统 <span style="color:#81909b;font-size:.8rem;">v20260605-2</span></h1>
-      <a href="./K713第十三名乘客.html?v=20260605-2">返回档案系统</a>
+      <h1>K713列车监控系统 <span style="color:#81909b;font-size:.8rem;">v20260605-3</span></h1>
+      <a href="./K713第十三名乘客.html?v=20260605-3">返回档案系统</a>
     </header>
     <section class="panel" id="login">
       <p>请输入目标时间码。</p>
@@ -54,6 +54,8 @@
     </section>
   </div>
   <script>
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     let reviewCount = Number(localStorage.getItem("k713_monitor_review_count") || "0");
     function strictInput(value) { return String(value || "").trim(); }
     function unlock() {
@@ -73,6 +75,7 @@
       document.getElementById("ghost").style.opacity = String(Math.min(.35 + reviewCount * .16, .9));
     }
     function render() {
+      if (isAdmin()) localStorage.setItem("k713_monitor_unlocked", "true");
       const unlocked = localStorage.getItem("k713_monitor_unlocked") === "true";
       document.getElementById("login").classList.toggle("hidden", unlocked);
       document.getElementById("content").classList.toggle("hidden", !unlocked);

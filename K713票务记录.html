@@ -23,12 +23,12 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>K713 本地票务缓存 <span style="color:#7b8996;font-size:.8rem;">v20260605-2</span></h1>
+    <h1>K713 本地票务缓存 <span style="color:#7b8996;font-size:.8rem;">v20260605-3</span></h1>
     <p>值班长身份验证</p>
     <div id="login">
       <input id="pass" type="password">
       <button onclick="unlock()">进入</button>
-      <a href="./K713第十三名乘客.html?v=20260605-2">返回档案系统</a>
+      <a href="./K713第十三名乘客.html?v=20260605-3">返回档案系统</a>
       <p class="error" id="error"></p>
     </div>
     <div id="content" class="hidden">
@@ -47,6 +47,8 @@
     </div>
   </div>
   <script>
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     function strictInput(value) { return String(value || "").trim(); }
     function unlock() {
       if (strictInput(document.getElementById("pass").value) === "JIANG.WEN") {
@@ -55,6 +57,7 @@
       } else document.getElementById("error").textContent = "身份验证失败。";
     }
     function render() {
+      if (isAdmin()) localStorage.setItem("k713_ticket_unlocked", "true");
       const unlocked = localStorage.getItem("k713_ticket_unlocked") === "true";
       document.getElementById("login").classList.toggle("hidden", unlocked);
       document.getElementById("content").classList.toggle("hidden", !unlocked);

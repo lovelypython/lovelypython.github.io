@@ -24,8 +24,8 @@
 <body>
   <div class="wrap">
     <header>
-      <div><h1>夜行列车论坛</h1><div style="color:#b8c6cf;font-size:.82rem;">thread archive v20260605-2</div></div>
-      <a href="./K713第十三名乘客.html?v=20260605-2">返回档案系统</a>
+      <div><h1>夜行列车论坛</h1><div style="color:#b8c6cf;font-size:.82rem;">thread archive v20260605-3</div></div>
+      <a href="./K713第十三名乘客.html?v=20260605-3">返回档案系统</a>
     </header>
     <article class="post">
       <h2>K713以前也有第十三个人</h2>
@@ -65,6 +65,8 @@
     </article>
   </div>
   <script>
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     function strictInput(value) { return String(value || "").trim(); }
     function unlock() {
       if (strictInput(document.getElementById("pass").value) === "13C") {
@@ -73,6 +75,7 @@
       } else document.getElementById("error").textContent = "口令无效。";
     }
     function render() {
+      if (isAdmin()) localStorage.setItem("k713_forum_locked_post", "true");
       const unlocked = localStorage.getItem("k713_forum_locked_post") === "true";
       document.getElementById("lock").classList.toggle("hidden", unlocked);
       document.getElementById("locked-content").classList.toggle("hidden", !unlocked);

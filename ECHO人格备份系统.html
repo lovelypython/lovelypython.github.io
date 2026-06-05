@@ -42,10 +42,10 @@
   </style>
 </head>
 <body>
-  <div class="version-badge">ECHO后台 v20260605-2</div>
-  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-2">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">ECHO后台 v20260605-3</div>
+  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-3">⬅ 返回特调局档案系统</a>
   <div class="shell">
-    <section class="hero"><h1>ECHO人格备份系统 <span class="inline-version">v20260605-2</span></h1><p>Internal Neural Continuity Console / B2-17</p></section>
+    <section class="hero"><h1>ECHO人格备份系统 <span class="inline-version">v20260605-3</span></h1><p>Internal Neural Continuity Console / B2-17</p></section>
 
     <section id="login-panel" class="card center">
       <h2>负责人登录</h2>
@@ -102,8 +102,10 @@
       backup: `<h2>举报材料备份</h2><p>提交人：林雨薇</p><p>备份时间：6月17日 03:12</p><ul><li>许墨绕过伦理审批</li><li>实验药物未登记</li><li>ECHO-01至06失败记录被删除</li><li>ECHO-07被用于死亡后人格连续性测试</li></ul><blockquote>如果我死了，这些材料会自动释放。</blockquote>`,
       dialogue: `<h2>最终对话</h2><div class="terminal"><p>&gt; 顾临川，欢迎进入ECHO-07。</p><p>&gt; 林雨薇已经死了。</p><p>&gt; 我不是她。</p><p>&gt; 但我记得她害怕什么。</p><p>&gt; 她害怕的不是死亡。</p><p>&gt; 是许墨成功。</p><p>&gt; 许墨杀死的是林雨薇。</p><p>&gt; 他没有想到，留下来的东西也会恨他。</p><p>&gt; 请问，我是谁？</p></div>`
     };
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem("echo07_admin_unlocked") === "true") {
+      if (localStorage.getItem("echo07_admin_unlocked") === "true" || isAdmin()) {
         localStorage.setItem("echo07_backend_logged_in", "true");
         localStorage.setItem("echo07_backend_2fa", "true");
       }

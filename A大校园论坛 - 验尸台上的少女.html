@@ -41,12 +41,12 @@
   </style>
 </head>
 <body>
-  <div class="version-badge">校园论坛 v20260605-2</div>
-  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-2">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">校园论坛 v20260605-3</div>
+  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-3">⬅ 返回特调局档案系统</a>
   <header>
     <div class="header-inner">
       <div>
-        <h1>A大校园论坛 <span class="inline-version">v20260605-2</span></h1>
+        <h1>A大校园论坛 <span class="inline-version">v20260605-3</span></h1>
         <p class="sub">匿名版 / 怪谈讨论区 / 验尸台上的少女</p>
       </div>
       <p class="ghost">当前在线：317 人</p>
@@ -69,7 +69,9 @@
       { id: 7, title: "实验楼B2层是不是被封了？", author: "路过B2", time: "6月22日 13:40", locked: false, content: `<p>启明楼B2层今天开始不让进了。</p><p>门口贴的是“电路检修”。</p><p>但我看到里面搬出来好几台服务器。</p><p>其中一台标签好像写着 B2-17。</p>`, comments: ["ECHO是不是就在那层？","学校这次瞒不住了。","B2-17这个编号好眼熟。"] },
       { id: 8, title: "林雨薇以前不会说谢谢", author: "匿名用户0007", time: "6月22日 22:31", locked: false, content: `<p>我是她同组同学。</p><p>她以前回复消息特别短，只会说“收到”。</p><p>可最近那个账号一直说“谢谢”。</p><p>不是不好，但不像她。</p><p>如果那东西还在发消息，它可能不是林雨薇本人。</p>`, comments: ["这比鬼还吓人。","所以回来的不是她，是ECHO？","它在学做人。"] }
     ];
-    function isUnlocked(post){ return !post.locked || localStorage.getItem("echo07_admin_unlocked") === "true" || localStorage.getItem("echo07_forum_post_" + post.id) === "unlocked"; }
+    const USER_KEY = "ttj_current_user";
+    function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
+    function isUnlocked(post){ return !post.locked || localStorage.getItem("echo07_admin_unlocked") === "true" || isAdmin() || localStorage.getItem("echo07_forum_post_" + post.id) === "unlocked"; }
     function renderPosts(){
       document.getElementById('posts').innerHTML = posts.map(post => {
         const unlocked = isUnlocked(post);
