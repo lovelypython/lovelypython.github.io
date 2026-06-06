@@ -31,7 +31,10 @@
     .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 16px; }
     .case-link-card { background: #fff; border: 1px solid #e1e7ee; border-top: 4px solid #3498db; border-radius: 8px; padding: 22px; text-decoration: none; color: inherit; transition: .22s; display: flex; flex-direction: column; gap: 10px; min-height: 220px; }
     .case-link-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(30,50,70,.12); border-top-color: #e67e22; }
+    .case-link-card.special-case { border-top-color: #8f1519; background: linear-gradient(145deg, #fff 0%, #fff7f4 100%); }
+    .case-link-card.special-case:hover { border-top-color: #b3131b; box-shadow: 0 14px 28px rgba(125, 12, 18, .18); }
     .case-badge { width: fit-content; border-radius: 4px; padding: 4px 8px; font-size: .8rem; font-weight: 900; background: #ffeaa7; color: #b35c00; }
+    .case-badge.test-badge { background: #8f1519; color: #fff4df; letter-spacing: .04em; }
     .case-name { color: #2c3e50; font-size: 1.28rem; }
     .case-desc { color: #607080; flex: 1; }
     .case-meta { color: #8a98a5; font-size: .86rem; }
@@ -58,6 +61,10 @@
     .modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.68); align-items: center; justify-content: center; padding: 18px; }
     .modal.active { display: flex; }
     .modal-content { width: min(520px, 94vw); background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 18px 50px rgba(0,0,0,.35); }
+    .test-modal-content { border: 2px solid #8f1519; background: linear-gradient(180deg, #fff8ef, #f7ead9); color: #3b1d1b; }
+    .test-modal-content h2 { color: #8f1519; margin-bottom: 10px; }
+    .test-modal-content ul { margin: 10px 0 14px 20px; color: #5f3430; }
+    .test-modal-content p { margin: 8px 0; }
     .auth-input { width: 100%; padding: 11px; border: 1px solid #ccd6df; border-radius: 6px; margin: 8px 0; }
     .toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: #22313f; color: #fff; padding: 12px 18px; border-radius: 999px; box-shadow: 0 10px 30px rgba(0,0,0,.22); opacity: 0; pointer-events: none; transition: .25s; z-index: 1200; text-align: center; }
     .toast.active { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -69,7 +76,7 @@
   <div class="toast" id="toast"></div>
   <div class="container">
     <header class="header">
-      <div class="logo">特调局档案系统 <span class="version">总站 v20260605-3</span></div>
+      <div class="logo">特调局档案系统 <span class="version">总站 v20260606-2</span></div>
       <div class="user-panel">
         <div id="user-info">登录用户: 未登录</div>
         <div id="cloud-info">云存档: 未配置</div>
@@ -144,6 +151,7 @@
             <select id="admin-case-id">
               <option value="echo07">ECHO-07 验尸台上的少女</option>
               <option value="k713">K713 第十三名乘客</option>
+              <option value="hongjiayi">红嫁衣：三更拜堂</option>
             </select>
             <button class="danger" onclick="adminDeleteCase()">删除指定案件</button>
           </div>
@@ -166,7 +174,7 @@
       </section>
     </main>
 
-    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260605-3 | GitHub Pages</footer>
+    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260606-2 | GitHub Pages</footer>
   </div>
 
   <div class="modal" id="auth-modal">
@@ -180,8 +188,27 @@
     </div>
   </div>
 
+  <div class="modal" id="hongjiayi-notice-modal">
+    <div class="modal-content test-modal-content">
+      <h2>【测试作品通知】</h2>
+      <p>你即将进入《红嫁衣：三更拜堂》。</p>
+      <p>这是一个测试性质的特别篇，玩法与前两部作品完全不同，不再以纯档案检索为核心，而是改为“调查 + 场景探索 + 解谜逃脱”的形式。</p>
+      <p>目前该作品仍在测试中，可能存在：</p>
+      <ul>
+        <li>线索触发异常</li>
+        <li>页面显示问题</li>
+        <li>逻辑 bug</li>
+        <li>部分交互不完善</li>
+      </ul>
+      <p>如果你不适应这种新玩法，可以随时退出并返回主界面。</p>
+      <p><strong>是否继续进入？</strong></p>
+      <button id="hongjiayi-continue-btn">继续进入</button>
+      <button class="secondary" id="hongjiayi-cancel-btn">取消</button>
+    </div>
+  </div>
+
   <script>
-    const PORTAL_VERSION = "20260605-3";
+    const PORTAL_VERSION = "20260606-2";
     const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
     const CLOUD_CONFIG_KEY = "ttj_cloud_endpoint";
     const USER_KEY = "ttj_current_user";
@@ -194,7 +221,7 @@
         name: "验尸台上的少女",
         desc: "A大脑科学学生林雨薇坠楼死亡后，验尸台上出现了不应存在的反应。伪灵异、脑机接口、人格备份AI交织成一场死后调查。",
         status: "已开放",
-        href: "./ECHO07验尸台上的少女.html?v=20260605-3"
+        href: "./ECHO07验尸台上的少女.html?v=20260606-2"
       },
       {
         id: "k713",
@@ -202,7 +229,17 @@
         name: "第十三名乘客",
         desc: "夜行列车K713上，调查记者韩越死亡。官方名单只有十二名乘客，但监控、广播、票务、证词和论坛都开始制造同一个不存在的人。",
         status: "已开放",
-        href: "./K713第十三名乘客.html?v=20260605-3"
+        href: "./K713第十三名乘客.html?v=20260606-2"
+      },
+      {
+        id: "hongjiayi",
+        badge: "TEST / 测试作品 / 特别篇",
+        name: "红嫁衣：三更拜堂",
+        desc: "一座废弃婚楼，一场没有结束的婚礼。第三部测试玩法：进入现场、调查房间、解开轻度密室逃脱谜题。",
+        status: "测试中 | 中式恐怖 | 调查逃脱 | 新玩法",
+        href: "./红嫁衣：三更拜堂.html?v=20260606-2",
+        special: true,
+        requiresNotice: true
       }
     ];
 
@@ -245,6 +282,8 @@
       document.getElementById("modal-login-btn").addEventListener("click", performLogin);
       document.getElementById("password-input").addEventListener("keydown", e => { if (e.key === "Enter") performLogin(); });
       document.getElementById("logout-btn").addEventListener("click", logout);
+      document.getElementById("hongjiayi-cancel-btn").addEventListener("click", closeHongjiayiNotice);
+      document.getElementById("hongjiayi-continue-btn").addEventListener("click", continueHongjiayi);
     }
     function getCloudEndpoint() { return (localStorage.getItem(CLOUD_CONFIG_KEY) || CLOUD_SAVE_ENDPOINT).trim(); }
     function getSessionToken() { return (localStorage.getItem(SESSION_KEY) || "").trim(); }
@@ -357,8 +396,8 @@
         const progress = siteSave.visitedCases?.[item.id];
         const locked = item.locked || !currentUser;
         const href = locked ? "#" : item.href;
-        return `<a class="case-link-card ${locked ? "locked-card" : ""}" href="${href}" data-case="${item.id}">
-          <span class="case-badge">${item.badge}</span>
+        return `<a class="case-link-card ${locked ? "locked-card" : ""} ${item.special ? "special-case" : ""}" href="${href}" data-case="${item.id}">
+          <span class="case-badge ${item.special ? "test-badge" : ""}">${item.badge}</span>
           <h3 class="case-name">${item.name}</h3>
           <p class="case-desc">${item.desc}</p>
           <p class="case-meta">状态: ${locked && item.locked ? "未开放" : item.status}${progress?.lastOpened ? ` | 最近访问: ${new Date(progress.lastOpened).toLocaleString()}` : ""}</p>
@@ -368,12 +407,34 @@
       document.querySelectorAll(".case-link-card").forEach(card => card.addEventListener("click", e => {
         const caseId = card.dataset.case;
         const item = cases.find(c => c.id === caseId);
-        if (!currentUser) { e.preventDefault(); showToast("请先登录总站账号。"); return; }
-        if (item?.locked) { e.preventDefault(); return; }
-        siteSave.visitedCases[caseId] = { lastOpened: new Date().toISOString() };
-        saveSite();
-      }));
-    }
+	        if (!currentUser) { e.preventDefault(); showToast("请先登录总站账号。"); return; }
+	        if (item?.locked) { e.preventDefault(); return; }
+	        if (item?.requiresNotice) {
+	          e.preventDefault();
+	          pendingHongjiayiHref = item.href;
+	          pendingHongjiayiCaseId = caseId;
+	          document.getElementById("hongjiayi-notice-modal").classList.add("active");
+	          return;
+	        }
+	        siteSave.visitedCases[caseId] = { lastOpened: new Date().toISOString() };
+	        saveSite();
+	      }));
+	    }
+	    let pendingHongjiayiHref = "";
+	    let pendingHongjiayiCaseId = "";
+	    function closeHongjiayiNotice() {
+	      document.getElementById("hongjiayi-notice-modal").classList.remove("active");
+	      pendingHongjiayiHref = "";
+	      pendingHongjiayiCaseId = "";
+	    }
+	    function continueHongjiayi() {
+	      const href = pendingHongjiayiHref || "./红嫁衣：三更拜堂.html?v=20260606-2";
+	      const caseId = pendingHongjiayiCaseId || "hongjiayi";
+	      siteSave.visitedCases[caseId] = { lastOpened: new Date().toISOString(), testNoticeAccepted: true };
+	      saveSite();
+	      localStorage.setItem("hongjiayi_notice_read", "true");
+	      location.href = href;
+	    }
     function saveSite() {
       siteSave.version = PORTAL_VERSION;
       siteSave.updatedAt = new Date().toISOString();

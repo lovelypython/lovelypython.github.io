@@ -19,30 +19,45 @@
     th { background: #f3f7fa; }
     .hidden { display: none; }
     .meta { background: #f8fbfd; border: 1px solid #dfe8ee; border-radius: 6px; padding: 12px; margin-top: 14px; }
+    .warning-row td { background: #fff4ef; color: #8d2b20; font-weight: 800; }
+    .ticket-note, .ticket-log { background: #f8fbfd; border: 1px solid #dfe8ee; border-radius: 6px; padding: 12px; margin-top: 14px; }
+    blockquote { border-left: 4px solid #b83a32; background: #fff4ef; padding: 10px 12px; margin: 8px 0; color: #263747; }
+    pre { white-space: pre-wrap; background: #263747; color: #e7eef3; border-radius: 6px; padding: 12px; overflow: auto; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>K713 本地票务缓存 <span style="color:#7b8996;font-size:.8rem;">v20260605-3</span></h1>
+    <h1>K713 本地票务缓存 <span style="color:#7b8996;font-size:.8rem;">v20260606-2</span></h1>
     <p>值班长身份验证</p>
     <div id="login">
-      <input id="pass" type="password">
-      <button onclick="unlock()">进入</button>
-      <a href="./K713第十三名乘客.html?v=20260605-3">返回档案系统</a>
-      <p class="error" id="error"></p>
+      <input id="ticket-auth-input" type="password" placeholder="请输入值班长账号">
+      <button onclick="unlockTicketSystem()">验证</button>
+      <a href="./K713第十三名乘客.html?v=20260606-2">返回档案系统</a>
+      <p class="error" id="ticket-auth-error"></p>
     </div>
     <div id="content" class="hidden">
+      <h2>K713 本地票务缓存</h2>
       <table>
-        <tr><th>乘客</th><th>座位</th><th>状态</th></tr>
-        <tr><td>韩越</td><td>07A</td><td>已验票</td></tr>
-        <tr><td>蒋闻</td><td>值班</td><td>系统人员</td></tr>
-        <tr><td>唐伊</td><td>值班</td><td>系统人员</td></tr>
-        <tr><td>UNKNOWN</td><td>13C</td><td>离线补票缓存</td></tr>
+        <tr><th>记录类型</th><th>内容</th><th>状态</th></tr>
+        <tr><td>乘客</td><td>韩越 / 07A</td><td>已验票</td></tr>
+        <tr><td>系统人员</td><td>蒋闻 / 值班长</td><td>本地权限</td></tr>
+        <tr><td>系统人员</td><td>唐伊 / 乘务员</td><td>广播权限</td></tr>
+        <tr class="warning-row"><td>离线补票</td><td>UNKNOWN / 13C</td><td>未同步</td></tr>
       </table>
-      <div class="meta">
-        <p>座位图校验：13C 不存在。</p>
+      <div class="ticket-note">
+        <p>座位图校验结果：</p>
+        <blockquote>三号车厢不存在 13C。</blockquote>
         <p>缓存生成时间：02:31。</p>
-        <p>同步状态：未上传。</p>
+        <p>生成来源：本地离线缓存。</p>
+        <p>中心系统同步状态：未上传。</p>
+      </div>
+      <div class="ticket-log">
+        <h3>缓存日志片段</h3>
+        <pre>[02:30] local cache opened
+[02:31] temporary ticket created
+[02:31] seat = 13C
+[02:31] passenger = UNKNOWN
+[02:32] sync blocked</pre>
       </div>
     </div>
   </div>
@@ -50,11 +65,11 @@
     const USER_KEY = "ttj_current_user";
     function isAdmin() { try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; } }
     function strictInput(value) { return String(value || "").trim(); }
-    function unlock() {
-      if (strictInput(document.getElementById("pass").value) === "JIANG.WEN") {
+    function unlockTicketSystem() {
+      if (strictInput(document.getElementById("ticket-auth-input").value) === "JIANG.WEN") {
         localStorage.setItem("k713_ticket_unlocked", "true");
         render();
-      } else document.getElementById("error").textContent = "身份验证失败。";
+      } else document.getElementById("ticket-auth-error").textContent = "身份验证失败。";
     }
     function render() {
       if (isAdmin()) localStorage.setItem("k713_ticket_unlocked", "true");

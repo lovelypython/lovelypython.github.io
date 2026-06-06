@@ -41,12 +41,12 @@
   </style>
 </head>
 <body>
-  <div class="version-badge">校园论坛 v20260605-3</div>
-  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260605-3">⬅ 返回特调局档案系统</a>
+  <div class="version-badge">校园论坛 v20260606-2</div>
+  <a class="back-link" href="./ECHO07验尸台上的少女.html?v=20260606-2">⬅ 返回特调局档案系统</a>
   <header>
     <div class="header-inner">
       <div>
-        <h1>A大校园论坛 <span class="inline-version">v20260605-3</span></h1>
+        <h1>A大校园论坛 <span class="inline-version">v20260606-2</span></h1>
         <p class="sub">匿名版 / 怪谈讨论区 / 验尸台上的少女</p>
       </div>
       <p class="ghost">当前在线：317 人</p>
@@ -75,7 +75,7 @@
     function renderPosts(){
       document.getElementById('posts').innerHTML = posts.map(post => {
         const unlocked = isUnlocked(post);
-        const body = unlocked ? `<div class="content">${post.content}</div><div class="comments">${post.comments.map(c=>`<div class="comment">${c}</div>`).join('')}</div>` : `<div class="locked-box"><p>该帖已被管理员设为口令可见。</p><p class="ghost">访问口令为验尸台上死者说出的三个字，不含标点。</p><br><input id="post-pass-${post.id}" placeholder="输入口令"> <button onclick="unlockPost(${post.id})">解锁</button></div>`;
+        const body = unlocked ? `<div class="content">${post.content}</div><div class="comments">${post.comments.map(c=>`<div class="comment">${c}</div>`).join('')}</div>` : `<div class="locked-box"><p>该帖已被管理员设为口令可见。</p><p class="locked-hint">该帖设置了口令。发帖人备注：口令来自验尸房音轨转写，不包含标点。</p><br><input id="post-pass-${post.id}" placeholder="输入口令"> <button onclick="unlockPost(${post.id})">解锁</button></div>`;
         return `<article class="post"><div class="post-head" onclick="togglePost(${post.id})"><div><div class="post-title">${post.title}${post.locked?'<span class="tag-lock">锁帖</span>':''}</div><div class="meta">${post.author} · ${post.time}</div></div><div class="expand" id="expand-${post.id}">▼</div></div><div class="post-body" id="post-${post.id}">${body}</div></article>`;
       }).join('');
     }

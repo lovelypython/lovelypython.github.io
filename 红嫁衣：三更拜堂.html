@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>红嫁衣：三更拜堂</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      color: #f7ead8;
+      font-family: "Songti SC", "STSong", "Microsoft YaHei", serif;
+      line-height: 1.72;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(245, 172, 90, .16), transparent 22%),
+        radial-gradient(circle at 84% 20%, rgba(190, 22, 28, .24), transparent 28%),
+        radial-gradient(circle at 50% 120%, rgba(0, 0, 0, .86), transparent 48%),
+        linear-gradient(90deg, rgba(255, 210, 140, .04) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255, 210, 140, .035) 1px, transparent 1px),
+        #240707;
+      background-size: auto, auto, auto, 46px 46px, 46px 46px, auto;
+      overflow-x: hidden;
+    }
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::before {
+      background:
+        repeating-linear-gradient(90deg, transparent 0 36px, rgba(40, 0, 0, .28) 36px 39px),
+        radial-gradient(ellipse at center, transparent 38%, rgba(0, 0, 0, .78) 100%);
+      mix-blend-mode: multiply;
+    }
+    body::after {
+      opacity: .12;
+      background:
+        radial-gradient(circle at 20% 30%, #f4c77b 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 62%, #f4c77b 0 1px, transparent 2px),
+        linear-gradient(125deg, transparent 0 48%, rgba(255, 245, 210, .6) 49%, transparent 51%);
+      animation: candleBreath 4.8s ease-in-out infinite;
+    }
+    @keyframes candleBreath { 0%, 100% { opacity: .08; } 50% { opacity: .17; } }
+    button, a.button {
+      border: 1px solid rgba(238, 190, 120, .55);
+      border-radius: 4px;
+      background: linear-gradient(180deg, #9c171b, #5d0b0e);
+      color: #fff3dc;
+      padding: 10px 15px;
+      font-weight: 900;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .26);
+    }
+    button:hover, a.button:hover { filter: brightness(1.08); box-shadow: 0 0 18px rgba(218, 91, 45, .28); }
+    button.secondary, a.secondary { background: linear-gradient(180deg, #5b4840, #2f2422); }
+    button.ghost { background: rgba(28, 8, 8, .72); }
+    input {
+      width: min(360px, 100%);
+      padding: 11px;
+      border: 1px solid rgba(209, 160, 100, .55);
+      border-radius: 4px;
+      background: rgba(24, 7, 7, .82);
+      color: #fff6e7;
+      outline: none;
+    }
+    .shell {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 34px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      backdrop-filter: blur(10px);
+    }
+    .brand {
+      color: #f9d7a3;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-shadow: 0 2px 16px rgba(190, 28, 28, .55);
+    }
+    .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .hero, .panel, .ending {
+      border: 1px solid rgba(214, 157, 91, .38);
+      background:
+        linear-gradient(180deg, rgba(83, 13, 13, .9), rgba(30, 8, 8, .94)),
+        repeating-linear-gradient(135deg, rgba(246, 210, 150, .035) 0 6px, transparent 6px 12px);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, .36), inset 0 0 80px rgba(113, 13, 17, .35);
+    }
+    .hero {
+      min-height: calc(100vh - 108px);
+      display: grid;
+      align-content: center;
+      padding: clamp(28px, 6vw, 72px);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "囍";
+      position: absolute;
+      right: clamp(18px, 8vw, 110px);
+      top: clamp(20px, 7vw, 90px);
+      font-size: clamp(5rem, 18vw, 16rem);
+      color: rgba(255, 214, 160, .07);
+      transform: rotate(-5deg);
+      font-weight: 900;
+    }
+    .kicker { color: #d9a65f; font-weight: 900; margin-bottom: 10px; }
+    h1 { font-size: clamp(2.35rem, 8vw, 6.6rem); line-height: 1.02; color: #fff3dc; text-shadow: 0 0 22px rgba(181, 17, 22, .58); letter-spacing: 0; }
+    h2 { color: #f9d7a3; font-size: 1.35rem; margin-bottom: 12px; }
+    h3 { color: #ffe0ae; margin-bottom: 8px; }
+    .intro-copy { width: min(720px, 100%); margin: 20px 0 24px; color: #e8c9a7; font-size: 1.06rem; }
+    .action-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .game-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .sidebar, .scene-card {
+      border: 1px solid rgba(214, 157, 91, .35);
+      background: rgba(35, 9, 9, .88);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .32);
+    }
+    .sidebar { position: sticky; top: 72px; padding: 16px; }
+    .scene-card { min-height: 620px; padding: clamp(18px, 4vw, 34px); }
+    .status-line { color: #d6a86e; font-size: .94rem; margin-bottom: 10px; }
+    .item-list, .clue-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+    .pill {
+      border: 1px solid rgba(221, 174, 109, .42);
+      background: rgba(112, 18, 18, .45);
+      color: #f8dfba;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: .84rem;
+    }
+    .room-tabs { display: grid; gap: 8px; margin-top: 14px; }
+    .room-tabs button { width: 100%; text-align: left; }
+    .room-tabs button:disabled { opacity: .45; cursor: not-allowed; filter: grayscale(.35); }
+    .scene-title { display: flex; justify-content: space-between; gap: 12px; align-items: start; border-bottom: 1px solid rgba(238, 190, 120, .25); padding-bottom: 14px; margin-bottom: 18px; }
+    .scene-text { color: #ead0ae; margin-bottom: 18px; }
+    .object-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 18px 0; }
+    .object-card {
+      text-align: left;
+      border: 1px solid rgba(218, 166, 103, .32);
+      background: rgba(71, 14, 14, .72);
+      color: #f8e5c6;
+      padding: 14px;
+      min-height: 118px;
+      border-radius: 3px;
+      box-shadow: inset 0 0 24px rgba(0, 0, 0, .18);
+    }
+    .object-card span { display: block; color: #cda06d; font-size: .82rem; margin-top: 6px; }
+    .message {
+      display: none;
+      border-left: 4px solid #b88a51;
+      background: rgba(255, 238, 196, .08);
+      color: #ffe8c2;
+      padding: 14px;
+      margin: 16px 0;
+      white-space: pre-line;
+    }
+    .message.active { display: block; }
+    .puzzle-box {
+      border: 1px solid rgba(205, 148, 76, .28);
+      background: rgba(19, 6, 6, .58);
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .choice-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .small-note { color: #c59c72; font-size: .9rem; }
+    .ending {
+      min-height: 70vh;
+      padding: clamp(24px, 6vw, 64px);
+    }
+    .ending p { margin: 12px 0; color: #ead0ae; }
+    blockquote {
+      margin: 14px 0;
+      padding: 12px 14px;
+      border-left: 4px solid #d7a45f;
+      background: rgba(255, 238, 200, .08);
+      color: #fff3dd;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 840px) {
+      .game-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .top-actions { justify-content: flex-start; }
+      .scene-card { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">特调局特别篇 / 红嫁衣测试程序 <span id="version">v20260606-2</span></div>
+      <nav class="top-actions">
+        <a class="button secondary" href="./index.html?v=20260606-2">返回主页</a>
+        <button class="ghost" onclick="exitCase()">退出测试作品</button>
+      </nav>
+    </header>
+
+    <main id="intro-view" class="hero">
+      <div class="kicker">测试作品 / 新玩法 / 中式恐怖调查逃脱</div>
+      <h1>红嫁衣：三更拜堂</h1>
+      <div class="intro-copy">
+        <p>一张旧照片，一句诡异留言，一座早已废弃的婚楼。</p>
+        <p>顾临川沿着旧案留下的线索来到这里。当地人说，婚楼里始终有一场没办完的婚礼。</p>
+        <p>穿上红嫁衣的人，第二天名字就会出现在祠堂牌位上。</p>
+        <blockquote>陆川不是第十三个。<br>红衣新娘才是第一个。</blockquote>
+      </div>
+      <div class="action-row">
+        <button onclick="startInvestigation()">开始调查</button>
+        <a class="button secondary" href="./index.html?v=20260606-2">返回主页</a>
+      </div>
+    </main>
+
+    <main id="game-view" class="game-layout hidden">
+      <aside class="sidebar">
+        <h2>调查状态</h2>
+        <div class="status-line">当前地点：<strong id="current-room-name">前厅</strong></div>
+        <div class="status-line">测试作品，可随时退出。</div>
+        <h3>已获得</h3>
+        <div class="item-list" id="inventory"></div>
+        <h3>关键线索</h3>
+        <div class="clue-list" id="clues"></div>
+        <h3>地点</h3>
+        <div class="room-tabs" id="room-tabs"></div>
+      </aside>
+      <section class="scene-card">
+        <div class="scene-title">
+          <div>
+            <h2 id="scene-title">前厅</h2>
+            <p class="small-note" id="scene-subtitle">沈氏婚楼入口</p>
+          </div>
+          <button class="secondary" onclick="saveProgress()">保存进度</button>
+        </div>
+        <div class="scene-text" id="scene-text"></div>
+        <div class="object-grid" id="object-grid"></div>
+        <div class="message" id="message"></div>
+        <div id="puzzle-area"></div>
+      </section>
+    </main>
+
+    <main id="ending-view" class="ending hidden">
+      <div class="kicker">测试作品完成</div>
+      <h1>你离开了沈氏婚楼</h1>
+      <p>你离开婚楼时，天已经快亮了。</p>
+      <p>林绣不是人们口中的“红嫁衣新娘”。她只是被推上婚礼位置的人。</p>
+      <p>真正的婚书、族谱、牌位都在说同一件事：这场婚礼不是为了成礼，而是为了让一个人失去她原本的名字。</p>
+      <p>这不是单纯的闹鬼传说。这是一次借婚礼、祠堂、名分与族谱完成的身份替换。</p>
+      <blockquote>婚书背面还夹着一行极淡的字：<br>“他们不是在杀人。他们是在改名。”</blockquote>
+      <div class="puzzle-box">
+        <h2>调查记录摘要</h2>
+        <p>林绣是替身，沈知兰才是被婚书、族谱与空牌位共同指向的人。</p>
+        <p>井边仪式并不是召鬼，而是把被替换的名字从错误的礼法里取回。</p>
+      </div>
+      <div class="action-row" style="margin-top:18px;">
+        <a class="button" href="./index.html?v=20260606-2">返回主界面</a>
+        <button onclick="resetProgress()">重新体验本作</button>
+        <button class="secondary" onclick="showTestInfo()">查看测试说明</button>
+      </div>
+      <div class="message" id="ending-message"></div>
+    </main>
+  </div>
+
+  <script>
+    const APP_VERSION = "20260606-2";
+    const PROGRESS_KEY = "hongjiayi_progress";
+    const ITEMS_KEY = "hongjiayi_items";
+    const COMPLETED_KEY = "hongjiayi_completed";
+    const NOTICE_KEY = "hongjiayi_notice_read";
+    const HOME_URL = "./index.html?v=20260606-2";
+    const roomOrder = ["front", "hall", "bride", "ancestral", "well"];
+    const rooms = {
+      front: {
+        name: "前厅",
+        subtitle: "沈氏婚楼入口",
+        text: "门轴发出很轻的响声。前厅没有人，只有红布、供桌和一股像旧纸被雨泡过的气味。剧情里门像是关上了，但右上角始终可以退出测试作品。",
+        objects: [
+          ["倒贴的囍字", "纸角向外翘起，像被人反复揭开过。", () => discover("喜反为丧，门向西开。", "西门线索")],
+          ["供桌上的两支烛", "一红一白，烛台下压着两张纸条。", () => discover("红烛旁写着：生人点红。\n白烛旁写着：亡人点白。", "亡人点白")],
+          ["礼单残页", "纸面泛黄，边缘像被火燎过。", () => { addItem("礼单残页"); discover("阴亲不拜天，先告地。\n回门向西。", "先地后天"); }],
+          ["半张婚书", "红纸被撕去一半，只剩几个能辨认的字。", () => { addItem("半张婚书"); discover("新娘……林绣……\n吉时……子时三刻……", "林绣婚书残名"); }]
+        ],
+        puzzle: () => `<div class="puzzle-box"><h3>通往喜堂</h3><p>前厅线索已经足够。继续往内，可以进入喜堂。</p><div class="choice-row"><button onclick="enterHall()">进入喜堂</button></div></div>`
+      },
+      hall: {
+        name: "喜堂",
+        subtitle: "白烛、拜堂与三扇门",
+        text: "喜堂挂满褪色红绸。墙上的婚礼流程仍写着“一拜天地”，可前厅礼单说，这不是普通婚礼。",
+        objects: [
+          ["天地桌", "桌面上积着厚灰，地面却有新的膝印。", () => discover("桌下刻着一行小字：阴亲不拜天。", "阴亲")],
+          ["墙上的婚礼流程", "一拜天地，二拜高堂，夫妻对拜，送入洞房。", () => discover("流程写得很端正，像是故意让人按错顺序。", "正常流程可疑")],
+          ["三扇门", "东门贴着新囍，西门贴着旧白纸，后门被红布挡住。", () => discover("前厅两处线索都指向：西。", "西门")],
+          ["冷掉的香灰", "香灰没有风，却向门西侧斜着落。", () => discover("灰线指向西门。", "西侧灰线")]
+        ],
+        puzzle: hallPuzzle
+      },
+      bride: {
+        name: "新娘房",
+        subtitle: "嫁衣、妆匣与完整婚书",
+        text: "新娘房比喜堂更安静。红纱垂在床边，像有人刚从床上起身。梳妆台前摆着胭脂盒、木梳、红绣鞋和一个锁住的抽屉。",
+        objects: [
+          ["红嫁衣", "衣料很旧，却被人细细补过。", () => discover("嫁衣内侧绣着“林绣”。\n但在更旧的针脚下面，还藏着另一个名字：沈知兰。", "沈知兰")],
+          ["胭脂盒", "盒盖内侧有一道指甲划痕。", () => discover("盒底写着：不是我嫁给他。是她替我嫁。", "替嫁")],
+          ["木梳", "木齿缺了三根，背面刻着三句话。", () => discover("一梳不回头\n二梳不入梦\n三梳不断魂", "三梳不断魂")],
+          ["红绣鞋", "鞋面很小，鞋尖朝里摆着。", () => { addItem("红绣鞋"); discover("鞋底沾着井边青苔。", "井边青苔"); }]
+        ],
+        puzzle: bridePuzzle
+      },
+      ancestral: {
+        name: "祠堂",
+        subtitle: "族谱、牌位与正名",
+        text: "祠堂里没有风，红布却轻轻鼓动。正中摆着一块空牌位，旁边压着族谱残页。",
+        objects: [
+          ["族谱残页", "纸张从谱册中撕下，墨色深浅不一。", () => discover("沈归，早亡。\n沈知兰，未嫁。\n林绣，外姓，记入偏房。\n旁注：替嫁者不得入正谱。正礼不成，正名不落。", "族谱残页")],
+          ["盖红布的牌位", "红布下面似乎不止一块牌位。", () => discover("红布边缘露出半个“兰”字。", "兰字")],
+          ["空牌位", "牌位前刻着：牌位不是给替身的。", () => discover("它等的不是林绣。", "不是替身")],
+          ["锁魂铃", "铜铃被红线缠住，暂时取不下来。", () => discover("铃身刻着：正名之后，魂铃才响。", "正名后取铃")]
+        ],
+        puzzle: ancestralPuzzle
+      },
+      well: {
+        name: "后院井口",
+        subtitle: "红绳、绣鞋与井边石板",
+        text: "后院潮得像刚下过雨。井口被红绳缠住，石板上有被磨掉的字。井水深处没有倒影。",
+        objects: [
+          ["井边石板", "石板像被人刻意磨掉了字。", () => discover("只剩三段：\n“替……”\n“……不成……”\n“……礼”", "替嫁不成礼")],
+          ["红绳", "红绳绕井三圈，结扣朝内。", () => discover("绳结旁有鞋印，鞋尖朝外。", "鞋尖朝外")],
+          ["小铜铃", "和祠堂拿到的锁魂铃花纹一致。", () => discover("铃声需要三响，像三梳、三更、三拜。", "三次铃声")],
+          ["井水", "水面很黑。你看不见自己，只看见一截红袖。", () => discover("井底像有什么东西在等一句完整的话。", "最后一句话")]
+        ],
+        puzzle: wellPuzzle
+      }
+    };
+    let state = {
+      started: false,
+      currentRoom: "front",
+      unlockedRooms: ["front"],
+      items: [],
+      clues: [],
+      hallCandle: "",
+      hallBows: [],
+      drawerOpened: false,
+      ancestralSolved: false,
+      shoePlaced: false,
+      shoeDirection: "",
+      bellCount: 0,
+      completed: false,
+      version: APP_VERSION
+    };
+
+    document.addEventListener("DOMContentLoaded", init);
+    function init() {
+      localStorage.setItem(NOTICE_KEY, localStorage.getItem(NOTICE_KEY) || "direct-entry");
+      loadProgress();
+      if (state.completed || localStorage.getItem(COMPLETED_KEY) === "true") showEnding();
+      else if (state.started) showGame();
+      else showIntro();
+    }
+    function loadProgress() {
+      try { state = { ...state, ...(JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}")) }; } catch(e) {}
+      try {
+        const items = JSON.parse(localStorage.getItem(ITEMS_KEY) || "null");
+        if (Array.isArray(items)) state.items = items;
+      } catch(e) {}
+      state.unlockedRooms = Array.from(new Set(state.unlockedRooms || ["front"]));
+      state.items = Array.from(new Set(state.items || []));
+      state.clues = Array.from(new Set(state.clues || []));
+    }
+    function saveProgress(silent = false) {
+      state.version = APP_VERSION;
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+      localStorage.setItem(ITEMS_KEY, JSON.stringify(state.items));
+      if (!silent) flash("进度已保存。");
+    }
+    function startInvestigation() {
+      state.started = true;
+      unlockRoom("front");
+      saveProgress(true);
+      showGame();
+    }
+    function showIntro() {
+      document.getElementById("intro-view").classList.remove("hidden");
+      document.getElementById("game-view").classList.add("hidden");
+      document.getElementById("ending-view").classList.add("hidden");
+    }
+    function showGame() {
+      document.getElementById("intro-view").classList.add("hidden");
+      document.getElementById("game-view").classList.remove("hidden");
+      document.getElementById("ending-view").classList.add("hidden");
+      renderRoom();
+    }
+    function showEnding() {
+      state.completed = true;
+      localStorage.setItem(COMPLETED_KEY, "true");
+      document.getElementById("intro-view").classList.add("hidden");
+      document.getElementById("game-view").classList.add("hidden");
+      document.getElementById("ending-view").classList.remove("hidden");
+      saveProgress(true);
+    }
+    function exitCase() {
+      saveProgress(true);
+      location.href = HOME_URL;
+    }
+    function renderRoom() {
+      const room = rooms[state.currentRoom] || rooms.front;
+      document.getElementById("current-room-name").textContent = room.name;
+      document.getElementById("scene-title").textContent = room.name;
+      document.getElementById("scene-subtitle").textContent = room.subtitle;
+      document.getElementById("scene-text").textContent = room.text;
+      document.getElementById("object-grid").innerHTML = room.objects.map((item, index) => `<button class="object-card" onclick="inspectObject(${index})">${item[0]}<span>${item[1]}</span></button>`).join("");
+      document.getElementById("puzzle-area").innerHTML = room.puzzle();
+      document.getElementById("message").classList.remove("active");
+      renderStatus();
+    }
+    function renderStatus() {
+      document.getElementById("inventory").innerHTML = state.items.length ? state.items.map(x => `<span class="pill">${x}</span>`).join("") : `<span class="small-note">暂无物品</span>`;
+      document.getElementById("clues").innerHTML = state.clues.length ? state.clues.map(x => `<span class="pill">${x}</span>`).join("") : `<span class="small-note">暂无线索</span>`;
+      document.getElementById("room-tabs").innerHTML = roomOrder.map(id => {
+        const unlocked = state.unlockedRooms.includes(id);
+        return `<button ${unlocked ? "" : "disabled"} onclick="goRoom('${id}')">${rooms[id].name}</button>`;
+      }).join("");
+    }
+    function inspectObject(index) {
+      const object = rooms[state.currentRoom].objects[index];
+      if (object) object[2]();
+      renderStatus();
+      document.getElementById("puzzle-area").innerHTML = rooms[state.currentRoom].puzzle();
+      saveProgress(true);
+    }
+    function discover(text, clue) {
+      if (clue && !state.clues.includes(clue)) state.clues.push(clue);
+      flash(text);
+    }
+    function flash(text) {
+      const box = document.getElementById("message");
+      box.textContent = text;
+      box.classList.add("active");
+    }
+    function addItem(item) {
+      if (!state.items.includes(item)) state.items.push(item);
+    }
+    function hasItem(item) { return state.items.includes(item); }
+    function hasClue(clue) { return state.clues.includes(clue); }
+    function unlockRoom(id) {
+      if (!state.unlockedRooms.includes(id)) state.unlockedRooms.push(id);
+    }
+    function goRoom(id) {
+      if (!state.unlockedRooms.includes(id)) return;
+      state.currentRoom = id;
+      saveProgress(true);
+      renderRoom();
+    }
+    function enterHall() {
+      unlockRoom("hall");
+      state.currentRoom = "hall";
+      saveProgress(true);
+      renderRoom();
+      flash("门闩落下，喜堂里的白烛像是在等人。");
+    }
+    function hallPuzzle() {
+      const bows = state.hallBows.join(" → ") || "尚未开始";
+      return `<div class="puzzle-box">
+        <h3>喜堂仪式</h3>
+        <p>先处理烛，再按阴亲礼法拜堂，最后选择离开的门。</p>
+        <p class="small-note">当前烛火：${state.hallCandle || "未点"} | 拜堂顺序：${bows}</p>
+        <div class="choice-row">
+          <button onclick="chooseCandle('red')">点红烛</button>
+          <button onclick="chooseCandle('white')">点白烛</button>
+        </div>
+        <div class="choice-row">
+          <button onclick="bow('地')">拜地</button>
+          <button onclick="bow('天')">拜天</button>
+          <button class="secondary" onclick="resetBows()">重来拜堂</button>
+        </div>
+        <div class="choice-row">
+          <button onclick="chooseDoor('east')">走东门</button>
+          <button onclick="chooseDoor('west')">走西门</button>
+          <button onclick="chooseDoor('back')">走后门</button>
+        </div>
+      </div>`;
+    }
+    function chooseCandle(type) {
+      let text = "";
+      if (type === "white") {
+        state.hallCandle = "白烛";
+        text = "白烛燃起，火光很冷。";
+      } else {
+        state.hallCandle = "";
+        text = "红烛亮了一瞬，很快自己熄灭。";
+      }
+      saveProgress(true);
+      renderRoom();
+      flash(text);
+    }
+    function bow(target) {
+      if (state.hallBows.length >= 2) state.hallBows = [];
+      state.hallBows.push(target);
+      let text = "";
+      if (state.hallBows.join(",") === "地,天") text = "地先受礼，天后无声。喜堂西侧的门闩落了。";
+      else if (state.hallBows.length === 2) text = "顺序不对。红绸垂下来，遮住了门。";
+      else text = `你先拜了${target}。`;
+      saveProgress(true);
+      renderRoom();
+      flash(text);
+    }
+    function resetBows() {
+      state.hallBows = [];
+      saveProgress(true);
+      renderRoom();
+      flash("你重新站回天地桌前。");
+    }
+    function chooseDoor(dir) {
+      if (state.hallCandle === "白烛" && state.hallBows.join(",") === "地,天" && dir === "west") {
+        unlockRoom("bride");
+        state.currentRoom = "bride";
+        saveProgress(true);
+        renderRoom();
+        flash("西门吱呀一声打开。红纱后面，是新娘房。");
+      } else if (dir === "west") flash("西门后有门闩声，但仪式还没对上。");
+      else flash("门后传来唢呐声，你退了回来。");
+    }
+    function bridePuzzle() {
+      return `<div class="puzzle-box">
+        <h3>梳妆台抽屉</h3>
+        <p>抽屉上刻着：三梳开妆匣。</p>
+        <input id="drawer-answer" placeholder="输入第三句对应的词">
+        <div class="choice-row"><button onclick="openDrawer()">打开抽屉</button></div>
+      </div>`;
+    }
+    function openDrawer() {
+      const answer = document.getElementById("drawer-answer").value.trim();
+      if (answer === "不断魂") {
+        state.drawerOpened = true;
+        addItem("完整婚书");
+        discover("抽屉打开了。\n完整婚书写着：\n新娘：沈知兰\n替身：林绣\n新郎：沈归\n吉时：子时三刻\n礼成后，替身入井。", "完整婚书");
+        unlockRoom("ancestral");
+      } else {
+        flash("抽屉没有打开。");
+      }
+      saveProgress(true);
+      renderStatus();
+    }
+    function ancestralPuzzle() {
+      return `<div class="puzzle-box">
+        <h3>空牌位</h3>
+        <p>牌位旁刻着：牌位不是给替身的。</p>
+        <input id="tablet-name" placeholder="输入牌位上应写的名字">
+        <div class="choice-row"><button onclick="solveTablet()">写上名字</button></div>
+      </div>`;
+    }
+    function solveTablet() {
+      const answer = document.getElementById("tablet-name").value.trim();
+      if (answer === "沈知兰") {
+        state.ancestralSolved = true;
+        addItem("锁魂铃");
+        unlockRoom("well");
+        discover("所有牌位上的红布一起落下。\n后院方向传来井盖拖动的声音。\n你取得了锁魂铃。", "正名完成");
+      } else {
+        flash("红布没有落下。");
+      }
+      saveProgress(true);
+      renderStatus();
+    }
+    function wellPuzzle() {
+      return `<div class="puzzle-box">
+        <h3>井口仪式</h3>
+        <p>需要把物品、方向、铃声和最后一句话都对上。</p>
+        <p class="small-note">绣鞋：${state.shoePlaced ? "已放置" : "未放置"} | 方向：${state.shoeDirection || "未定"} | 铃声：${state.bellCount} / 3</p>
+        <div class="choice-row">
+          <button onclick="placeShoe()">把红绣鞋放在井边</button>
+          <button onclick="setShoeDirection('in')">鞋尖朝内</button>
+          <button onclick="setShoeDirection('out')">鞋尖朝外</button>
+          <button onclick="ringBell()">摇锁魂铃</button>
+        </div>
+        <div style="margin-top:12px;">
+          <input id="final-sentence" placeholder="输入最后一句话">
+          <div class="choice-row"><button onclick="finishCase()">完成仪式</button></div>
+        </div>
+      </div>`;
+    }
+    function placeShoe() {
+      if (!hasItem("红绣鞋")) return flash("你还没有红绣鞋。");
+      state.shoePlaced = true;
+      saveProgress(true);
+      renderRoom();
+      flash("红绣鞋被放在井边，鞋面上的红线慢慢绷紧。");
+    }
+    function setShoeDirection(dir) {
+      if (!state.shoePlaced) return flash("先把红绣鞋放在井边。");
+      state.shoeDirection = dir === "out" ? "鞋尖朝外" : "鞋尖朝内";
+      const text = dir === "out" ? "鞋尖朝外，像是在离开婚楼。" : "鞋尖朝内，井水忽然暗了一下。";
+      saveProgress(true);
+      renderRoom();
+      flash(text);
+    }
+    function ringBell() {
+      if (!hasItem("锁魂铃")) return flash("你还没有锁魂铃。");
+      state.bellCount = Math.min(3, state.bellCount + 1);
+      const text = `锁魂铃响了第 ${state.bellCount} 次。`;
+      saveProgress(true);
+      renderRoom();
+      flash(text);
+    }
+    function finishCase() {
+      const sentence = document.getElementById("final-sentence").value.trim();
+      if (state.shoePlaced && state.shoeDirection === "鞋尖朝外" && state.bellCount === 3 && sentence === "替嫁不成礼") {
+        flash("井口红绳断开。前厅大门打开。你离开了沈氏婚楼。");
+        setTimeout(showEnding, 650);
+      } else {
+        flash("井水没有动。");
+      }
+    }
+    function showTestInfo() {
+      const box = document.getElementById("ending-message");
+      box.textContent = "这是测试性质的第三部特别篇。玩法与前两部不同，采用场景探索、点击调查和轻度逃脱解谜。若出现显示或逻辑问题，可以返回主页重新进入。";
+      box.classList.add("active");
+    }
+    function resetProgress() {
+      localStorage.removeItem(PROGRESS_KEY);
+      localStorage.removeItem(ITEMS_KEY);
+      localStorage.removeItem(COMPLETED_KEY);
+      state = {
+        started: false,
+        currentRoom: "front",
+        unlockedRooms: ["front"],
+        items: [],
+        clues: [],
+        hallCandle: "",
+        hallBows: [],
+        drawerOpened: false,
+        ancestralSolved: false,
+        shoePlaced: false,
+        shoeDirection: "",
+        bellCount: 0,
+        completed: false,
+        version: APP_VERSION
+      };
+      showIntro();
+    }
+  </script>
+</body>
+</html>
