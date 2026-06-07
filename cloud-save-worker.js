@@ -1,4 +1,4 @@
-const LATEST_VERSION = "20260606-2";
+const LATEST_VERSION = "20260607-1";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 const PBKDF2_ITERATIONS = 100000;
 const CLOUD_DISABLED_USERS = new Set(["guest"]);
@@ -329,6 +329,79 @@ function summarizeAccountProgress(account) {
   return { site: account?.site || {}, cases };
 }
 
+const CASE_UNLOCK_BUILDERS = {
+  echo07(username) {
+    return {
+      caseId: "echo07",
+      version: LATEST_VERSION,
+      savedAt: new Date().toISOString(),
+      currentUser: { username, role: username === "admin" ? "administrator" : "investigator" },
+      isSealed: false,
+      goodEndingAchieved: true,
+      documents: Array.from({ length: 32 }, (_, index) => ({ id: index + 1, unlocked: true, new: false })),
+      sceneInvestigations: { area1: true, area2: true, area3: true, area4: true, area5: true, area6: true },
+      usedSearchTerms: ["admin-unlock-all"],
+      adminUnlocked: true
+    };
+  },
+  k713(username) {
+    return {
+      caseId: "k713",
+      version: LATEST_VERSION,
+      savedAt: new Date().toISOString(),
+      currentUser: { username, role: username === "admin" ? "administrator" : "investigator" },
+      goodEndingAchieved: true,
+      documents: Array.from({ length: 36 }, (_, index) => ({ id: index + 1, unlocked: true, new: false })),
+      usedSearchTerms: ["admin-unlock-all"],
+      adminUnlocked: true
+    };
+  },
+  hongjiayi(username) {
+    return {
+      caseId: "hongjiayi",
+      version: LATEST_VERSION,
+      savedAt: new Date().toISOString(),
+      currentUser: { username, role: username === "admin" ? "administrator" : "investigator" },
+      started: true,
+      currentRoom: "well",
+      unlockedRooms: ["front", "hall", "bride", "ancestral", "well"],
+      items: ["礼单残页", "半张婚书", "红绣鞋", "完整婚书", "锁魂铃"],
+      clues: ["西门线索", "亡人点白", "先地后天", "林绣婚书残名", "阴亲", "正常流程可疑", "西门", "西侧灰线", "沈知兰", "替嫁", "三梳不断魂", "井边青苔", "完整婚书", "族谱残页", "兰字", "不是替身", "正名后取铃", "正名完成", "替嫁不成礼", "鞋尖朝外", "三次铃声", "最后一句话"],
+      hallCandle: "白烛",
+      hallBows: ["地", "天"],
+      drawerOpened: true,
+      ancestralSolved: true,
+      shoePlaced: true,
+      shoeDirection: "鞋尖朝外",
+      bellCount: 3,
+      completed: true,
+      adminUnlocked: true
+    };
+  }
+};
+
+function unlockAllAccountSaves(account, username) {
+  const now = new Date().toISOString();
+  const next = {
+    ...emptyAccount(username),
+    ...(account || {}),
+    username,
+    site: { ...(account?.site || emptyAccount(username).site) },
+    cases: { ...(account?.cases || {}) },
+    updatedAt: now
+  };
+  next.site.version = LATEST_VERSION;
+  next.site.updatedAt = now;
+  next.site.adminUnlockedAll = true;
+  next.site.visitedCases = { ...(next.site.visitedCases || {}) };
+  for (const [caseId, buildSave] of Object.entries(CASE_UNLOCK_BUILDERS)) {
+    const unlockedSave = buildSave(username);
+    next.cases[caseId] = { ...(next.cases[caseId] || {}), ...unlockedSave, cloudSavedAt: now };
+    next.site.visitedCases[caseId] = { ...(next.site.visitedCases[caseId] || {}), lastOpened: now, lastSynced: now, adminUnlocked: true };
+  }
+  return next;
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -366,7 +439,10 @@ export default {
         }
         await ensureAccount(env, username);
         const session = await makeSession(env, user);
-        const account = await readAccount(env, username);
+        let account = await readAccount(env, username);
+        if (user.role === "administrator" && !isCloudDisabledUser(username)) {
+          account = await writeAccount(env, username, unlockAllAccountSaves(account, username));
+        }
         await logEvent(env, request, { actorUsername: username, targetUsername: username, action: "login_success", detail: { role: user.role } });
         if (isCloudDisabledUser(username)) {
           return json({ ok: true, latestVersion: LATEST_VERSION, user: publicUser(user), sessionToken: session.token, site: emptyAccount(username).site, cases: {}, cloudDisabled: true });
@@ -512,6 +588,27 @@ export default {
       await writeAccount(env, name, body.account);
       await logEvent(env, request, { actorUsername: admin.username, targetUsername: name, action: "admin_put_account", detail: summarizeAccountProgress(body.account) });
       return json({ ok: true, latestVersion: LATEST_VERSION, account: await readAccount(env, name) });
+    }
+
+    if (body.action === "adminUnlockAllSaves") {
+      const name = String(body.targetUsername || "").trim();
+      const user = await readUser(env, name);
+      if (!user) return json({ ok: false, latestVersion: LATEST_VERSION, error: "账号不存在" }, 404);
+      const targetAccount = await readAccount(env, name);
+      const unlockedAccount = await writeAccount(env, name, unlockAllAccountSaves(targetAccount, name));
+      await logEvent(env, request, {
+        actorUsername: admin.username,
+        targetUsername: name,
+        action: "admin_unlock_all_saves",
+        detail: { caseIds: Object.keys(CASE_UNLOCK_BUILDERS), progress: summarizeAccountProgress(unlockedAccount) }
+      });
+      return json({
+        ok: true,
+        latestVersion: LATEST_VERSION,
+        account: unlockedAccount,
+        progress: summarizeAccountProgress(unlockedAccount),
+        unlockedCaseIds: Object.keys(CASE_UNLOCK_BUILDERS)
+      });
     }
 
     if (body.action === "adminGetUserDetails") {

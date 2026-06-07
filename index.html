@@ -76,7 +76,7 @@
   <div class="toast" id="toast"></div>
   <div class="container">
     <header class="header">
-      <div class="logo">特调局档案系统 <span class="version">总站 v20260606-2</span></div>
+      <div class="logo">特调局档案系统 <span class="version">总站 v20260607-1</span></div>
       <div class="user-panel">
         <div id="user-info">登录用户: 未登录</div>
         <div id="cloud-info">云存档: 未配置</div>
@@ -147,6 +147,11 @@
             <button onclick="adminPutAccount()">保存修改</button>
           </div>
           <div class="admin-card">
+            <h3>一键解锁存档</h3>
+            <p style="color:#667;margin:6px 0 10px;">为所选账号解锁所有已登记作品的云端存档内容。新作品只要接入总站 caseId，后端模板会统一处理。</p>
+            <button onclick="adminUnlockAllSaves()">解锁所选账号全部内容</button>
+          </div>
+          <div class="admin-card">
             <h3>删除案件存档</h3>
             <select id="admin-case-id">
               <option value="echo07">ECHO-07 验尸台上的少女</option>
@@ -163,6 +168,7 @@
               <option value="login_failed">登录失败</option>
               <option value="admin_create_user">创建账号</option>
               <option value="admin_reset_password">重置密码</option>
+              <option value="admin_unlock_all_saves">一键解锁存档</option>
               <option value="push_case">案件进度更新</option>
               <option value="push_site">总站进度更新</option>
               <option value="delete_case">删除案件存档</option>
@@ -174,7 +180,7 @@
       </section>
     </main>
 
-    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260606-2 | GitHub Pages</footer>
+    <footer class="footer">特殊事务调查局内部系统 | 总站版本 v20260607-1 | GitHub Pages</footer>
   </div>
 
   <div class="modal" id="auth-modal">
@@ -208,7 +214,7 @@
   </div>
 
   <script>
-    const PORTAL_VERSION = "20260606-2";
+    const PORTAL_VERSION = "20260607-1";
     const CLOUD_SAVE_ENDPOINT = "https://ttj-save.charles1206.qzz.io";
     const CLOUD_CONFIG_KEY = "ttj_cloud_endpoint";
     const USER_KEY = "ttj_current_user";
@@ -221,7 +227,7 @@
         name: "验尸台上的少女",
         desc: "A大脑科学学生林雨薇坠楼死亡后，验尸台上出现了不应存在的反应。伪灵异、脑机接口、人格备份AI交织成一场死后调查。",
         status: "已开放",
-        href: "./ECHO07验尸台上的少女.html?v=20260606-2"
+        href: "./ECHO07验尸台上的少女.html?v=20260607-1"
       },
       {
         id: "k713",
@@ -229,7 +235,7 @@
         name: "第十三名乘客",
         desc: "夜行列车K713上，调查记者韩越死亡。官方名单只有十二名乘客，但监控、广播、票务、证词和论坛都开始制造同一个不存在的人。",
         status: "已开放",
-        href: "./K713第十三名乘客.html?v=20260606-2"
+        href: "./K713第十三名乘客.html?v=20260607-1"
       },
       {
         id: "hongjiayi",
@@ -237,7 +243,7 @@
         name: "红嫁衣：三更拜堂",
         desc: "一座废弃婚楼，一场没有结束的婚礼。第三部测试玩法：进入现场、调查房间、解开轻度密室逃脱谜题。",
         status: "测试中 | 中式恐怖 | 调查逃脱 | 新玩法",
-        href: "./红嫁衣：三更拜堂.html?v=20260606-2",
+        href: "./红嫁衣：三更拜堂.html?v=20260607-1",
         special: true,
         requiresNotice: true
       }
@@ -428,7 +434,7 @@
 	      pendingHongjiayiCaseId = "";
 	    }
 	    function continueHongjiayi() {
-	      const href = pendingHongjiayiHref || "./红嫁衣：三更拜堂.html?v=20260606-2";
+	      const href = pendingHongjiayiHref || "./红嫁衣：三更拜堂.html?v=20260607-1";
 	      const caseId = pendingHongjiayiCaseId || "hongjiayi";
 	      siteSave.visitedCases[caseId] = { lastOpened: new Date().toISOString(), testNoticeAccepted: true };
 	      saveSite();
@@ -552,6 +558,18 @@
         showToast("存档已保存。");
         adminLoadMore();
       } catch(e) { showToast(e.message || "JSON 格式错误。"); }
+    }
+    async function adminUnlockAllSaves() {
+      const targetUsername = getAdminSelectedUser();
+      if (!targetUsername) return;
+      if (!window.confirm(`确认解锁 ${targetUsername} 的所有已登记作品存档内容？`)) return;
+      try {
+        const data = await adminRequest("adminUnlockAllSaves", { targetUsername });
+        inspectedUsername = targetUsername;
+        document.getElementById("admin-account-json").value = JSON.stringify(data.account, null, 2);
+        renderAdminMore(data);
+        showToast(`已解锁: ${(data.unlockedCaseIds || []).join(", ")}`);
+      } catch(e) { showToast(e.message); }
     }
     async function adminDeleteCase() {
       const targetUsername = getAdminSelectedUser();

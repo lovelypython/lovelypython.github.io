@@ -209,9 +209,9 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <div class="brand">特调局特别篇 / 红嫁衣测试程序 <span id="version">v20260606-2</span></div>
+      <div class="brand">特调局特别篇 / 红嫁衣测试程序 <span id="version">v20260607-1</span></div>
       <nav class="top-actions">
-        <a class="button secondary" href="./index.html?v=20260606-2">返回主页</a>
+        <a class="button secondary" href="./index.html?v=20260607-1">返回主页</a>
         <button class="ghost" onclick="exitCase()">退出测试作品</button>
       </nav>
     </header>
@@ -227,7 +227,7 @@
       </div>
       <div class="action-row">
         <button onclick="startInvestigation()">开始调查</button>
-        <a class="button secondary" href="./index.html?v=20260606-2">返回主页</a>
+        <a class="button secondary" href="./index.html?v=20260607-1">返回主页</a>
       </div>
     </main>
 
@@ -272,7 +272,7 @@
         <p>井边仪式并不是召鬼，而是把被替换的名字从错误的礼法里取回。</p>
       </div>
       <div class="action-row" style="margin-top:18px;">
-        <a class="button" href="./index.html?v=20260606-2">返回主界面</a>
+        <a class="button" href="./index.html?v=20260607-1">返回主界面</a>
         <button onclick="resetProgress()">重新体验本作</button>
         <button class="secondary" onclick="showTestInfo()">查看测试说明</button>
       </div>
@@ -281,12 +281,13 @@
   </div>
 
   <script>
-    const APP_VERSION = "20260606-2";
+    const APP_VERSION = "20260607-1";
     const PROGRESS_KEY = "hongjiayi_progress";
     const ITEMS_KEY = "hongjiayi_items";
     const COMPLETED_KEY = "hongjiayi_completed";
     const NOTICE_KEY = "hongjiayi_notice_read";
-    const HOME_URL = "./index.html?v=20260606-2";
+    const USER_KEY = "ttj_current_user";
+    const HOME_URL = "./index.html?v=20260607-1";
     const roomOrder = ["front", "hall", "bride", "ancestral", "well"];
     const rooms = {
       front: {
@@ -371,9 +372,29 @@
     function init() {
       localStorage.setItem(NOTICE_KEY, localStorage.getItem(NOTICE_KEY) || "direct-entry");
       loadProgress();
+      if (isAdmin()) unlockForAdmin();
       if (state.completed || localStorage.getItem(COMPLETED_KEY) === "true") showEnding();
       else if (state.started) showGame();
       else showIntro();
+    }
+    function isAdmin() {
+      try { return JSON.parse(localStorage.getItem(USER_KEY) || "null")?.role === "administrator"; } catch(e) { return false; }
+    }
+    function unlockForAdmin() {
+      state.started = true;
+      state.currentRoom = state.currentRoom || "front";
+      state.unlockedRooms = ["front", "hall", "bride", "ancestral", "well"];
+      state.items = ["礼单残页", "半张婚书", "红绣鞋", "完整婚书", "锁魂铃"];
+      state.clues = ["西门线索", "亡人点白", "先地后天", "林绣婚书残名", "阴亲", "正常流程可疑", "西门", "西侧灰线", "沈知兰", "替嫁", "三梳不断魂", "井边青苔", "完整婚书", "族谱残页", "兰字", "不是替身", "正名后取铃", "正名完成", "替嫁不成礼", "鞋尖朝外", "三次铃声", "最后一句话"];
+      state.hallCandle = "白烛";
+      state.hallBows = ["地", "天"];
+      state.drawerOpened = true;
+      state.ancestralSolved = true;
+      state.shoePlaced = true;
+      state.shoeDirection = "鞋尖朝外";
+      state.bellCount = 3;
+      state.adminUnlocked = true;
+      saveProgress(true);
     }
     function loadProgress() {
       try { state = { ...state, ...(JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}")) }; } catch(e) {}
