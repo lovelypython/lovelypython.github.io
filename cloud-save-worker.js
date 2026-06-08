@@ -1,4 +1,4 @@
-const LATEST_VERSION = "20260607-1";
+const LATEST_VERSION = "20260608-1";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 const PBKDF2_ITERATIONS = 100000;
 const CLOUD_DISABLED_USERS = new Set(["guest"]);
@@ -372,8 +372,9 @@ const CASE_UNLOCK_BUILDERS = {
       drawerOpened: true,
       ancestralSolved: true,
       shoePlaced: true,
-      shoeDirection: "鞋尖朝外",
+      shoeDirection: "out",
       bellCount: 3,
+      phraseReady: true,
       completed: true,
       adminUnlocked: true
     };

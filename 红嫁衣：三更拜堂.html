@@ -209,9 +209,9 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <div class="brand">特调局特别篇 / 红嫁衣测试程序 <span id="version">v20260607-1</span></div>
+      <div class="brand">特调局特别篇 / 红嫁衣测试程序 <span id="version">v20260608-1</span></div>
       <nav class="top-actions">
-        <a class="button secondary" href="./index.html?v=20260607-1">返回主页</a>
+        <a class="button secondary" href="./index.html?v=20260608-1">返回主页</a>
         <button class="ghost" onclick="exitCase()">退出测试作品</button>
       </nav>
     </header>
@@ -227,7 +227,7 @@
       </div>
       <div class="action-row">
         <button onclick="startInvestigation()">开始调查</button>
-        <a class="button secondary" href="./index.html?v=20260607-1">返回主页</a>
+        <a class="button secondary" href="./index.html?v=20260608-1">返回主页</a>
       </div>
     </main>
 
@@ -272,7 +272,7 @@
         <p>井边仪式并不是召鬼，而是把被替换的名字从错误的礼法里取回。</p>
       </div>
       <div class="action-row" style="margin-top:18px;">
-        <a class="button" href="./index.html?v=20260607-1">返回主界面</a>
+        <a class="button" href="./index.html?v=20260608-1">返回主界面</a>
         <button onclick="resetProgress()">重新体验本作</button>
         <button class="secondary" onclick="showTestInfo()">查看测试说明</button>
       </div>
@@ -281,13 +281,13 @@
   </div>
 
   <script>
-    const APP_VERSION = "20260607-1";
+    const APP_VERSION = "20260608-1";
     const PROGRESS_KEY = "hongjiayi_progress";
     const ITEMS_KEY = "hongjiayi_items";
     const COMPLETED_KEY = "hongjiayi_completed";
     const NOTICE_KEY = "hongjiayi_notice_read";
     const USER_KEY = "ttj_current_user";
-    const HOME_URL = "./index.html?v=20260607-1";
+    const HOME_URL = "./index.html?v=20260608-1";
     const roomOrder = ["front", "hall", "bride", "ancestral", "well"];
     const rooms = {
       front: {
@@ -364,6 +364,7 @@
       shoePlaced: false,
       shoeDirection: "",
       bellCount: 0,
+      phraseReady: false,
       completed: false,
       version: APP_VERSION
     };
@@ -391,8 +392,9 @@
       state.drawerOpened = true;
       state.ancestralSolved = true;
       state.shoePlaced = true;
-      state.shoeDirection = "鞋尖朝外";
+      state.shoeDirection = "out";
       state.bellCount = 3;
+      state.phraseReady = true;
       state.adminUnlocked = true;
       saveProgress(true);
     }
@@ -405,6 +407,8 @@
       state.unlockedRooms = Array.from(new Set(state.unlockedRooms || ["front"]));
       state.items = Array.from(new Set(state.items || []));
       state.clues = Array.from(new Set(state.clues || []));
+      if (state.shoeDirection === "鞋尖朝外") state.shoeDirection = "out";
+      if (state.shoeDirection === "鞋尖朝内" || state.shoeDirection === "鞋尖朝里") state.shoeDirection = "in";
     }
     function saveProgress(silent = false) {
       state.version = APP_VERSION;
@@ -604,50 +608,77 @@
     function wellPuzzle() {
       return `<div class="puzzle-box">
         <h3>井口仪式</h3>
-        <p>需要把物品、方向、铃声和最后一句话都对上。</p>
-        <p class="small-note">绣鞋：${state.shoePlaced ? "已放置" : "未放置"} | 方向：${state.shoeDirection || "未定"} | 铃声：${state.bellCount} / 3</p>
+        <p>需要把物品、方向、铃声和最后一句话都对上。失败后可重新开始井口仪式，不会丢失已获得物品。</p>
+        <p class="small-note" id="shoe-status">${getShoeStatusText()}</p>
+        <p class="small-note">铃声：<span id="bell-counter">${state.bellCount} / 3</span></p>
         <div class="choice-row">
           <button onclick="placeShoe()">把红绣鞋放在井边</button>
           <button onclick="setShoeDirection('in')">鞋尖朝内</button>
           <button onclick="setShoeDirection('out')">鞋尖朝外</button>
           <button onclick="ringBell()">摇锁魂铃</button>
         </div>
-        <div style="margin-top:12px;">
-          <input id="final-sentence" placeholder="输入最后一句话">
-          <div class="choice-row"><button onclick="finishCase()">完成仪式</button></div>
+        <div id="final-phrase-section" style="display:${state.phraseReady ? "block" : "none"}; margin-top:12px;">
+          <p>石板上的残字浮了出来：</p>
+          <blockquote>替____ / ____不成 / ____礼</blockquote>
+          <input id="well-final-phrase" placeholder="输入最后一句话">
+          <div class="choice-row"><button onclick="submitFinalPhrase()">确认</button></div>
         </div>
+        <div class="choice-row"><button class="secondary" onclick="resetWellRitual()">重新开始井口仪式</button></div>
       </div>`;
+    }
+    function getShoeStatusText() {
+      if (!state.shoePlaced) return "红绣鞋尚未放下。";
+      if (state.shoeDirection === "out") return "红绣鞋鞋尖朝外。";
+      if (state.shoeDirection === "in") return "红绣鞋鞋尖朝里。";
+      return "红绣鞋已经放下，但方向还未确定。";
+    }
+    function updateWellUI(message = "") {
+      saveProgress(true);
+      renderRoom();
+      if (message) flash(message);
+    }
+    function resetWellRitual(message = "井口仪式已重新开始。") {
+      state.shoePlaced = false;
+      state.shoeDirection = "";
+      state.bellCount = 0;
+      state.phraseReady = false;
+      updateWellUI(message);
     }
     function placeShoe() {
       if (!hasItem("红绣鞋")) return flash("你还没有红绣鞋。");
       state.shoePlaced = true;
-      saveProgress(true);
-      renderRoom();
-      flash("红绣鞋被放在井边，鞋面上的红线慢慢绷紧。");
+      state.shoeDirection = "";
+      state.bellCount = 0;
+      state.phraseReady = false;
+      updateWellUI("红绣鞋被放在井边。");
     }
     function setShoeDirection(dir) {
-      if (!state.shoePlaced) return flash("先把红绣鞋放在井边。");
-      state.shoeDirection = dir === "out" ? "鞋尖朝外" : "鞋尖朝内";
-      const text = dir === "out" ? "鞋尖朝外，像是在离开婚楼。" : "鞋尖朝内，井水忽然暗了一下。";
-      saveProgress(true);
-      renderRoom();
-      flash(text);
+      if (!state.shoePlaced) return flash("井边还没有放下红绣鞋。");
+      state.shoeDirection = dir;
+      state.bellCount = 0;
+      state.phraseReady = false;
+      updateWellUI(dir === "out" ? "你把红绣鞋转向井外。" : "你把红绣鞋转向井里。");
     }
     function ringBell() {
-      if (!hasItem("锁魂铃")) return flash("你还没有锁魂铃。");
+      if (state.completed) return;
+      if (state.phraseReady && state.bellCount === 3) return flash("井水已经停住，似乎在等最后一句话。");
+      if (!hasItem("锁魂铃")) return resetWellRitual("铜铃没有回应。");
+      if (!state.shoePlaced) return resetWellRitual("井边只有冷风。");
+      if (state.shoeDirection !== "out") return resetWellRitual("铃声被井水吞了下去。");
       state.bellCount = Math.min(3, state.bellCount + 1);
-      const text = `锁魂铃响了第 ${state.bellCount} 次。`;
-      saveProgress(true);
-      renderRoom();
-      flash(text);
+      if (state.bellCount < 3) return updateWellUI(`铃声响了第 ${state.bellCount} 次。`);
+      state.bellCount = 3;
+      state.phraseReady = true;
+      updateWellUI("第三声铃响后，井水停住了。石板上的残字浮了出来。");
     }
-    function finishCase() {
-      const sentence = document.getElementById("final-sentence").value.trim();
-      if (state.shoePlaced && state.shoeDirection === "鞋尖朝外" && state.bellCount === 3 && sentence === "替嫁不成礼") {
+    function submitFinalPhrase() {
+      const sentence = document.getElementById("well-final-phrase")?.value.trim() || "";
+      if (!state.phraseReady || state.bellCount !== 3) return resetWellRitual("井水没有动。");
+      if (sentence === "替嫁不成礼") {
         flash("井口红绳断开。前厅大门打开。你离开了沈氏婚楼。");
         setTimeout(showEnding, 650);
       } else {
-        flash("井水没有动。");
+        resetWellRitual("井水没有动。");
       }
     }
     function showTestInfo() {
@@ -672,6 +703,7 @@
         shoePlaced: false,
         shoeDirection: "",
         bellCount: 0,
+        phraseReady: false,
         completed: false,
         version: APP_VERSION
       };
